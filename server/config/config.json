@@ -1,0 +1,16 @@
+{
+  "port": 1337,
+  "db": "mongodb://localhost:27017/journeycreator",
+  "bunyan": {
+    "streams": [
+      {
+        "level": "debug",
+        "stream": "process.stdout"
+      },
+      {
+        "level": "info",
+        "path": "server/logs/journeycreator.info.log"
+      }
+    ]
+  }
+}
