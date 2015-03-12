@@ -18,8 +18,20 @@ let App = React.createClass({
 
   render() {
     return (
-      <div>
-        JOURNEY CREATOR
+      <div className="hero">
+        <h1>DISCOVER THE WORLD</h1>
+        <form>
+          <span className="wrapper">
+            <input placeholder="Starting location"></input>
+          </span>
+          <span className="wrapper">
+            <input placeholder="Start date"></input>
+          </span>
+          <span className="wrapper">
+            <input placeholder="End date"></input>
+          </span>
+          <button>Create journey</button>
+        </form>
         <div>{this.props.schedule}</div>
       </div>
     );
