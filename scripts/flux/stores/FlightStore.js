@@ -33,7 +33,6 @@ class FlightStore extends Store {
     });
   }
   createJourney() {
-    console.log(this.state.selectedAirport);
     let journey = {
       'country' : this.state.selectedAirport.country_code,
       'airport' : this.state.selectedAirport.airports[0],

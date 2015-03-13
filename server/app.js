@@ -42,7 +42,7 @@ app.use('/api', flightApi);
 io.on('connection', function(socket) {
   socket.on('request-flight', function(data) {
     console.log('data', data);
-    superagent.get([config.api, 'livestore', 'en', data.country, 'per-country', data.airport, data.from, data.to].join('/'))
+    superagent.get([config.api, 'livestore', 'en', data.country, 'per-country', data.airport, data.from, data.to].join('/')+'?id=H4cK3r&currency=USD')
 		.end(function(err, response) {
 			if (err) {
 				return res.status(500).send('Something went wrong :(');
