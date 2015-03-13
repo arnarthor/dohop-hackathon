@@ -1,5 +1,5 @@
 {
-  "api": "http://api.dohop.com/",
+  "api": "http://api.dohop.com/api/v1",
   "port": 1337,
   "db": "mongodb://localhost:27017/journeycreator",
   "bunyan": {

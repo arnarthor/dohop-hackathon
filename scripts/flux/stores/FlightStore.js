@@ -14,6 +14,7 @@ class FlightStore extends Store {
     this.register(flightActions.clearAirports, this.clearAirports);
     this.register(flightActions.setAirport, this.setAirport);
     this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
+    this.register(flightActions.createJourney, this.createJourney);
 
     this.socket = null;
     this.state = {
@@ -30,6 +31,17 @@ class FlightStore extends Store {
       fromCountry: fromCountry,
       schedule: schedule,
     });
+  }
+  createJourney() {
+    console.log(this.state.selectedAirport);
+    let journey = {
+      'country' : this.state.selectedAirport.country_code,
+      'airport' : this.state.selectedAirport.airports[0],
+      'from' : '2015-3-20', 
+      'to' : '2015-3-22'
+    }
+    this.socket.emit('request-flight', journey);
+    
   }
 
   clearAirports() {

@@ -28,6 +28,7 @@ const App = React.createClass({
   },
 
   componentDidMount() {
+    this.refs.searchBar.getDOMNode().focus();
     this.props.flux.getActions('FlightActions').connectIo();
   },
 
@@ -54,18 +55,20 @@ const App = React.createClass({
         <form>
           <span className="wrapper">
             <input
+              ref="searchBar"
               value={airportSearch}
-              onFocus={(event) => this.handleOnFocus(event)}
+              onFocus={(event) => this.handleOnFocus(event, true)}
+              onBlur={(event) => this.handleOnFocus(event, false)}
               onChange={(event) => this.handleSearchAirport(event)}
-              placeholder="Starting airport">
-            </input>
+              placeholder="Starting airport"
+            />
           </span>
           <TimeoutTransitionGroup
             enterTimeout={300}
             leaveTimeout={300}
             transitionName="fade"
           >
-            {(this.state.showSearchResults || !selectedAirport) ? [
+            {(this.state.showSearchResults) ? [
               <SearchResults
                 flux={this.props.flux}
                 airports={this.props.airports}
@@ -89,8 +92,9 @@ const App = React.createClass({
     );
   },
 
-  handleOnFocus() {
-    this.setState({showSearchResults: true});
+  handleOnFocus(event, value) {
+    event.preventDefault();
+    this.setState({showSearchResults: value});
   },
 
   handleSearchAirport(event) {
