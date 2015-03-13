@@ -8,12 +8,16 @@ class FlightActions extends Actions {
     return {schedule, fromCountry};
   }
 
+  clearAirports() {
+    return 'clear';
+  }
+
   setUUID(id) {
     return id;
   }
 
-  airportList(airport, hash) {
-    return {airport, hash};
+  airportList(airports, hash) {
+    return {airports, hash};
   }
 
   async fetchFlights(fromCountry) {

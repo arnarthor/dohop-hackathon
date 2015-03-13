@@ -1,0 +1,13 @@
+@import '../variables.scss';
+
+.SearchResults {
+  display: inline-block;
+}
+
+.SearchResults__result__name {
+  color: $color-orange;
+}
+
+.SearchResults__result__airport {
+  color: $color-orange;
+}
