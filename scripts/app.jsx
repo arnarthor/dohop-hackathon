@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import FluxContainer from 'flummox';
 import constants from './config/constants';
+import DateTimeField from 'react-bootstrap-daterangepicker';
 
 require('./app.scss');
 
@@ -22,9 +23,13 @@ let App = React.createClass({
   },
 
   render() {
+ 
     return (
       <div className="hero">
         <h1>DISCOVER THE WORLD</h1>
+        <div>hello
+          <DateTimeField />
+        </div>
         <form>
           <span className="wrapper">
             <input
