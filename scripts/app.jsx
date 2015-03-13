@@ -25,10 +25,10 @@ let App = React.createClass({
             <input placeholder="Starting location"></input>
           </span>
           <span className="wrapper">
-            <input placeholder="Start date"></input>
+            <input type="date" placeholder="Start date"></input>
           </span>
           <span className="wrapper">
-            <input placeholder="End date"></input>
+            <input type="date" placeholder="End date"></input>
           </span>
           <button>Create journey</button>
         </form>
