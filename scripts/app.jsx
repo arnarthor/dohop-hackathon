@@ -4,12 +4,12 @@ import _ from 'lodash';
 import React from 'react/addons';
 import FluxContainer from 'flummox';
 import constants from './config/constants';
-import SearchResults from './components/SearchResults.jsx';
+import SearchResults from './components/SearchResults';
+import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 
 require('./app.scss');
 
 const Props = React.PropTypes;
-const CSSTransitionGroup = React.addons.CSSTransitionGroup;
 const classSet = React.addons.classSet;
 
 let App = React.createClass({
@@ -50,13 +50,21 @@ let App = React.createClass({
               placeholder="Starting airport">
             </input>
           </span>
-          <SearchResults
-            flux={this.props.flux}
-            airports={this.props.airports}
-            selectedAirport={this.props.selectedAirport}
-            selectAirport={this.handleSetAirport}
-            showList={this.state.showSearchResults}
-          />
+          <TimeoutTransitionGroup
+            enterTimeout={300}
+            leaveTimeout={300}
+            transitionName="fade"
+          >
+            {(this.state.showSearchResults || !selectedAirport) ? [
+              <SearchResults
+                flux={this.props.flux}
+                airports={this.props.airports}
+                selectedAirport={this.props.selectedAirport}
+                selectAirport={this.handleSetAirport}
+                showList={this.state.showSearchResults}
+              />
+            ] : []}
+          </TimeoutTransitionGroup>
           <span className="wrapper">
             <input ref="startDate" type="date" placeholder="Start date"></input>
           </span>
