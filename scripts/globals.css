@@ -7,7 +7,6 @@
 }
 
 .fade-leave {
-  pointer-events: none; /* Make sure it can't be interacted with when fading out*/
   opacity: 1;
   transition: opacity 0.3s;
 }
