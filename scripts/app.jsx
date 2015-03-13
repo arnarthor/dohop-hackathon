@@ -6,8 +6,11 @@ import FluxContainer from 'flummox';
 import constants from './config/constants';
 import SearchResults from './components/SearchResults';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+import Moment from 'moment';
 
 require('./app.scss');
+require('./datetimefield.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
@@ -19,6 +22,8 @@ const App = React.createClass({
       airportSearch: '',
       showLandingPage: true,
       showSearchResults: true,
+      startDate: Moment(),
+      endDate: Moment().add(7, 'days')
     };
   },
 
@@ -33,6 +38,11 @@ const App = React.createClass({
     };
     let airportSearch = this.state.airportSearch;
     let selectedAirport = this.props.selectedAirport;
+
+
+    let start = this.state.startDate.format('YYYY-MM-DD');
+    let end = this.state.endDate.format('YYYY-MM-DD');
+    let label = (start === end ? start : start + ' - ' + end);
 
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airports[0]})`;
@@ -66,10 +76,9 @@ const App = React.createClass({
             ] : []}
           </TimeoutTransitionGroup>
           <span className="wrapper">
-            <input ref="startDate" type="date" placeholder="Start date"></input>
-          </span>
-          <span className="wrapper">
-            <input type="date" placeholder="End date"></input>
+            <DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onEvent={this.handleEvent}>
+              <span>{label}</span>
+            </DateRangePicker>
           </span>
           <button onClick={(event) => this.handleCreateJourney(event)}>
             Create journey
@@ -91,11 +100,6 @@ const App = React.createClass({
     this.performSearch();
   },
 
-  handleCreateJourney(event) {
-    event.preventDefault();
-    this.setState({showLandingPage: !this.state.showLandingPage});
-  },
-
   handleSetAirport(event, airport) {
     this.setState({showSearchResults: false});
     this.props.flux.getActions('FlightActions').setAirport(airport);
@@ -114,6 +118,16 @@ const App = React.createClass({
   fetchFlights(fromCountry) {
     this.props.flux.getActions('FlightActions').fetchFlights(fromCountry);
   },
+
+  handleCreateJourney(event) {
+    event.preventDefault();
+    if (!this.props.selectedAirport) {
+      alert('Obb bobb bobb, this isnt an airport');
+      return;
+    }
+    this.setState({showLandingPage: !this.state.showLandingPage});
+    this.props.flux.getActions('FlightActions').createJourney();
+  }
 });
 
 export default App;
