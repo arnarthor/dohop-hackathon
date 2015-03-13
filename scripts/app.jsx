@@ -12,7 +12,7 @@ require('./app.scss');
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
 
-let App = React.createClass({
+const App = React.createClass({
 
   getInitialState() {
     return {

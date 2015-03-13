@@ -6,7 +6,7 @@ require('./SearchResults.scss');
 
 const Props = React.PropTypes;
 
-let SearchResults = React.createClass({
+const SearchResults = React.createClass({
 
   propTypes: {
     flux: Props.object.isRequired,

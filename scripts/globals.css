@@ -1,0 +1,16 @@
+.fade-enter {
+  opacity: 0.01;
+  transition: opacity 0.3s;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+}
+
+.fade-leave {
+  pointer-events: none; /* Make sure it can't be interacted with when fading out*/
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+}
