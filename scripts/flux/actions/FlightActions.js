@@ -1,3 +1,4 @@
+import uuid from 'node-uuid';
 import {Actions} from 'flummox';
 import request from 'superagent';
 import constants from '../../config/constants';
@@ -7,10 +8,27 @@ class FlightActions extends Actions {
     return {schedule, fromCountry};
   }
 
+  setUUID(id) {
+    return id;
+  }
+
+  airportList(airport, hash) {
+    return {airport, hash};
+  }
+
   async fetchFlights(fromCountry) {
     request.get(`${constants.api}/${fromCountry}`)
       .end(res => {
         this.newFlight(res.body, fromCountry);
+      });
+  }
+
+  async searchAirport(searchString) {
+    let hash = uuid.v4();
+    this.setUUID(hash);
+    request.get(`${constants.api}/search_airport/${searchString}`)
+      .end(res => {
+        this.airportList(res.body, hash);
       });
   }
 

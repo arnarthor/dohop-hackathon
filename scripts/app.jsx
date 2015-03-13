@@ -1,5 +1,6 @@
 'use strict';
 
+import _ from 'lodash';
 import React from 'react/addons';
 import FluxContainer from 'flummox';
 import constants from './config/constants';
@@ -12,6 +13,10 @@ let CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 let App = React.createClass({
 
+  getInitialState() {
+    return {airportSearch: ''};
+  },
+
   componentDidMount() {
     this.props.flux.getActions('FlightActions').connectIo();
   },
@@ -22,13 +27,17 @@ let App = React.createClass({
         <h1>DISCOVER THE WORLD</h1>
         <form>
           <span className="wrapper">
-            <input placeholder="Starting location"></input>
+            <input
+              value={this.state.airportSearch}
+              onChange={(event) => this.handleSearchAirport(event)}
+              placeholder="Starting airport">
+            </input>
           </span>
           <span className="wrapper">
-            <input placeholder="Start date"></input>
+            <input type="date" placeholder="Start date"></input>
           </span>
           <span className="wrapper">
-            <input placeholder="End date"></input>
+            <input type="date" placeholder="End date"></input>
           </span>
           <button>Create journey</button>
         </form>
@@ -36,6 +45,19 @@ let App = React.createClass({
       </div>
     );
   },
+
+  handleSearchAirport(event) {
+    let airportSearch = event.target.value;
+    this.setState({airportSearch})
+    this.performSearch();
+  },
+
+  performSearch: _.debounce(function() {
+    let airportSearch = this.state.airportSearch;
+    if (airportSearch.length >= 2) {
+      this.props.flux.getActions('FlightActions').searchAirport(airportSearch);
+    }
+  }, 200),
 
   fetchFlights(fromCountry) {
     this.props.flux.getActions('FlightActions').fetchFlights(fromCountry);

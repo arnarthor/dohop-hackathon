@@ -5,6 +5,7 @@ var cors = require('cors');
 var bunyan = require('bunyan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var superagent = require('superagent');
 
 var flightApi = require('./routes/flights');
 
@@ -39,7 +40,6 @@ app.use('*', function(req, res, next) {
 app.use('/api', flightApi);
 
 io.on('connection', function(socket) {
-  socket.emit('news', {yolo: 'swag'});
   socket.on('request-flight', function(data) {
     console.log('data', data);
   });
