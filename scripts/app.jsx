@@ -13,7 +13,7 @@ let CSSTransitionGroup = React.addons.CSSTransitionGroup;
 let App = React.createClass({
 
   componentDidMount() {
-    this.props.flux.getActions('FlightActions').fetchFlights('wooohoooooooo');
+    this.props.flux.getActions('FlightActions').connectIo();
   },
 
   render() {

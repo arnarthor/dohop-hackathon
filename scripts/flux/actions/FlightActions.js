@@ -13,6 +13,10 @@ class FlightActions extends Actions {
         this.newFlight(res.body, fromCountry);
       });
   }
+
+  connectIo() {
+    return {yolo: 'swag'};
+  }
 }
 
 export default FlightActions;

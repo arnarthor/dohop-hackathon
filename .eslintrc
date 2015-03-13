@@ -3,6 +3,7 @@
     "arrowFunctions": true,
     "classes": true,
     "destructuring": true,
+    "modules": true,
     "objectLiteralComputedProperties": true,
     "objectLiteralShorthandMethods": true,
     "objectLiteralShorthandProperties": true,
