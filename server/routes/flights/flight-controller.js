@@ -16,3 +16,4 @@ exports.searchAirport = function(req, res) {
       res.send(JSON.parse(response.text));
     });
 };
+
