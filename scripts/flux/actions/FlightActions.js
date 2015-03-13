@@ -45,12 +45,11 @@ class FlightActions extends Actions {
   }
 
   createJourney(data) {
-    console.log('FlightActions');
     return 'create-journey';
   }
 
   connectIo() {
-    return {yolo: 'swag'};
+    return 'connect-io';
   }
 }
 
