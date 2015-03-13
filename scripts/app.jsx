@@ -18,6 +18,7 @@ let App = React.createClass({
     return {
       airportSearch: '',
       showLandingPage: true,
+      showSearchResults: true,
     };
   },
 
@@ -44,6 +45,7 @@ let App = React.createClass({
           <span className="wrapper">
             <input
               value={airportSearch}
+              onFocus={(event) => this.handleOnFocus(event)}
               onChange={(event) => this.handleSearchAirport(event)}
               placeholder="Starting airport">
             </input>
@@ -51,25 +53,45 @@ let App = React.createClass({
               flux={this.props.flux}
               airports={this.props.airports}
               selectedAirport={this.props.selectedAirport}
+              selectAirport={this.handleSetAirport}
+              showList={this.state.showSearchResults}
             />
           </span>
           <span className="wrapper">
-            <input type="date" placeholder="Start date"></input>
+            <input ref="startDate" type="date" placeholder="Start date"></input>
           </span>
           <span className="wrapper">
             <input type="date" placeholder="End date"></input>
           </span>
-          <button onClick={(event) => this.handleCreateJourney(event)}>Create journey</button>
+          <button onClick={(event) => this.handleCreateJourney(event)}>
+            Create journey
+          </button>
         </form>
         <div>{this.props.schedule}</div>
       </div>
     );
   },
 
+  handleOnFocus() {
+    this.setState({showSearchResults: true});
+  },
+
   handleSearchAirport(event) {
     let airportSearch = event.target.value;
+    this.props.flux.getActions('FlightActions').clearSelectedAirport();
     this.setState({airportSearch})
     this.performSearch();
+  },
+
+  handleCreateJourney(event) {
+    event.preventDefault();
+    this.setState({showLandingPage: !this.state.showLandingPage});
+  },
+
+  handleSetAirport(event, airport) {
+    this.setState({showSearchResults: false});
+    this.props.flux.getActions('FlightActions').setAirport(airport);
+    this.refs.startDate.getDOMNode().focus();
   },
 
   performSearch: _.debounce(function() {
@@ -84,11 +106,6 @@ let App = React.createClass({
   fetchFlights(fromCountry) {
     this.props.flux.getActions('FlightActions').fetchFlights(fromCountry);
   },
-
-  handleCreateJourney(event) {
-    event.preventDefault();
-    this.setState({showLandingPage: !this.state.showLandingPage});
-  }
 });
 
 export default App;

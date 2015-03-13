@@ -12,6 +12,10 @@ class FlightActions extends Actions {
     return airport;
   }
 
+  clearSelectedAirport() {
+    return 'clear-airport';
+  }
+
   clearAirports() {
     return 'clear';
   }

@@ -13,6 +13,7 @@ class FlightStore extends Store {
     this.register(flightActions.setUUID, this.setUUID);
     this.register(flightActions.clearAirports, this.clearAirports);
     this.register(flightActions.setAirport, this.setAirport);
+    this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
 
     this.socket = null;
     this.state = {
@@ -35,6 +36,10 @@ class FlightStore extends Store {
     this.setState({airports: []});
   }
 
+  clearSelectedAirport() {
+    this.setState({selectedAirport: null});
+  }
+
   setUUID(hash) {
     this.setState({desiredHash: hash});
   }
@@ -49,7 +54,7 @@ class FlightStore extends Store {
   }
 
   airportList(data) {
-    this.setState({selectedAirport: null});
+    this.clearSelectedAirport();
     let {hash, airports} = data;
     let localAirports = _.map(airports.matches, airport =>
       airport.children ||
