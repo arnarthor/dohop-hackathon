@@ -18,7 +18,7 @@ let App = React.createClass({
 
   render() {
     return (
-      <div className="hero">
+      <div className="search">
         <h1>DISCOVER THE WORLD</h1>
         <form>
           <span className="wrapper">
