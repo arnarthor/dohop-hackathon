@@ -12,10 +12,12 @@ class FlightStore extends Store {
     this.register(flightActions.airportList, this.airportList);
     this.register(flightActions.setUUID, this.setUUID);
     this.register(flightActions.clearAirports, this.clearAirports);
+    this.register(flightActions.setAirport, this.setAirport);
 
     this.socket = null;
     this.state = {
       desiredHash: '',
+      selectedAirport: null,
       schedule: [],
       airports: [],
     };
@@ -37,12 +39,17 @@ class FlightStore extends Store {
     this.setState({desiredHash: hash});
   }
 
+  setAirport(airport) {
+    this.setState({selectedAirport: airport});
+  }
+
   connectIo() {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('new-flight', (data) => this.debug(data));
   }
 
   airportList(data) {
+    this.setState({selectedAirport: null});
     let {hash, airports} = data;
     let localAirports = _.map(airports.matches, airport =>
       airport.children ||

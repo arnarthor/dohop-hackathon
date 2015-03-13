@@ -8,6 +8,10 @@ class FlightActions extends Actions {
     return {schedule, fromCountry};
   }
 
+  setAirport(airport) {
+    return airport;
+  }
+
   clearAirports() {
     return 'clear';
   }

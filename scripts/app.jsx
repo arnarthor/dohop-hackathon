@@ -30,18 +30,27 @@ let App = React.createClass({
       search: true,
       min: !this.state.showLandingPage,
     };
+    let airportSearch = this.state.airportSearch;
+    let selectedAirport = this.props.selectedAirport;
+
+    if (selectedAirport) {
+      airportSearch = `${selectedAirport.name} (${selectedAirport.airports[0]})`;
+    }
+
     return (
       <div className={classSet(formClasses)}>
         <h1>DISCOVER THE WORLD</h1>
         <form>
           <span className="wrapper">
             <input
-              value={this.state.airportSearch}
+              value={airportSearch}
               onChange={(event) => this.handleSearchAirport(event)}
               placeholder="Starting airport">
             </input>
             <SearchResults
+              flux={this.props.flux}
               airports={this.props.airports}
+              selectedAirport={this.props.selectedAirport}
             />
           </span>
           <span className="wrapper">
