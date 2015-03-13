@@ -83,11 +83,6 @@ let App = React.createClass({
     this.performSearch();
   },
 
-  handleCreateJourney(event) {
-    event.preventDefault();
-    this.setState({showLandingPage: !this.state.showLandingPage});
-  },
-
   handleSetAirport(event, airport) {
     this.setState({showSearchResults: false});
     this.props.flux.getActions('FlightActions').setAirport(airport);
@@ -106,6 +101,16 @@ let App = React.createClass({
   fetchFlights(fromCountry) {
     this.props.flux.getActions('FlightActions').fetchFlights(fromCountry);
   },
+
+  handleCreateJourney(event) {
+    event.preventDefault();
+    if (!this.props.selectedAirport) {
+      alert('Obb bobb bobb, this isnt an airport');
+      return;
+    }
+    this.setState({showLandingPage: !this.state.showLandingPage});
+    this.props.flux.getActions('FlightActions').createJourney();
+  }
 });
 
 export default App;

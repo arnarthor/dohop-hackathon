@@ -7,7 +7,8 @@ exports.index = function(req, res) {
 };
 
 exports.searchAirport = function(req, res) {
-  superagent.get(config.api + 'api/v1/picker/en/' + req.params.airport)
+	console.log('BBBBBBBBBBBB');
+  superagent.get(config.api + '/picker/en/' + req.params.airport)
     .set('Accept', 'application/json')
     .end(function(err, response) {
       if (err) {
@@ -16,4 +17,3 @@ exports.searchAirport = function(req, res) {
       res.send(JSON.parse(response.text));
     });
 };
-
