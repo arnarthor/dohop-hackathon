@@ -47,12 +47,12 @@ let App = React.createClass({
               onChange={(event) => this.handleSearchAirport(event)}
               placeholder="Starting airport">
             </input>
-            <SearchResults
-              flux={this.props.flux}
-              airports={this.props.airports}
-              selectedAirport={this.props.selectedAirport}
-            />
           </span>
+          <SearchResults
+            airports={this.props.airports}
+            selectedAirport={this.props.selectedAirport}
+            flux={this.props.flux}
+          />
           <span className="wrapper">
             <input type="date" placeholder="Start date"></input>
           </span>

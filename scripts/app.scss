@@ -15,17 +15,17 @@ body {
   font-weight: 600;
   color: $color-black;
   -webkit-font-smoothing: antialiased;
+  background-color: red;
 }
 
 .search {
   background: url(/img/bg.png) center bottom no-repeat;
   background-size: cover;
-
   position: absolute;
   top: 0; bottom: 0;
   left: 0; right: 0;
-
   transition: transform 350ms;
+
 
   &.min{
     transform: translate3d(0,-100vh,0);
@@ -44,7 +44,6 @@ body {
           border:none;
         }
       }
-
     }
   }
 
@@ -61,8 +60,6 @@ body {
     color: white;
     font-size: 3.5em;
     text-align: center;
-
-    
   }
 
   form {

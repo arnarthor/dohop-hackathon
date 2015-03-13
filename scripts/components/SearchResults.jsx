@@ -17,20 +17,21 @@ let SearchResults = React.createClass({
     let airports = this.props.airports;
     let selectedAirport = this.props.selectedAirport;
     return selectedAirport ? null : (
-      <div className="SearchResults">
+      <ul className="SearchResults">
         {_.map(airports, airport => (
-          <div onClick={(event) => this.handleSetAirport(event, airport)} className="SearchResults__result">
+          <li onClick={(event) => this.handleSetAirport(event, airport)} className="SearchResults__result">
             <span className="SearchResults__result__name">{airport.name}</span>
             <span className="SearchResults__result__airport"> ({airport.airports[0]})</span>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     );
   },
 
   handleSetAirport(event, airport) {
     this.props.flux.getActions('FlightActions').setAirport(airport);
-  }
+  },
+
 });
 
 export default SearchResults;
