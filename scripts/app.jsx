@@ -79,7 +79,7 @@ const App = React.createClass({
             ] : []}
           </TimeoutTransitionGroup>
           <span className="wrapper">
-            <DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onEvent={this.handleEvent}>
+            <DateRangePicker ref="startDate" startDate={this.state.startDate} endDate={this.state.endDate}>
               <span>{label}</span>
             </DateRangePicker>
           </span>
