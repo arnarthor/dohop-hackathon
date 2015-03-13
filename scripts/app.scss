@@ -65,7 +65,7 @@ body {
   form {
     position: absolute;
     text-align: center;
-    
+
 
     .wrapper:before{
       position: relative;
@@ -78,10 +78,10 @@ body {
 
     .wrapper:first-child{
       &:before{
-        content: "\f041"; 
+        content: "\f041";
       }
       input{
-        width: 340px;  
+        width: 340px;
       }
     }
 
@@ -112,4 +112,3 @@ body {
     }
   }
 }
-
