@@ -29,27 +29,27 @@ class FlightStore extends Store {
       airports: [],
       dates: {
         startDate: moment().add(1, 'days'),
-        endDate: moment().add(8, 'days')
+        endDate: moment().add(32, 'days')
       },
     };
   }
 
-  createJourney(location) {
-    this.setState({flights: []});
+  createJourney(flightHash) {
+    console.log(flightHash);
+    this.setState({flights: [], flightHash, goHome: false});
 
-    console.log(this.state.selectedAirport);
-
+    let selectedAirport = _.clone(this.state.selectedAirport);
     let travelingData = {
       departure: {
-        airportName: this.state.selectedAirport.name,
-        country: this.state.selectedAirport.country_code,
-        airportCode: this.state.selectedAirport.airportCode,
+        airportName: selectedAirport.name,
+        country: selectedAirport.country_code,
+        airportCode: selectedAirport.airportCode,
         from: this.state.dates.startDate.format('YYYY-MM-DD'),
         to: this.state.dates.endDate.format('YYYY-MM-DD'),
-        lat: location.lat,
-        lon: location.lng,
+        lat: selectedAirport.location.lat,
+        lon: selectedAirport.location.lng,
       },
-      goHome: this.state.goHome,
+      goHome: false,
       flights: [],
       startingPoint: this.state.selectedAirport,
     };
@@ -76,12 +76,13 @@ class FlightStore extends Store {
   setDates(dates) {
     this.setState({dates});
   }
+
   setHome(home) {
-    console.log('home', home);
     this.setState({goHome: home});
   }
-  addFlight(flight) {
 
+  addFlight(flight) {
+    console.log(flight);
     if (this.state.flights.length === 5) {
       this.setHome(true);
     }
@@ -99,7 +100,7 @@ class FlightStore extends Store {
     this.setState({flights: flights.concat(flight)});
     if (flight.destAirport === this.state.selectedAirport.airportCode) return;
 
-   
+
     let travelingData = {
       departure: {
         airportName: flight.arrivalCountry.airportName,
@@ -109,13 +110,12 @@ class FlightStore extends Store {
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
-        
+
       },
       goHome: this.state.goHome,
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
     };
-
     this.socket.emit('request-flight', travelingData);
   }
 
