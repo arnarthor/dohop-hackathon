@@ -34,7 +34,7 @@ class FlightStore extends Store {
     };
   }
 
-  createJourney() {
+  createJourney(location) {
     this.setState({flights: []});
 
     console.log(this.state.selectedAirport);
@@ -46,6 +46,8 @@ class FlightStore extends Store {
         airportCode: this.state.selectedAirport.airportCode,
         from: this.state.dates.startDate.format('YYYY-MM-DD'),
         to: this.state.dates.endDate.format('YYYY-MM-DD'),
+        lat: location.lat,
+        lon: location.lng,
       },
       goHome: this.state.goHome,
       flights: [],
@@ -107,6 +109,7 @@ class FlightStore extends Store {
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
+        
       },
       goHome: this.state.goHome,
       flights: this.state.flights,

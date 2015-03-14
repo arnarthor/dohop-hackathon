@@ -40,8 +40,15 @@ class FlightActions extends Actions {
       });
   }
 
+  async fetchAirport(searchString) {
+    request.get(`${constants.googleMapsAPI}/json?address=${searchString.airportCode} airport&sensor=false`)
+      .end(res => {
+        this.createJourney(res.body.results[0].geometry.location);
+      });
+  }
+
   createJourney(data) {
-    return 'create-journey';
+    return data;
   }
 
   connectIo() {
