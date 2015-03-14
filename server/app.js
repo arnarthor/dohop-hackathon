@@ -70,6 +70,8 @@ io.on('connection', function(socket) {
             city: airports[fares[0].b].a_n,
             countryCode: airports[fares[0].b].cc_c,
             countryName: airports[fares[0].b].cc_n,
+            // I have absolutely no idea what this is.
+            // It seems to be the city again, but i'm not sure.
             dontKnow: airports[fares[0].b].ci_n,
           },
           departure: fares[0].d1
