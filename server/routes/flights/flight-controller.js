@@ -21,7 +21,6 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
   if (travelingInfo.goHome) {
-    console.log('Im coming home');
     url = [
       config.api,
       'livestore',
@@ -58,7 +57,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     var countries = _.map(travelingInfo.flights, function(item) {
       return item['departureCountry'].country;
     });
-    //console.log('countries', fares);
     for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {      
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  === -1) { 
         break;
@@ -69,11 +67,8 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       return;
     }
     var cheapestFlight = fares[0];
-    console.log('here1');
     if (fares.length) {
-      console.log('here2', travelingInfo.goHome);
       if (travelingInfo.goHome) {
-        console.log('this is it');
         cheapestFlight = cheapestFlight[0];
       }
       else {
