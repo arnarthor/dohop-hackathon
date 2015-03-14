@@ -16,7 +16,7 @@ let GoogleMap = React.createClass({
   getInitialState() {
     return {
       center: new LatLng(41.879535, -87.624333),
-      zoom: 5,
+      zoom: 4,
       linePath: [],
       height: 1000,
       width: 1000,
