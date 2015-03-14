@@ -1,6 +1,7 @@
 'use strict';
 var superagent = require('superagent');
 var config = require('../../config');
+var _ = require("lodash");
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
@@ -20,7 +21,7 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
 
-  console.log(travelingInfo.departure)
+
   if (travelingInfo.goHome) {
     url = [
       config.api,
@@ -45,7 +46,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.to
     ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
   }
-
   superagent.get(url)
 	.end(function(err, response) {
 		if (err) {
@@ -56,15 +56,35 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     var responseData = JSON.parse(response.text);
     var fares = responseData.fares;
     var airports = responseData.airports;
+
+
+    var cheapest = 0;
+    var countries = _.map(travelingInfo.flights, function(item) {
+      return item['departureCountry'].country;
+    });
+
+
+    //check if we have travled there before
+    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {      
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  === -1) { 
+        break;
+      }
+    };
+
+    //go home 
+    if (travelingInfo.flights.length && fares.length === cheapest) {
+      socket.emit('go-home', true);
+      return;
+    }
+
+
     var cheapestFlight = fares[0];
 
 
     if (fares.length) {
-      if (travelingInfo.goHome) {
-        cheapestFlight = cheapestFlight[0];
+      if (!travelingInfo.goHome) {
+        cheapestFlight = fares[cheapest];
       }
-
-      // Check if we have travelled to country
       var travelInfo = {
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,

@@ -5,6 +5,7 @@ import React from 'react/addons';
 import FluxContainer from 'flummox';
 import constants from './config/constants';
 import SearchResults from './components/SearchResults';
+import GoogleMap from './components/GoogleMap';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 import DateRangePicker from './components/daterangepicker';
 import JourneyPlan from './components/JourneyPlan.jsx';
@@ -101,6 +102,9 @@ const App = React.createClass({
           flights={this.props.flights}
           display={this.state.showJourneyPlan}
         />
+        <GoogleMap
+          flights={this.props.flights}
+        />
       </div>
     );
   },
@@ -149,8 +153,8 @@ const App = React.createClass({
     } else if (this.props.dates.startDate.format('YYYY-MM-DD') === this.props.dates.endDate.format('YYYY-MM-DD')) {
       alert('Obb bobb bobb, invalid date');
       return;
-    } 
-    
+    }
+
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});

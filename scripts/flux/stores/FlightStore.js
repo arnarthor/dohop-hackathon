@@ -24,6 +24,7 @@ class FlightStore extends Store {
       desiredHash: '',
       selectedAirport: null,
       flights: [],
+      goHome: false,
       airports: [],
       dates: {
         startDate: moment().add(1, 'days'),
@@ -45,7 +46,7 @@ class FlightStore extends Store {
         from: this.state.dates.startDate.format('YYYY-MM-DD'),
         to: this.state.dates.endDate.format('YYYY-MM-DD'),
       },
-      goHome: this.state.flights.length === 5,
+      goHome: this.state.goHome,
       flights: [],
       startingPoint: this.state.selectedAirport,
     };
@@ -72,8 +73,15 @@ class FlightStore extends Store {
   setDates(dates) {
     this.setState({dates});
   }
-
+  setHome(home) {
+    console.log('home', home);
+    this.setState({goHome: home});
+  }
   addFlight(flight) {
+
+    if (this.state.flights.length === 5) {
+      this.setHome(true);
+    }
 
     let flights = this.state.flights;
     let lastFlight;
@@ -98,12 +106,10 @@ class FlightStore extends Store {
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
       },
-      goHome: this.state.flights.length === 5,
+      goHome: this.state.goHome,
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
     };
-
-  
 
     this.socket.emit('request-flight', travelingData);
   }
@@ -112,6 +118,7 @@ class FlightStore extends Store {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('new-flight', (data) => this.addFlight(data));
     this.socket.on('error', (data) => this.debug(data));
+    this.socket.on('go-home', (data) => this.setHome(data));
   }
 
   airportList(data) {

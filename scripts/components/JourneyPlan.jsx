@@ -40,11 +40,13 @@ let JourneyPlan = React.createClass({
                   </div>
                   <div className="JourneyPlan__items__flight__details">
                     <div className="JourneyPlan__items__flight__from">
-                      {`${flight.departureCountry.airportName} (${flight.departureCountry.airportCode})`}
+                      <span className="JourneyPlan__items__flight__from__airportName">{flight.departureCountry.airportName}</span>
+                      <span className="JourneyPlan__items__flight__to__airportCode">({flight.departureCountry.airportCode})</span>
                     </div>
                     <div className="JourneyPlan__items__flight__plane"></div>
                     <div className="JourneyPlan__items__flight__to">
-                      {`${flight.arrivalCountry.airportName} (${flight.arrivalCountry.airportCode})`}
+                      <span className="JourneyPlan__items__flight__to__airportName">{flight.arrivalCountry.airportName}</span>
+                      <span className="JourneyPlan__items__flight__to__airportCode">({flight.arrivalCountry.airportCode})</span>
                     </div>
                   </div>
                 </li>

@@ -1,0 +1,78 @@
+{
+  "name": "react-googlemaps",
+  "version": "0.4.0",
+  "description": "A declarative React interface to Google Maps",
+  "keywords": [
+    "react",
+    "react-component",
+    "google maps",
+    "googlemaps",
+    "maps"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build-examples": "webpack --devtool inline-source-map",
+    "watch-examples": "webpack --devtool inline-source-map --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pieterv/react-googlemaps.git"
+  },
+  "homepage": "https://github.com/pieterv/react-googlemaps",
+  "bugs": {
+    "url": "https://github.com/pieterv/react-googlemaps/issues"
+  },
+  "author": {
+    "name": "Pieter Vanderwerff"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jest-cli": "^0.1.18",
+    "jsx-loader": "^0.12.2",
+    "react-tools": "^0.12.2",
+    "webpack": "^1.3.7",
+    "react": ">=0.12.1"
+  },
+  "peerDependencies": {
+    "react": ">=0.12.1",
+    "reactify": ">=0.17.1"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
+  "gitHead": "cf12264ed26b27756926ebd35ae5eb18102c9fc8",
+  "_id": "react-googlemaps@0.4.0",
+  "_shasum": "038b5b8365bc67feb7be9f213f9ff685ea198280",
+  "_from": "react-googlemaps@*",
+  "_npmVersion": "2.1.14",
+  "_nodeVersion": "0.10.35",
+  "_npmUser": {
+    "name": "pieterv",
+    "email": "me@pieter.io"
+  },
+  "maintainers": [
+    {
+      "name": "pieterv",
+      "email": "me@pieter.io"
+    },
+    {
+      "name": "petehunt",
+      "email": "floydophone@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "038b5b8365bc67feb7be9f213f9ff685ea198280",
+    "tarball": "http://registry.npmjs.org/react-googlemaps/-/react-googlemaps-0.4.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/react-googlemaps/-/react-googlemaps-0.4.0.tgz"
+}
