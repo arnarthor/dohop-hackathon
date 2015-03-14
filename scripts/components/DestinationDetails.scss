@@ -1,0 +1,26 @@
+.DestinationDetails__items__destination {
+  height: 115px;
+  background: url('/img/bg.png') center center no-repeat;
+  background-size: cover;
+  text-align: center;
+}
+
+.DestinationDetails__items__destination__details {
+  padding-top: 20px;
+}
+
+.DestinationDetails__items__destination__details__duration,
+.DestinationDetails__items__destination__details__city,
+.DestinationDetails__items__destination__details__country {
+  text-align: center;
+  background-color: rgba(245,140,92,0.8);
+  color: white;
+  font-size: 0.8em;
+  display:inline-block;
+  margin: 1px;
+  padding: 2px;
+}
+
+.DestinationDetails__items__destination__details__city {
+  font-size: 1.2em;
+}
