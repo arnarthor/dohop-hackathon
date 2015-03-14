@@ -150,6 +150,7 @@ const App = React.createClass({
     }
     this.setState({showLandingPage: !this.state.showLandingPage});
     this.setState({showJourneyPlan: !this.state.showJourneyPlan});
+    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
     this.props.flux.getActions('FlightActions').createJourney();
     
   }
