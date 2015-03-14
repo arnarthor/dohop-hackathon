@@ -11,7 +11,7 @@ let DestinationDetails = React.createClass({
   },
 
   componentDidMount() {
-    this.props.flux.getActions('FlightActions').getFlickrImage(this.props.flight.departure);
+    this.props.flux.getActions('FlightActions').getFlickrImage(this.props.flight.departure, this.props.flight.arrivalCountry.lat, this.props.flight.arrivalCountry.lon);
   },
 
   render() {
