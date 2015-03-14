@@ -76,6 +76,11 @@ let GoogleMap = React.createClass({
   },
 
   render() {
+    let polyLineArrays = [];
+    let linePath = this.state.linePath;
+    for(var i = 0; i < linePath.length - 1; i++) {
+      polyLineArrays.push([linePath[i], linePath[i + 1]]);
+    }
     return (
       <div className="GoogleMap">
         <Map
@@ -85,13 +90,15 @@ let GoogleMap = React.createClass({
           height={this.state.height}
           onCenterChange={this.handleCenterChange}
         >
-          <Polyline
-            geodesic
-            path={this.state.linePath}
-            strokeColor="#F58C5C"
-            strokeOpacity={0.8}
-            strokeWeight={3}
-          />
+          {_.map(polyLineArrays, array =>
+            <Polyline
+              geodesic
+              path={array}
+              strokeColor="#F58C5C"
+              strokeOpacity={0.8}
+              strokeWeight={3}
+            />
+          )}
         </Map>
       </div>
     );
