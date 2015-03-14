@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Store} from 'flummox';
-import Moment from 'moment';
+import moment from 'moment';
 import constants from '../../config/constants';
 
 class FlightStore extends Store {
@@ -25,20 +25,26 @@ class FlightStore extends Store {
       flights: [],
       airports: [],
       dates: {
-        startDate: Moment().add(1, 'days'),
-        endDate: Moment().add(8, 'days')
+        startDate: moment().add(1, 'days'),
+        endDate: moment().add(8, 'days')
       },
     };
   }
 
   createJourney() {
-    let journey = {
-      'country' : this.state.selectedAirport.country_code,
-      'airport' : this.state.selectedAirport.airports[0],
-      'from' : this.state.dates.startDate.format('YYYY-MM-DD'),
-      'to' : this.state.dates.endDate.format('YYYY-MM-DD'),
-    }
-    this.socket.emit('request-flight', journey);
+    this.setState({flights: []});
+    let travelingData = {
+      departure: {
+        country: this.state.selectedAirport.country_code,
+        airport: this.state.selectedAirport.airportCode,
+        from: this.state.dates.startDate.format('YYYY-MM-DD'),
+        to: this.state.dates.endDate.format('YYYY-MM-DD'),
+      },
+      goHome: this.state.flights.length === 5,
+      flights: [],
+      startingPoint: this.state.selectedAirport,
+    };
+    this.socket.emit('request-flight', travelingData);
   }
 
   clearAirports() {
@@ -62,7 +68,21 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
+    console.log(flight);
     this.setState({flights: this.state.flights.concat(flight)});
+    if (flight.destAirport === this.state.selectedAirport.airportCode) return;
+    let travelingData = {
+      departure: {
+        country: flight.country.countryCode,
+        airport: flight.destAirport,
+        from: moment(flight.departure).add(2, 'days').format('YYYY-MM-DD'),
+        to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
+      },
+      goHome: this.state.flights.length === 5,
+      flights: this.state.flights,
+      startingPoint: this.state.selectedAirport,
+    };
+    this.socket.emit('request-flight', travelingData);
   }
 
   connectIo() {
@@ -81,6 +101,11 @@ class FlightStore extends Store {
 
     let airportList = [];
     _.forEach(localAirports, currentAirports => airportList = airportList.concat(currentAirports));
+    airportList = _.map(airportList, airport => {
+      airport.airportCode = airport.airports[0];
+      delete airport.airports;
+      return airport;
+    })
 
     if (hash === this.state.desiredHash) {
       this.setState({airports: airportList});

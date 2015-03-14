@@ -34,12 +34,12 @@ const SearchResults = React.createClass({
         >
           {airports.length ? _.map(airports, airport => (
               <li
-                key={airport.airports[0]}
+                key={airport.airportCode}
                 onClick={(event) => this.props.selectAirport(event, airport)}
                 className="SearchResults__result"
               >
                 <span className="SearchResults__result__name">{airport.name}</span>
-                <span className="SearchResults__result__airport"> ({airport.airports[0]})</span>
+                <span className="SearchResults__result__airport"> ({airport.airportCode})</span>
               </li>
           )): []}
         </TimeoutTransitionGroup>

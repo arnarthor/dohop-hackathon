@@ -16,3 +16,66 @@ exports.searchAirport = function(req, res) {
       res.send(JSON.parse(response.text));
     });
 };
+
+exports.findCheapestFlight = function(travelingInfo, socket) {
+  var url = '';
+  if (travelingInfo.goHome) {
+    url = [
+      config.api,
+      'livestore',
+      'en',
+      travelingInfo.departure.country,
+      'per-airport',
+      travelingInfo.departure.airport,
+      travelingInfo.startingPoint.airportCode,
+      travelingInfo.departure.from,
+      travelingInfo.departure.to
+    ].join('/') + '?id=H4cK3r&currency=USD&stay=1-365&include_split=true';
+  } else {
+    console.log(travelingInfo);
+    url = [
+      config.api,
+      'livestore',
+      'en',
+      travelingInfo.departure.country,
+      'per-country',
+      travelingInfo.departure.airport,
+      travelingInfo.departure.from,
+      travelingInfo.departure.to
+    ].join('/') + '?id=H4cK3r&currency=USD';
+  }
+
+  superagent.get(url)
+	.end(function(err, response) {
+		if (err) {
+			socket.emit('error', 'something went wrong in the socket');
+      return;
+		}
+    var responseData = JSON.parse(response.text);
+    var fares = responseData.fares;
+    var airports = responseData.airports;
+    var cheapestFlight = fares[0];
+    if (fares.length) {
+      if (travelingInfo.goHome) {
+        cheapestFlight = cheapestFlight[0];
+      }
+      // Check if we have travelled to country
+      var travelInfo = {
+        fromAirport: cheapestFlight.a,
+        destAirport: cheapestFlight.b,
+        price: cheapestFlight.conv_fare,
+        departure: cheapestFlight.d1
+      };
+      if (airports[cheapestFlight.b]) {
+        travelInfo.country = {
+          airportCode: airports[cheapestFlight.b].a_i,
+          airportName: airports[cheapestFlight.b].a_n,
+          countryCode: airports[cheapestFlight.b].cc_c,
+          countryName: airports[cheapestFlight.b].cc_n,
+          city: airports[cheapestFlight.b].ci_n
+        };
+      }
+      socket.emit('new-flight', travelInfo);
+    }
+	});
+};

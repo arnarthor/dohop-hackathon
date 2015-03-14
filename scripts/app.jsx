@@ -48,8 +48,10 @@ const App = React.createClass({
     console.log(this.props.flights);
 
     if (selectedAirport) {
-      airportSearch = `${selectedAirport.name} (${selectedAirport.airports[0]})`;
+      airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
     }
+
+    console.log(this.props.flights);
 
     return (
       <div>
@@ -97,7 +99,7 @@ const App = React.createClass({
           </form>
           <div>{this.props.schedule}</div>
         </div>
-        <JourneyPlan 
+        <JourneyPlan
           flights={this.props.flights}
           display={this.state.showJourneyPlan}
         />
@@ -153,11 +155,11 @@ const App = React.createClass({
       return;
     }
 
-    this.setState({showLandingPage: !this.state.showLandingPage});
-    this.setState({showJourneyPlan: !this.state.showJourneyPlan});
-    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
+    this.setState({showLandingPage: false});
+    this.setState({showJourneyPlan: false);
+    this.setState({minimizeSearchResults: false);
     this.props.flux.getActions('FlightActions').createJourney();
-    
+
   }
 });
 
