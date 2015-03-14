@@ -30,9 +30,9 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.startingPoint.airportCode,
       travelingInfo.departure.from,
       travelingInfo.departure.to
-    ].join('/') + '?id=H4cK3r&currency=USD&stay=1-365&include_split=true';
+    ].join('/') + '?currency=USD&stay=1-365&include_split=true&airport-format=full&fare-format=full&id=H4cK3r';
   } else {
-    console.log(travelingInfo);
+    //console.log(travelingInfo);
     url = [
       config.api,
       'livestore',
@@ -42,7 +42,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.airportCode,
       travelingInfo.departure.from,
       travelingInfo.departure.to
-    ].join('/') + '?id=H4cK3r&currency=USD';
+    ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
   }
 
   superagent.get(url)
@@ -59,6 +59,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       if (travelingInfo.goHome) {
         cheapestFlight = cheapestFlight[0];
       }
+
       // Check if we have travelled to country
       var travelInfo = {
         fromAirport: cheapestFlight.a,
@@ -73,7 +74,11 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
           airportName: airports[cheapestFlight.b].a_n,
           countryCode: airports[cheapestFlight.b].cc_c,
           countryName: airports[cheapestFlight.b].cc_n,
-          city: airports[cheapestFlight.b].ci_n
+          city: airports[cheapestFlight.b].ci_n,
+          lat: airports[cheapestFlight.b].lat,
+          lon: airports[cheapestFlight.b].lon,
+          state: airports[cheapestFlight.b].r_n,
+          state_short: airports[cheapestFlight.b].r_c,
         };
       }
       socket.emit('new-flight', travelInfo);
