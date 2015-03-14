@@ -148,10 +148,8 @@ const App = React.createClass({
     } else if (this.props.dates.startDate.format('YYYY-MM-DD') === this.props.dates.endDate.format('YYYY-MM-DD')) {
       alert('Obb bobb bobb, invalid date');
       return;
-    } else if (this.props.dates.startDate.unix() < Math.floor(new Date().getTime() / 1000)) {
-      alert('Invalid date, sorry bro!');
-      return;
-    }
+    } 
+    
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
