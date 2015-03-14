@@ -5,7 +5,7 @@
  * A slightly modified version of bootstrap-daterangepicker.js for use in react and npm.
  * Original copyright in: ./lib/daterangepicker.js
  */
-var React = require('react');
+var React = require('react/addons');
 var $ = require('jquery');
 var DateRangePicker = require('./daterangepicker.js');
 
