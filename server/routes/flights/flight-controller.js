@@ -1,6 +1,7 @@
 'use strict';
 var superagent = require('superagent');
 var config = require('../../config');
+var _ = require("lodash");
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
@@ -20,6 +21,7 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
   if (travelingInfo.goHome) {
+    console.log('Im coming home');
     url = [
       config.api,
       'livestore',
@@ -32,7 +34,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.to
     ].join('/') + '?id=H4cK3r&currency=USD&stay=1-365&include_split=true';
   } else {
-    console.log(travelingInfo);
     url = [
       config.api,
       'livestore',
@@ -44,7 +45,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.to
     ].join('/') + '?id=H4cK3r&currency=USD';
   }
-
   superagent.get(url)
 	.end(function(err, response) {
 		if (err) {
@@ -54,12 +54,31 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     var responseData = JSON.parse(response.text);
     var fares = responseData.fares;
     var airports = responseData.airports;
+    var cheapest = 0;
+    var countries = _.map(travelingInfo.flights, function(item) {
+      return item['departureCountry'].country;
+    });
+    //console.log('countries', fares);
+    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {      
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  === -1) { 
+        break;
+      }
+    };
+    if (travelingInfo.flights.length && fares.length === cheapest) {
+      socket.emit('go-home', true);
+      return;
+    }
     var cheapestFlight = fares[0];
+    console.log('here1');
     if (fares.length) {
+      console.log('here2', travelingInfo.goHome);
       if (travelingInfo.goHome) {
+        console.log('this is it');
         cheapestFlight = cheapestFlight[0];
       }
-      // Check if we have travelled to country
+      else {
+        cheapestFlight = fares[cheapest];
+      }     
       var travelInfo = {
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,
