@@ -85,6 +85,10 @@ body {
       }
     }
 
+    .wrapper div {
+      display: inline-block;
+    }
+
     input, button {
       font-family: $font-family;
       border: 0;

@@ -36,11 +36,11 @@ class FlightStore extends Store {
     let journey = {
       'country' : this.state.selectedAirport.country_code,
       'airport' : this.state.selectedAirport.airports[0],
-      'from' : '2015-3-20', 
+      'from' : '2015-3-20',
       'to' : '2015-3-22'
     }
     this.socket.emit('request-flight', journey);
-    
+
   }
 
   clearAirports() {
