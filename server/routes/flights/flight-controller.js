@@ -19,6 +19,8 @@ exports.searchAirport = function(req, res) {
 
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
+
+  console.log(travelingInfo.departure)
   if (travelingInfo.goHome) {
     url = [
       config.api,
@@ -50,10 +52,13 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 			socket.emit('error', 'something went wrong in the socket');
       return;
 		}
+
     var responseData = JSON.parse(response.text);
     var fares = responseData.fares;
     var airports = responseData.airports;
     var cheapestFlight = fares[0];
+
+
     if (fares.length) {
       if (travelingInfo.goHome) {
         cheapestFlight = cheapestFlight[0];
@@ -84,3 +89,24 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     }
 	});
 };
+
+
+
+
+function findDistance(lat1,lon1,lat2,lon2){
+
+  //HAVERSIN FORMULA
+
+  var radiusEarth = 6371; //radius in km
+
+  var dLat = lat2-lat1;
+  var dLon = lon2-lon1;
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
+
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  var d = radiusEarth * c; //distance in km
+
+  return d;
+}

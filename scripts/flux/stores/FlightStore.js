@@ -3,6 +3,7 @@ import {Store} from 'flummox';
 import moment from 'moment';
 import constants from '../../config/constants';
 
+
 class FlightStore extends Store {
   constructor(flux) {
     super();
@@ -33,6 +34,9 @@ class FlightStore extends Store {
 
   createJourney() {
     this.setState({flights: []});
+
+    console.log(this.state.selectedAirport);
+
     let travelingData = {
       departure: {
         airportName: this.state.selectedAirport.name,
@@ -45,6 +49,7 @@ class FlightStore extends Store {
       flights: [],
       startingPoint: this.state.selectedAirport,
     };
+
     this.socket.emit('request-flight', travelingData);
   }
 
@@ -69,6 +74,7 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
+
     let flights = this.state.flights;
     let lastFlight;
     if (flights.length > 0) {
@@ -80,6 +86,8 @@ class FlightStore extends Store {
     }
     this.setState({flights: flights.concat(flight)});
     if (flight.destAirport === this.state.selectedAirport.airportCode) return;
+
+   
     let travelingData = {
       departure: {
         airportName: flight.arrivalCountry.airportName,
@@ -87,11 +95,16 @@ class FlightStore extends Store {
         airportCode: flight.destAirport,
         from: moment(flight.departure).add(2, 'days').format('YYYY-MM-DD'),
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
+        lat: flight.arrivalCountry.lat,
+        lon: flight.arrivalCountry.lon,
       },
       goHome: this.state.flights.length === 5,
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
     };
+
+  
+
     this.socket.emit('request-flight', travelingData);
   }
 

@@ -123,6 +123,7 @@ const App = React.createClass({
 
   handleSetAirport(event, airport) {
     this.setState({showSearchResults: false});
+    console.log(airport);
     this.props.flux.getActions('FlightActions').setAirport(airport);
     this.refs.dates.getDOMNode().focus();
   },

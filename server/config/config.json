@@ -1,5 +1,6 @@
 {
   "api": "http://api.dohop.com/api/v1",
+  "earthRadius": 6371,
   "port": 1337,
   "db": "mongodb://localhost:27017/journeycreator",
   "bunyan": {
