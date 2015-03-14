@@ -51,6 +51,7 @@
 .JourneyPlan__items__flight__date__month {
 	margin-top: -6px;
 	font-size: 1.1em;
+	text-transform: uppercase;
 }
 
 .JourneyPlan__items__flight__details{
@@ -91,7 +92,7 @@
   padding-top: 20px;
 }
 
-.JourneyPlan__items__destination__details__duration, 
+.JourneyPlan__items__destination__details__duration,
 .JourneyPlan__items__destination__details__city,
 .JourneyPlan__items__destination__details__country{
   text-align: center;

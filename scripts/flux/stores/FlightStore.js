@@ -35,8 +35,9 @@ class FlightStore extends Store {
     this.setState({flights: []});
     let travelingData = {
       departure: {
+        airportName: this.state.selectedAirport.name,
         country: this.state.selectedAirport.country_code,
-        airport: this.state.selectedAirport.airportCode,
+        airportCode: this.state.selectedAirport.airportCode,
         from: this.state.dates.startDate.format('YYYY-MM-DD'),
         to: this.state.dates.endDate.format('YYYY-MM-DD'),
       },
@@ -68,13 +69,13 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
-    console.log(flight);
     this.setState({flights: this.state.flights.concat(flight)});
     if (flight.destAirport === this.state.selectedAirport.airportCode) return;
     let travelingData = {
       departure: {
-        country: flight.country.countryCode,
-        airport: flight.destAirport,
+        airportName: flight.arrivalCountry.airportName,
+        country: flight.arrivalCountry.countryCode,
+        airportCode: flight.destAirport,
         from: moment(flight.departure).add(2, 'days').format('YYYY-MM-DD'),
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
       },

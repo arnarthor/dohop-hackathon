@@ -45,13 +45,9 @@ const App = React.createClass({
     let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
 
-    console.log(this.props.flights);
-
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
     }
-
-    console.log(this.props.flights);
 
     return (
       <div>
@@ -154,8 +150,8 @@ const App = React.createClass({
       alert('Invalid date, sorry bro!');
       return;
     }
-    this.setState({showLandingPage: !this.state.showLandingPage});
-    this.setState({showJourneyPlan: !this.state.showJourneyPlan});
+    this.setState({showLandingPage: false});
+    this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
     this.props.flux.getActions('FlightActions').createJourney();
   }
