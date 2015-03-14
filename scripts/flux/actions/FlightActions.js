@@ -15,10 +15,6 @@ class FlightActions extends Actions {
     return {startDate, endDate};
   }
 
-  clearSelectedAirport() {
-    return 'clear-airport';
-  }
-
   clearAirports() {
     return 'clear';
   }

@@ -15,7 +15,6 @@ class FlightStore extends Store {
     this.register(flightActions.setUUID, this.setUUID);
     this.register(flightActions.clearAirports, this.clearAirports);
     this.register(flightActions.setAirport, this.setAirport);
-    this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
     this.register(flightActions.setImage, this.setImage);
@@ -35,7 +34,6 @@ class FlightStore extends Store {
   }
 
   createJourney(flightHash) {
-    console.log(flightHash);
     this.setState({flights: [], flightHash, goHome: false});
 
     let selectedAirport = _.clone(this.state.selectedAirport);
@@ -61,16 +59,12 @@ class FlightStore extends Store {
     this.setState({airports: []});
   }
 
-  clearSelectedAirport() {
-    this.setState({selectedAirport: null});
-  }
-
   setUUID(hash) {
     this.setState({desiredHash: hash});
   }
 
   setAirport(airport) {
-    this.setState({selectedAirport: airport});
+    this.setState({selectedAirport: _.clone(airport)});
   }
 
   setDates(dates) {
@@ -82,7 +76,6 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
-    console.log(flight);
     if (this.state.flights.length === 5) {
       this.setHome(true);
     }
@@ -135,7 +128,6 @@ class FlightStore extends Store {
   }
 
   airportList(data) {
-    this.clearSelectedAirport();
     let {hash, airports} = data;
     let localAirports = _.map(airports.matches, airport =>
       airport.children ||
@@ -153,10 +145,6 @@ class FlightStore extends Store {
     if (hash === this.state.desiredHash) {
       this.setState({airports: airportList});
     }
-  }
-
-  debug(data) {
-    console.log(data);
   }
 }
 

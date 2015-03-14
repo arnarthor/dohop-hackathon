@@ -22,6 +22,7 @@ const App = React.createClass({
   getInitialState() {
     return {
       airportSearch: '',
+      useSelectedAirport: false,
       showLandingPage: true,
       showSearchResults: true,
       minimizeSearchResults: false,
@@ -59,7 +60,7 @@ const App = React.createClass({
     let label = start + ' - ' + end;
     let minDate = moment().add(1, 'days');
 
-    if (selectedAirport) {
+    if (selectedAirport && this.state.useSelectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
     }
 
@@ -139,13 +140,12 @@ const App = React.createClass({
 
   handleSearchAirport(event) {
     let airportSearch = event.target.value;
-    this.props.flux.getActions('FlightActions').clearSelectedAirport();
-    this.setState({airportSearch})
+    this.setState({airportSearch, useSelectedAirport: false})
     this.performSearch();
   },
 
   handleSetAirport(event, airport) {
-    this.setState({showSearchResults: false});
+    this.setState({showSearchResults: false, useSelectedAirport: true});
     this.props.flux.getActions('FlightActions').fetchAirport(airport);
     this.refs.dates.getDOMNode().focus();
   },
