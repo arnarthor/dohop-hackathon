@@ -6,12 +6,12 @@ import FluxContainer from 'flummox';
 import constants from './config/constants';
 import SearchResults from './components/SearchResults';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
+import DateRangePicker from './components/daterangepicker';
 import JourneyPlan from './components/JourneyPlan.jsx';
 import moment from 'moment';
 
 require('./app.scss');
-require('./components/DateRangePicker.scss');
+require('./components/daterangepicker/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
