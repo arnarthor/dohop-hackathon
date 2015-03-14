@@ -18,6 +18,11 @@
   z-index: 3000;
 }
 
+.calendar-title {
+  text-align: center;
+  margin-bottom: 3px;
+}
+
 .daterangepicker.opensleft .ranges, .daterangepicker.opensleft .calendar {
   float: left;
   margin: 4px;

@@ -44,6 +44,7 @@ const App = React.createClass({
     let start = this.props.dates.startDate.format('ll');
     let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
+    let minDate = moment().add(1, 'days');
 
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
@@ -83,6 +84,7 @@ const App = React.createClass({
             <span className="wrapper">
               <DateRangePicker
                 ref="dates"
+                minDate={minDate}
                 startDate={this.props.dates.startDate}
                 endDate={this.props.dates.endDate}
                 onEvent={this.handleDatePicker}>
