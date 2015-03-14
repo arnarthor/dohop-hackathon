@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var superagent = require('superagent');
 
 var flightApi = require('./routes/flights');
+var flightController = require('./routes/flights/flight-controller');
 
 var config = require('./config');
 
@@ -41,44 +42,7 @@ app.use('/api', flightApi);
 
 io.on('connection', function(socket) {
   socket.on('request-flight', function(data) {
-    superagent.get([
-      config.api,
-      'livestore',
-      'en',
-      data.country,
-      'per-country',
-      data.airport,
-      data.from,
-      data.to].join('/') +
-      '?id=H4cK3r&currency=USD')
-		.end(function(err, response) {
-			if (err) {
-				socket.emit('error', 'something went wrong in the socket');
-        return;
-			}
-      var responseData = JSON.parse(response.text);
-      var fares = responseData.fares;
-      var airports = responseData.airports;
-      if (fares.length) {
-        // Check if we have travelled to country
-        var travelInfo = {
-          fromAirport: fares[0].a,
-          destAirport: fares[0].b,
-          price: fares[0].conv_fare,
-          country: {
-            airportName: airports[fares[0].b].a_i,
-            city: airports[fares[0].b].a_n,
-            countryCode: airports[fares[0].b].cc_c,
-            countryName: airports[fares[0].b].cc_n,
-            // I have absolutely no idea what this is.
-            // It seems to be the city again, but i'm not sure.
-            dontKnow: airports[fares[0].b].ci_n,
-          },
-          departure: fares[0].d1
-        };
-        socket.emit('new-flight', travelInfo);
-      }
-		});
+    flightController.findCheapestFlight(data, socket);
   });
 });
 
