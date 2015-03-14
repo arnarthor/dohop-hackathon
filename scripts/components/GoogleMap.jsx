@@ -16,32 +16,66 @@ let GoogleMap = React.createClass({
   getInitialState() {
     return {
       center: new LatLng(41.879535, -87.624333),
-      zoom: 7,
+      zoom: 4,
       linePath: [],
       height: 1000,
       width: 1000,
     };
   },
 
-  componentDidMount() {
-    window.addEventListener('resize', this.handleWindowResize);
-    this.setState({height: window.innerHeight, width: window.innerWidth});
-  },
-
   propTypes: {
     flights: Props.array,
   },
 
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleWindowResize);
+    this.setState({
+      height: window.innerHeight,
+      width: window.innerWidth,
+      center: new LatLng(this.props.location.lat, this.props.location.lon),
+    });
+  },
+
+  componentWillReceiveProps(nextProps) {
+    let {lat, lon} = nextProps.location;
+    if (lat === null || lon === null) return;
+    let firstLatLng = new LatLng(lat, lon);
+    let linePath = _.clone(this.state.linePath);
+    let firstCoord = _.first(linePath);
+    if (!firstCoord) {
+      linePath.push(firstLatLng);
+    }
+
+    if (nextProps.flights.length) {
+      let lastCoord = _.last(linePath);
+      let lastFlightCoord = new LatLng(
+        _.last(nextProps.flights).arrivalCountry.lat,
+        _.last(nextProps.flights).arrivalCountry.lon
+      );
+      console.log(nextProps.flights);
+      console.log(this.state.linePath);
+      console.log(lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D);
+
+      if (lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D) {
+        linePath.push(lastFlightCoord);
+      }
+    }
+    this.setState({
+      linePath: linePath,
+      center: new LatLng(nextProps.location.lat, nextProps.location.lon),
+    });
+  },
+
   render() {
-    console.log(this.state);
     return (
       <div className="GoogleMap">
         <Map
           initialZoom={this.state.zoom}
-          initialCenter={this.state.center}
+          center={this.state.center}
           width={this.state.width}
           height={this.state.height}
-          onClick={this.handleMapClick}
+          onCenterChange={this.handleCenterChange}
         >
           <Polyline
             geodesic
@@ -55,20 +89,13 @@ let GoogleMap = React.createClass({
     );
   },
 
-  handleMapClick(mapEvent) {
-    var linePath = React.addons
-      .update(this.state.linePath, {
-        $push: [mapEvent.latLng]
-      });
-
-    this.setState({
-      linePath: linePath
-    });
-  },
-
   handleWindowResize(event) {
     this.setState({height: event.target.innerHeight, width: event.target.innerWidth});
-  }
+  },
+
+  handleCenterChange(mapNode) {
+    this.setState({center: mapNode.getCenter()});
+  },
 });
 
 export default GoogleMap;

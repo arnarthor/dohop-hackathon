@@ -83,7 +83,8 @@ class FlightStore extends Store {
       this.setHome(true);
     }
 
-    let flights = this.state.flights;
+    let flights = _.clone(this.state.flights);
+
     let lastFlight;
     if (flights.length > 0) {
       lastFlight = _.last(flights);
