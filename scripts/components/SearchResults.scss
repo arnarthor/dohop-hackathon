@@ -26,6 +26,7 @@
 	cursor: pointer;
 	color: $color-black;
 	font-size: 0.9em;
+  overflow: hidden;
 
 	&:hover {
 		background-color: rgba(245,140,92,0.2);
