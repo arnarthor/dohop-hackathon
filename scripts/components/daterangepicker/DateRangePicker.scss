@@ -1,4 +1,4 @@
-@import '../../variables.scss';
+@import '../variables.scss';
 
 /*!
  * Stylesheet for the Date Range Picker, for use with Bootstrap 3.x
@@ -338,8 +338,6 @@
   width: 340px;
   height: 49px;
 }
-
-
 
 .daterangepicker .ranges {
   display: none !important;
