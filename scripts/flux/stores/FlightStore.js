@@ -106,6 +106,7 @@ class FlightStore extends Store {
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
+        
       },
       goHome: this.state.goHome,
       flights: this.state.flights,
