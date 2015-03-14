@@ -72,6 +72,7 @@ class FlightStore extends Store {
   connectIo() {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('new-flight', (data) => this.debug(data));
+    this.socket.on('error', (data) => this.debug(data));
   }
 
   airportList(data) {

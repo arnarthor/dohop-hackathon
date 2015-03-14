@@ -45,9 +45,24 @@ io.on('connection', function(socket) {
     superagent.get([config.api, 'livestore', 'en', data.country, 'per-country', data.airport, data.from, data.to].join('/')+'?id=H4cK3r&currency=USD')
 		.end(function(err, response) {
 			if (err) {
-				return res.status(500).send('Something went wrong :(');
+				socket.emit('error', 'something went wrong in the socket');
+        return;
 			}
-			console.log('AXEL', JSON.parse(response.text));
+      console.log(response);
+      var data = JSON.parse(response.text);
+      var fares = data.fares;
+      var airports = data.airports;
+      if (fares.length) {
+        //Check if we have travelled to country
+        var travelInfo = {
+          fromAirport: fares[0].a,
+          destAirport: fares[0].b,
+          price: fares[0].conv_fare,
+          country: airports[fares[0].b],
+          departure: fares[0].d1
+        }
+        socket.emit('new-flight', travelInfo);
+      }
 		});
   });
 });
