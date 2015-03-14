@@ -68,13 +68,9 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     }
     var cheapestFlight = fares[0];
     if (fares.length) {
-      if (travelingInfo.goHome) {
-        cheapestFlight = cheapestFlight[0];
-      }
-
-      else {
+      if (!travelingInfo.goHome) {
         cheapestFlight = fares[cheapest];
-      }     
+      }
       var travelInfo = {
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,

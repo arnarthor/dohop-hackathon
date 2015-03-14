@@ -76,6 +76,7 @@ class FlightStore extends Store {
     if (this.state.flights.length === 5) {
       this.setHome(true);
     }
+    console.log('fly mutherfucer', flight);
     let flights = this.state.flights;
     let lastFlight;
     if (flights.length > 0) {
