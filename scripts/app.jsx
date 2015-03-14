@@ -7,7 +7,7 @@ import constants from './config/constants';
 import SearchResults from './components/SearchResults';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-import Moment from 'moment';
+//import Moment from 'moment';
 
 require('./app.scss');
 require('./datetimefield.scss');
@@ -21,9 +21,7 @@ const App = React.createClass({
     return {
       airportSearch: '',
       showLandingPage: true,
-      showSearchResults: true,
-      startDate: Moment(),
-      endDate: Moment().add(7, 'days')
+      showSearchResults: true
     };
   },
 
@@ -40,10 +38,10 @@ const App = React.createClass({
     let airportSearch = this.state.airportSearch;
     let selectedAirport = this.props.selectedAirport;
 
+    let start = this.props.dates.startDate.format('YYYY-MM-DD');
+    let end = this.props.dates.endDate.format('YYYY-MM-DD');
+    let label = start + ' - ' + end;
 
-    let start = this.state.startDate.format('YYYY-MM-DD');
-    let end = this.state.endDate.format('YYYY-MM-DD');
-    let label = (start === end ? start : start + ' - ' + end);
 
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airports[0]})`;
@@ -79,7 +77,11 @@ const App = React.createClass({
             ] : []}
           </TimeoutTransitionGroup>
           <span className="wrapper">
-            <DateRangePicker ref="startDate" startDate={this.state.startDate} endDate={this.state.endDate}>
+            <DateRangePicker 
+              ref="dateRanges" 
+              startDate={this.props.dates.startDate} 
+              endDate={this.props.dates.endDate} 
+              onEvent={this.handleDatePicker}>
               <span className="DatePicker">{label}</span>
             </DateRangePicker>
           </span>
@@ -90,6 +92,10 @@ const App = React.createClass({
         <div>{this.props.schedule}</div>
       </div>
     );
+  },
+
+  handleDatePicker(event, picker) {
+    this.props.flux.getActions('FlightActions').setDates(picker);
   },
 
   handleOnFocus(event, value) {
@@ -107,7 +113,7 @@ const App = React.createClass({
   handleSetAirport(event, airport) {
     this.setState({showSearchResults: false});
     this.props.flux.getActions('FlightActions').setAirport(airport);
-    this.refs.startDate.getDOMNode().focus();
+    this.refs.dateRanges.getDOMNode().focus();
   },
 
   performSearch: _.debounce(function() {
@@ -127,6 +133,9 @@ const App = React.createClass({
     event.preventDefault();
     if (!this.props.selectedAirport) {
       alert('Obb bobb bobb, this isnt an airport');
+      return;
+    } else if (this.props.dates.startDate.format('YYYY-MM-DD') === this.props.dates.endDate.format('YYYY-MM-DD')) {
+      alert('Obb bobb bobb, invalid date');
       return;
     }
     this.setState({showLandingPage: !this.state.showLandingPage});

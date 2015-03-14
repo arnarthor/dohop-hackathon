@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {Store} from 'flummox';
+import Moment from 'moment';
 import constants from '../../config/constants';
 
 class FlightStore extends Store {
@@ -15,6 +16,7 @@ class FlightStore extends Store {
     this.register(flightActions.setAirport, this.setAirport);
     this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
     this.register(flightActions.createJourney, this.createJourney);
+    this.register(flightActions.setDates, this.setDates);
 
     this.socket = null;
     this.state = {
@@ -22,6 +24,10 @@ class FlightStore extends Store {
       selectedAirport: null,
       schedule: [],
       airports: [],
+      dates: {
+        startDate: Moment(),
+        endDate: Moment().add(7, 'days')
+      },
     };
   }
 
@@ -36,8 +42,8 @@ class FlightStore extends Store {
     let journey = {
       'country' : this.state.selectedAirport.country_code,
       'airport' : this.state.selectedAirport.airports[0],
-      'from' : '2015-3-20',
-      'to' : '2015-3-22'
+      'from' : this.state.dates.startDate.format('YYYY-MM-DD'),
+      'to' : this.state.dates.endDate.format('YYYY-MM-DD'),
     }
     this.socket.emit('request-flight', journey);
 
@@ -57,6 +63,10 @@ class FlightStore extends Store {
 
   setAirport(airport) {
     this.setState({selectedAirport: airport});
+  }
+
+  setDates(dates) {
+    this.setState({dates});
   }
 
   connectIo() {

@@ -1,4 +1,5 @@
 import uuid from 'node-uuid';
+import moment from 'moment';
 import {Actions} from 'flummox';
 import request from 'superagent';
 import constants from '../../config/constants';
@@ -10,6 +11,11 @@ class FlightActions extends Actions {
 
   setAirport(airport) {
     return airport;
+  }
+
+  setDates(dates) {
+    var {startDate, endDate} = dates;
+    return {startDate, endDate};
   }
 
   clearSelectedAirport() {
