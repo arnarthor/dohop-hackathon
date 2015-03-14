@@ -5,6 +5,7 @@ import TimeoutTransitionGroup from '../TimeoutTransitionGroup';
 require('./SearchResults.scss');
 
 const Props = React.PropTypes;
+const classSet = React.addons.classSet;
 
 const SearchResults = React.createClass({
 
@@ -14,13 +15,18 @@ const SearchResults = React.createClass({
     selectedAirport: Props.object,
     selectAirport: Props.func.isRequired,
     showList: Props.bool,
+    min: Props.bool,
   },
 
   render() {
     let airports = this.props.airports;
     let selectedAirport = this.props.selectedAirport;
+    let searchResultsClasses = {
+      SearchResults: true,
+      SearchResultsMin: this.props.min,
+    };
     return selectedAirport && !this.props.showList ? null : (
-      <ul className="SearchResults">
+      <ul className={classSet(searchResultsClasses)}>
         <TimeoutTransitionGroup
           enterTimeout={300}
           leaveTimeout={300}

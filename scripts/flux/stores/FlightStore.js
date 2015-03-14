@@ -25,8 +25,8 @@ class FlightStore extends Store {
       flights: [],
       airports: [],
       dates: {
-        startDate: Moment(),
-        endDate: Moment().add(7, 'days')
+        startDate: Moment().add(1, 'days'),
+        endDate: Moment().add(8, 'days')
       },
     };
   }
