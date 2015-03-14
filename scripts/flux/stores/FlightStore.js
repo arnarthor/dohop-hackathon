@@ -22,7 +22,7 @@ class FlightStore extends Store {
     this.state = {
       desiredHash: '',
       selectedAirport: null,
-      schedule: [],
+      flights: [],
       airports: [],
       dates: {
         startDate: Moment(),
@@ -31,13 +31,6 @@ class FlightStore extends Store {
     };
   }
 
-  reiceveFlights(results) {
-    let {schedule, fromCountry} = results;
-    this.setState({
-      fromCountry: fromCountry,
-      schedule: schedule,
-    });
-  }
   createJourney() {
     let journey = {
       'country' : this.state.selectedAirport.country_code,
@@ -46,7 +39,6 @@ class FlightStore extends Store {
       'to' : this.state.dates.endDate.format('YYYY-MM-DD'),
     }
     this.socket.emit('request-flight', journey);
-
   }
 
   clearAirports() {
@@ -69,9 +61,13 @@ class FlightStore extends Store {
     this.setState({dates});
   }
 
+  addFlight(flight) {
+    this.setState({flights: this.state.flights.concat(flight)});
+  }
+
   connectIo() {
     this.socket = window.io.connect(constants.socketIoAPI);
-    this.socket.on('new-flight', (data) => this.debug(data));
+    this.socket.on('new-flight', (data) => this.addFlight(data));
     this.socket.on('error', (data) => this.debug(data));
   }
 

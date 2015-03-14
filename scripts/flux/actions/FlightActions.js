@@ -5,9 +5,6 @@ import request from 'superagent';
 import constants from '../../config/constants';
 
 class FlightActions extends Actions {
-  newFlight(schedule, fromCountry) {
-    return {schedule, fromCountry};
-  }
 
   setAirport(airport) {
     return airport;
@@ -32,13 +29,6 @@ class FlightActions extends Actions {
 
   airportList(airports, hash) {
     return {airports, hash};
-  }
-
-  async fetchFlights(fromCountry) {
-    request.get(`${constants.api}/${fromCountry}`)
-      .end(res => {
-        this.newFlight(res.body, fromCountry);
-      });
   }
 
   async searchAirport(searchString) {
