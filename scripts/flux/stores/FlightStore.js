@@ -73,12 +73,19 @@ class FlightStore extends Store {
     this.setState({goHome: home});
   }
   addFlight(flight) {
-    this.setState({flights: this.state.flights.concat(flight)});
-    //console.log('flights', this.state.flights);
-    console.log('number of legs', this.state.flights.length);
     if (this.state.flights.length === 5) {
       this.setHome(true);
     }
+    let flights = this.state.flights;
+    let lastFlight;
+    if (flights.length > 0) {
+      lastFlight = _.last(flights);
+      let currentArrival = moment(lastFlight.departure);
+      let nextArrival = moment(flight.departure);
+      lastFlight.daysStaying = currentArrival.from(nextArrival);
+      flights = _.initial(flights).concat(lastFlight);
+    }
+    this.setState({flights: flights.concat(flight)});
     if (flight.destAirport === this.state.selectedAirport.airportCode) return;
     let travelingData = {
       departure: {

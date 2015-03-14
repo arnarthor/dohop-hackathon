@@ -4,11 +4,12 @@
 	width: 380px;
 	background-color: white;
 	position: absolute;
-	top: 80px;
+	top: 10vh;
 	right: 30px;
 	transform: translate3d(calc(100% + 30px),0,0);
 	transition: transform 400ms 250ms ease;
-  overflow: hidden;
+  overflow: auto;
+  max-height: 90vh;
 	border-radius: 5px;
 }
 
@@ -21,19 +22,20 @@
 	color: $color-orange;
 	font-size: 1.2em;
 	padding: 15px 0;
-	border-bottom: 1px solid #F1F1F1;
+	border-bottom: 1px solid $color-light-gray;
 }
 
 .JourneyPlan__items {
 	padding:0;
 	margin:0;
 	list-style: none;
+
 }
 
 .JourneyPlan__items__flight {
 	padding: 10px 5px;
-  font-size: 0.85em;
-  border-bottom: 1px solid #F1F1F1;
+  font-size: 0.8em;
+  border-bottom: 1px solid $color-light-gray;
 }
 
 .JourneyPlan__items__flight__date {
@@ -55,16 +57,38 @@
 }
 
 .JourneyPlan__items__flight__details{
-  padding: 15px 0;
+  padding: 16px 0 11px 0;
   text-align: center;
 }
 
-.JourneyPlan__items__flight__from {
-	display: inline;
+.JourneyPlan__items__flight__from,
+.JourneyPlan__items__flight__to {
+	display: inline-block;
+}
+
+.JourneyPlan__items__flight__from__airportName,
+.JourneyPlan__items__flight__to__airportName{
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 102px;
+  overflow:hidden;
+}
+
+.JourneyPlan__items__flight__from__airportName:after,
+.JourneyPlan__items__flight__to__airportName:after{
+  content: "\00a0 ";
+}
+
+.JourneyPlan__items__flight__from__airportCode,
+.JourneyPlan__items__flight__to__airportCode{
+  display: inline-block;
+  overflow:hidden;
 }
 
 .JourneyPlan__items__flight__plane{
 	display: inline-block;
+  overflow:hidden;
 }
 
 .JourneyPlan__items__flight__plane::after{
@@ -77,9 +101,7 @@
   transform: rotate(45deg);
 }
 
-.JourneyPlan__items__flight__to {
-	display: inline-block;
-}
+
 
 .JourneyPlan__items__destination {
   height: 115px;

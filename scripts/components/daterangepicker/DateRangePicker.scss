@@ -1,4 +1,4 @@
-@import '../variables.scss';
+@import '../../variables.scss';
 
 /*!
  * Stylesheet for the Date Range Picker, for use with Bootstrap 3.x
@@ -16,6 +16,11 @@
  .daterangepicker.dropdown-menu {
   max-width: none;
   z-index: 3000;
+}
+
+.calendar-title {
+  text-align: center;
+  margin-bottom: 3px;
 }
 
 .daterangepicker.opensleft .ranges, .daterangepicker.opensleft .calendar {

@@ -5,13 +5,14 @@ import React from 'react/addons';
 import FluxContainer from 'flummox';
 import constants from './config/constants';
 import SearchResults from './components/SearchResults';
+import GoogleMap from './components/GoogleMap';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
-import DateRangePicker from 'react-bootstrap-daterangepicker';
+import DateRangePicker from './components/daterangepicker';
 import JourneyPlan from './components/JourneyPlan.jsx';
 import moment from 'moment';
 
 require('./app.scss');
-require('./components/DateRangePicker.scss');
+require('./components/daterangepicker/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
@@ -44,6 +45,7 @@ const App = React.createClass({
     let start = this.props.dates.startDate.format('ll');
     let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
+    let minDate = moment().add(1, 'days');
 
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
@@ -54,7 +56,7 @@ const App = React.createClass({
         <div className={classSet(formClasses)}>
           <h1>DISCOVER THE WORLD</h1>
           <form>
-            <span className="wrapper">
+            <span className="wrapper location">
               <input
                 ref="searchBar"
                 value={airportSearch}
@@ -83,6 +85,7 @@ const App = React.createClass({
             <span className="wrapper">
               <DateRangePicker
                 ref="dates"
+                minDate={minDate}
                 startDate={this.props.dates.startDate}
                 endDate={this.props.dates.endDate}
                 onEvent={this.handleDatePicker}>
@@ -98,6 +101,9 @@ const App = React.createClass({
         <JourneyPlan
           flights={this.props.flights}
           display={this.state.showJourneyPlan}
+        />
+        <GoogleMap
+          flights={this.props.flights}
         />
       </div>
     );
@@ -146,16 +152,12 @@ const App = React.createClass({
     } else if (this.props.dates.startDate.format('YYYY-MM-DD') === this.props.dates.endDate.format('YYYY-MM-DD')) {
       alert('Obb bobb bobb, invalid date');
       return;
-    } else if (this.props.dates.startDate.unix() < Math.floor(new Date().getTime() / 1000)) {
-      alert('Invalid date, sorry bro!');
-      return;
     }
 
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
-    this.setState({minimizeSearchResults: true});
+    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
     this.props.flux.getActions('FlightActions').createJourney();
-
   }
 });
 
