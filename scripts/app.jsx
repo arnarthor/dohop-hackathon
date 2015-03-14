@@ -58,7 +58,7 @@ const App = React.createClass({
         <div className={classSet(formClasses)}>
           <h1>DISCOVER THE WORLD</h1>
           <form>
-            <span className="wrapper">
+            <span className="wrapper location">
               <input
                 ref="searchBar"
                 value={airportSearch}
@@ -154,12 +154,10 @@ const App = React.createClass({
       alert('Invalid date, sorry bro!');
       return;
     }
-
-    this.setState({showLandingPage: false});
-    this.setState({showJourneyPlan: false);
-    this.setState({minimizeSearchResults: false);
+    this.setState({showLandingPage: !this.state.showLandingPage});
+    this.setState({showJourneyPlan: !this.state.showJourneyPlan});
+    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
     this.props.flux.getActions('FlightActions').createJourney();
-
   }
 });
 

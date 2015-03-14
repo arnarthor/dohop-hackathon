@@ -21,7 +21,7 @@
 	color: $color-orange;
 	font-size: 1.2em;
 	padding: 15px 0;
-	border-bottom: 1px solid #F1F1F1;
+	border-bottom: 1px solid $color-light-gray;
 }
 
 .JourneyPlan__items {
@@ -33,7 +33,7 @@
 .JourneyPlan__items__flight {
 	padding: 10px 5px;
   font-size: 0.85em;
-  border-bottom: 1px solid #F1F1F1;
+  border-bottom: 1px solid $color-light-gray;
 }
 
 .JourneyPlan__items__flight__date {
