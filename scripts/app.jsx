@@ -10,7 +10,7 @@ import DateRangePicker from 'react-bootstrap-daterangepicker';
 import JourneyPlan from './components/JourneyPlan.jsx';
 
 require('./app.scss');
-require('./datetimefield.scss');
+require('./components/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
