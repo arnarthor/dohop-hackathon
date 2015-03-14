@@ -28,6 +28,7 @@ const SearchResults = React.createClass({
         >
           {airports.length ? _.map(airports, airport => (
               <li
+                key={airport.airports[0]}
                 onClick={(event) => this.props.selectAirport(event, airport)}
                 className="SearchResults__result"
               >

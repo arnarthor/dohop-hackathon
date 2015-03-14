@@ -7,7 +7,6 @@ import constants from './config/constants';
 import SearchResults from './components/SearchResults';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
-//import Moment from 'moment';
 
 require('./app.scss');
 require('./datetimefield.scss');
@@ -38,8 +37,8 @@ const App = React.createClass({
     let airportSearch = this.state.airportSearch;
     let selectedAirport = this.props.selectedAirport;
 
-    let start = this.props.dates.startDate.format('YYYY-MM-DD');
-    let end = this.props.dates.endDate.format('YYYY-MM-DD');
+    let start = this.props.dates.startDate.format('ll');
+    let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
 
 
@@ -78,7 +77,7 @@ const App = React.createClass({
           </TimeoutTransitionGroup>
           <span className="wrapper">
             <DateRangePicker
-              ref="dateRanges"
+              ref="dates"
               startDate={this.props.dates.startDate}
               endDate={this.props.dates.endDate}
               onEvent={this.handleDatePicker}>
@@ -113,7 +112,7 @@ const App = React.createClass({
   handleSetAirport(event, airport) {
     this.setState({showSearchResults: false});
     this.props.flux.getActions('FlightActions').setAirport(airport);
-    this.refs.dateRanges.getDOMNode().focus();
+    this.refs.dates.getDOMNode().focus();
   },
 
   performSearch: _.debounce(function() {

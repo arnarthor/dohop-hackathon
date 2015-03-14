@@ -61,6 +61,7 @@ io.on('connection', function(socket) {
           country: airports[fares[0].b],
           departure: fares[0].d1
         }
+
         socket.emit('new-flight', travelInfo);
       }
 		});
