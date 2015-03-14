@@ -32,7 +32,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.to
     ].join('/') + '?id=H4cK3r&currency=USD&stay=1-365&include_split=true';
   } else {
-    console.log(travelingInfo);
     url = [
       config.api,
       'livestore',

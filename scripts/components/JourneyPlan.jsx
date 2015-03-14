@@ -25,9 +25,12 @@ let JourneyPlan = React.createClass({
       	<div className="JourneyPlanTitle">MY JOURNEY</div>
       	<ul className="JourneyPlan__items">
           {_.map(this.props.flights, flight => {
-            console.log(flight);
             let date = moment(flight.departure).date();
             let month = moment(flight.departure).format('MMM');
+            let daysStaying;
+            if (flight.daysStaying) {
+              daysStaying = _.initial(flight.daysStaying.split(' ')).join(' ');
+            }
             return (
               <span>
                 <li className="JourneyPlan__items__flight">
@@ -48,9 +51,15 @@ let JourneyPlan = React.createClass({
 
             		<li className="JourneyPlan__items__destination">
                   <div className="JourneyPlan__items__destination__details">
-                    <div><span className="JourneyPlan__items__destination__details__duration">5 days in</span></div>
-                    <div><span className="JourneyPlan__items__destination__details__city">Phnom Penh</span></div>
-                    <div><span className="JourneyPlan__items__destination__details__country">Cambodia</span></div>
+                    {daysStaying && (
+                      <div>
+                        <span className="JourneyPlan__items__destination__details__duration">
+                          {`${daysStaying} in`}
+                        </span>
+                      </div>
+                    )}
+                    <div><span className="JourneyPlan__items__destination__details__city">{flight.arrivalCountry.city}</span></div>
+                    <div><span className="JourneyPlan__items__destination__details__country">{flight.arrivalCountry.countryName}</span></div>
             		  </div>
                 </li>
               </span>
