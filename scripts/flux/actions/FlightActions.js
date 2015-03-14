@@ -40,16 +40,23 @@ class FlightActions extends Actions {
       });
   }
 
+  async fetchAirport(searchString) {
+    request.get(`${constants.googleMapsAPI}/json?address=${searchString.airportCode} airport&sensor=false`)
+      .end(res => {
+        this.createJourney(res.body.results[0].geometry.location);
+      });
+  }
+
   createJourney(data) {
-    return 'create-journey';
+    return data;
   }
 
   connectIo() {
     return 'connect-io';
   }
 
-  getFlickrImage(date) {
-    request.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ad89fd4858af519bcb45434d24009b5d&privacy_filter=1&accuracy=5&safe_search=1&content_type=1&media=photos&lat=64.1335983&lon=-21.8524424&is_getty=true&format=json&nojsoncallback=1&auth_token=72157649016292084-bb0c17874e240aeb&api_sig=3adcac61413a8d7b9ffa0777cf5bd385')
+  getFlickrImage(date, lat, long) {
+    request.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=f07305911011fb8f88eb92e9d2ab1749&privacy_filter=1&accuracy=5&safe_search=1&content_type=1&media=photos&lat=${lat}&lon=${long}&is_getty=true&format=json&nojsoncallback=1`)
       .end(res => {
         if (res.ok) {
           let photo = res.body.photos.photo[0];

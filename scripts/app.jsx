@@ -172,7 +172,7 @@ const App = React.createClass({
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
-    this.props.flux.getActions('FlightActions').createJourney();
+    this.props.flux.getActions('FlightActions').fetchAirport(this.props.selectedAirport);
   }
 });
 
