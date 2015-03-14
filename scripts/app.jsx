@@ -113,6 +113,7 @@ const App = React.createClass({
         <JourneyPlan
           flights={this.props.flights}
           display={this.state.showJourneyPlan}
+          flux={this.props.flux}
         />
         <GoogleMap
           flights={this.props.flights}

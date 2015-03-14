@@ -18,6 +18,7 @@ class FlightStore extends Store {
     this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
+    this.register(flightActions.setImage, this.setImage);
 
     this.socket = null;
     this.state = {
@@ -106,6 +107,7 @@ class FlightStore extends Store {
         to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
+        
       },
       goHome: this.state.goHome,
       flights: this.state.flights,
@@ -113,6 +115,15 @@ class FlightStore extends Store {
     };
 
     this.socket.emit('request-flight', travelingData);
+  }
+
+  setImage(data) {
+    let flights = _.clone(this.state.flights)
+    let flight = _.findWhere(flights, {departure: data.date});
+    let index = _.indexOf(flights,flight);
+    flight.image = data.url;
+    flights[index] = flight;
+    this.setState({flights: flights});
   }
 
   connectIo() {

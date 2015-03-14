@@ -1,7 +1,9 @@
+'use strict';
+
 import _ from 'lodash';
 import moment from 'moment';
 import React from 'react/addons';
-
+import DestinationDetails from './DestinationDetails.jsx';
 require('./JourneyPlan.scss');
 
 const Props = React.PropTypes;
@@ -50,20 +52,11 @@ let JourneyPlan = React.createClass({
                     </div>
                   </div>
                 </li>
-
-            		<li className="JourneyPlan__items__destination">
-                  <div className="JourneyPlan__items__destination__details">
-                    {daysStaying && (
-                      <div>
-                        <span className="JourneyPlan__items__destination__details__duration">
-                          {`${daysStaying} in`}
-                        </span>
-                      </div>
-                    )}
-                    <div><span className="JourneyPlan__items__destination__details__city">{flight.arrivalCountry.city}</span></div>
-                    <div><span className="JourneyPlan__items__destination__details__country">{flight.arrivalCountry.countryName}</span></div>
-            		  </div>
-                </li>
+                <DestinationDetails 
+                  daysStaying={daysStaying}
+                  flight={flight}
+                  flux={this.props.flux}
+                />
               </span>
             );
           })}
