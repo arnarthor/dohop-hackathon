@@ -23,6 +23,11 @@ let GoogleMap = React.createClass({
     };
   },
 
+  propTypes: {
+    flights: Props.array,
+  },
+
+
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize);
     this.setState({
@@ -33,14 +38,33 @@ let GoogleMap = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    var linePath = _.clone(this.state.linePath);
+    let {lat, lon} = nextProps.location;
+    if (lat === null || lon === null) return;
+    let firstLatLng = new LatLng(lat, lon);
+    let linePath = _.clone(this.state.linePath);
+    let firstCoord = _.first(linePath);
+    if (!firstCoord) {
+      linePath.push(firstLatLng);
+    }
+
+    if (nextProps.flights.length) {
+      let lastCoord = _.last(linePath);
+      let lastFlightCoord = new LatLng(
+        _.last(nextProps.flights).arrivalCountry.lat,
+        _.last(nextProps.flights).arrivalCountry.lon
+      );
+      console.log(nextProps.flights);
+      console.log(this.state.linePath);
+      console.log(lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D);
+
+      if (lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D) {
+        linePath.push(lastFlightCoord);
+      }
+    }
     this.setState({
+      linePath: linePath,
       center: new LatLng(nextProps.location.lat, nextProps.location.lon),
     });
-  },
-
-  propTypes: {
-    flights: Props.array,
   },
 
   render() {
