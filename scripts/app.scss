@@ -14,7 +14,6 @@ body {
   font-size: 16px;
   color: $color-black;
   -webkit-font-smoothing: antialiased;
-  background-color: red;
 
   overflow: hidden;
 }
@@ -39,7 +38,7 @@ body {
         padding: 15px 0;
         background-color: white;
         transition: background-color 0 300ms;
-  
+
         input {
           background: transparent;
           transition: background-color 0 300ms;
