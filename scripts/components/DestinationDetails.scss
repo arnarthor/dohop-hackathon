@@ -3,6 +3,10 @@
   background: url('/img/bg.png') center center no-repeat;
   background-size: cover;
   text-align: center;
+
+  max-height:0;
+  overflow: hidden;
+  transition: max-height 3s 400ms ease-out;
 }
 
 .DestinationDetails__items__destination__details {
