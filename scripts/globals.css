@@ -2,6 +2,7 @@
   opacity: 0.01;
   transition: opacity 0.3s;
 }
+
 .fade-enter.fade-enter-active {
   opacity: 1;
 }
@@ -10,6 +11,26 @@
   opacity: 1;
   transition: opacity 0.3s;
 }
+
 .fade-leave.fade-leave-active {
   opacity: 0.01;
+}
+
+
+.fade-collapse-enter {
+  opacity: 0.01;
+  transition: opacity 0.2s;
+}
+
+.fade-collapse-enter.fade-collapse-enter-active {
+  opacity: 1;
+}
+
+.fade-collapse-leave {
+  max-height:300px;
+  transition: max-height 0.3s;
+}
+
+.fade-collapse-leave.fade-collapse-leave-active {
+  max-height:0;
 }

@@ -11,7 +11,7 @@ import JourneyPlan from './components/JourneyPlan.jsx';
 import moment from 'moment';
 
 require('./app.scss');
-require('./datetimefield.scss');
+require('./components/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
@@ -155,6 +155,7 @@ const App = React.createClass({
 
     this.setState({showLandingPage: !this.state.showLandingPage});
     this.setState({showJourneyPlan: !this.state.showJourneyPlan});
+    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
     this.props.flux.getActions('FlightActions').createJourney();
     
   }

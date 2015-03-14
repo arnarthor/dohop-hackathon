@@ -28,9 +28,9 @@ const SearchResults = React.createClass({
     return selectedAirport && !this.props.showList ? null : (
       <ul className={classSet(searchResultsClasses)}>
         <TimeoutTransitionGroup
-          enterTimeout={300}
+          enterTimeout={200}
           leaveTimeout={300}
-          transitionName="fade"
+          transitionName="fade-collapse"
         >
           {airports.length ? _.map(airports, airport => (
               <li
