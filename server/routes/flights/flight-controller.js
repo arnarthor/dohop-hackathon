@@ -26,7 +26,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       'en',
       travelingInfo.departure.country,
       'per-airport',
-      travelingInfo.departure.airport,
+      travelingInfo.departure.airportCode,
       travelingInfo.startingPoint.airportCode,
       travelingInfo.departure.from,
       travelingInfo.departure.to
@@ -39,7 +39,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       'en',
       travelingInfo.departure.country,
       'per-country',
-      travelingInfo.departure.airport,
+      travelingInfo.departure.airportCode,
       travelingInfo.departure.from,
       travelingInfo.departure.to
     ].join('/') + '?id=H4cK3r&currency=USD';
@@ -64,10 +64,11 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,
         price: cheapestFlight.conv_fare,
-        departure: cheapestFlight.d1
+        departure: cheapestFlight.d1,
+        departureCountry: travelingInfo.departure
       };
       if (airports[cheapestFlight.b]) {
-        travelInfo.country = {
+        travelInfo.arrivalCountry = {
           airportCode: airports[cheapestFlight.b].a_i,
           airportName: airports[cheapestFlight.b].a_n,
           countryCode: airports[cheapestFlight.b].cc_c,

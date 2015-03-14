@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import React from 'react/addons';
 
 require('./JourneyPlan.scss');
@@ -12,60 +13,49 @@ let JourneyPlan = React.createClass({
     display: Props.bool,
     flights: Props.array,
   },
-  
+
   render() {
     let journeyPlanClasses = {
       JourneyPlan: true,
       JourneyPlanShow: this.props.display,
     };
+
     return (
       <div className={classSet(journeyPlanClasses)}>
       	<div className="JourneyPlanTitle">MY JOURNEY</div>
       	<ul className="JourneyPlan__items">
-      		<li className="JourneyPlan__items__flight">
-      			<div className="JourneyPlan__items__flight__date">
-      				<div className="JourneyPlan__items__flight__date__day">11</div>
-      				<div className="JourneyPlan__items__flight__date__month">JUN</div>
-      			</div>
-            <div className="JourneyPlan__items__flight__details">
-        			<div className="JourneyPlan__items__flight__from">Reykjavik ‎(‎KEF)</div>
-        			<div className="JourneyPlan__items__flight__plane"></div>
-        			<div className="JourneyPlan__items__flight__to">Copenhagen ‎(‎CPH)</div>
-      		  </div>
-          </li>
+          {_.map(this.props.flights, flight => {
+            console.log(flight);
+            let date = moment(flight.departure).date();
+            let month = moment(flight.departure).format('MMM');
+            return (
+              <span>
+                <li className="JourneyPlan__items__flight">
+                  <div className="JourneyPlan__items__flight__date">
+                    <div className="JourneyPlan__items__flight__date__day">{date}</div>
+                    <div className="JourneyPlan__items__flight__date__month">{month}</div>
+                  </div>
+                  <div className="JourneyPlan__items__flight__details">
+                    <div className="JourneyPlan__items__flight__from">
+                      {`${flight.departureCountry.airportName} (${flight.departureCountry.airportCode})`}
+                    </div>
+                    <div className="JourneyPlan__items__flight__plane"></div>
+                    <div className="JourneyPlan__items__flight__to">
+                      {`${flight.arrivalCountry.airportName} (${flight.arrivalCountry.airportCode})`}
+                    </div>
+                  </div>
+                </li>
 
-          <li className="JourneyPlan__items__flight">
-            <div className="JourneyPlan__items__flight__date">
-              <div className="JourneyPlan__items__flight__date__day">11</div>
-              <div className="JourneyPlan__items__flight__date__month">JUN</div>
-            </div>
-            <div className="JourneyPlan__items__flight__details">
-              <div className="JourneyPlan__items__flight__from">Reykjavik ‎(‎KEF)</div>
-              <div className="JourneyPlan__items__flight__plane"></div>
-              <div className="JourneyPlan__items__flight__to">Copenhagen ‎(‎CPH)</div>
-            </div>
-          </li>
-
-      		<li className="JourneyPlan__items__destination">
-            <div className="JourneyPlan__items__destination__details">
-              <div><span className="JourneyPlan__items__destination__details__duration">5 days in</span></div>
-              <div><span className="JourneyPlan__items__destination__details__city">Phnom Penh</span></div>
-              <div><span className="JourneyPlan__items__destination__details__country">Cambodia</span></div>
-      		  </div>
-          </li>
-
-          <li className="JourneyPlan__items__flight">
-            <div className="JourneyPlan__items__flight__date">
-              <div className="JourneyPlan__items__flight__date__day">11</div>
-              <div className="JourneyPlan__items__flight__date__month">JUN</div>
-            </div>
-            <div className="JourneyPlan__items__flight__details">
-              <div className="JourneyPlan__items__flight__from">Reykjavik ‎(‎KEF)</div>
-              <div className="JourneyPlan__items__flight__plane"></div>
-              <div className="JourneyPlan__items__flight__to">Copenhagen ‎(‎CPH)</div>
-            </div>
-          </li>
-          
+            		<li className="JourneyPlan__items__destination">
+                  <div className="JourneyPlan__items__destination__details">
+                    <div><span className="JourneyPlan__items__destination__details__duration">5 days in</span></div>
+                    <div><span className="JourneyPlan__items__destination__details__city">Phnom Penh</span></div>
+                    <div><span className="JourneyPlan__items__destination__details__country">Cambodia</span></div>
+            		  </div>
+                </li>
+              </span>
+            );
+          })}
       	</ul>
       </div>
     );
