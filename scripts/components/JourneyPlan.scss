@@ -1,0 +1,108 @@
+@import '../variables.scss';
+
+.JourneyPlan {
+	width: 380px;
+	background-color: white;
+	position: absolute;
+	top: 80px;
+	right: 30px;
+	transform: translate3d(calc(100% + 30px),0,0);
+	transition: transform 400ms 250ms ease;
+  overflow: hidden;
+	border-radius: 5px;
+}
+
+.JourneyPlanShow {
+	transform: translate3d(0,0,0);
+}
+
+.JourneyPlanTitle {
+	text-align: center;
+	color: $color-orange;
+	font-size: 1.2em;
+	padding: 15px 0;
+	border-bottom: 1px solid #F1F1F1;
+}
+
+.JourneyPlan__items {
+	padding:0;
+	margin:0;
+	list-style: none;
+}
+
+.JourneyPlan__items__flight {
+	padding: 10px 5px;
+  font-size: 0.85em;
+  border-bottom: 1px solid #F1F1F1;
+}
+
+.JourneyPlan__items__flight__date {
+	width: 50px;
+	text-align: center;
+	color: $color-orange;
+  float:left; clear:right;
+
+}
+
+.JourneyPlan__items__flight__date__day {
+	font-size: 2em;
+}
+
+.JourneyPlan__items__flight__date__month {
+	margin-top: -6px;
+	font-size: 1.1em;
+}
+
+.JourneyPlan__items__flight__details{
+  padding: 15px 0;
+  text-align: center;
+}
+
+.JourneyPlan__items__flight__from {
+	display: inline;
+}
+
+.JourneyPlan__items__flight__plane{
+	display: inline-block;
+}
+
+.JourneyPlan__items__flight__plane::after{
+  padding: 0 15px;
+  margin-top: -10px;
+  display: inline-block;
+	font-family: 'FontAwesome';
+	color: $color-orange;
+	content: "\f072";
+  transform: rotate(45deg);
+}
+
+.JourneyPlan__items__flight__to {
+	display: inline-block;
+}
+
+.JourneyPlan__items__destination {
+  height: 115px;
+  background: url('/img/bg.png') center center no-repeat;
+  background-size: cover;
+  text-align: center;
+}
+
+.JourneyPlan__items__destination__details{
+  padding-top: 20px;
+}
+
+.JourneyPlan__items__destination__details__duration, 
+.JourneyPlan__items__destination__details__city,
+.JourneyPlan__items__destination__details__country{
+  text-align: center;
+  background-color: rgba(245,140,92,0.8);
+  color: white;
+  font-size: 0.8em;
+  display:inline-block;
+  margin: 1px;
+  padding: 2px;
+}
+
+.JourneyPlan__items__destination__details__city{
+  font-size: 1.2em;
+}

@@ -7,6 +7,7 @@ import constants from './config/constants';
 import SearchResults from './components/SearchResults';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 import DateRangePicker from 'react-bootstrap-daterangepicker';
+import JourneyPlan from './components/JourneyPlan.jsx';
 
 require('./app.scss');
 require('./datetimefield.scss');
@@ -20,7 +21,9 @@ const App = React.createClass({
     return {
       airportSearch: '',
       showLandingPage: true,
-      showSearchResults: true
+      showSearchResults: true,
+      minimizeSearchResults: false,
+      showJourneyPlan: false,
     };
   },
 
@@ -41,54 +44,62 @@ const App = React.createClass({
     let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
 
+    console.log(this.props.flights);
 
     if (selectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airports[0]})`;
     }
 
     return (
-      <div className={classSet(formClasses)}>
-        <h1>DISCOVER THE WORLD</h1>
-        <form>
-          <span className="wrapper">
-            <input
-              ref="searchBar"
-              value={airportSearch}
-              onFocus={(event) => this.handleOnFocus(event, true)}
-              onBlur={(event) => this.handleOnFocus(event, false)}
-              onChange={(event) => this.handleSearchAirport(event)}
-              placeholder="Starting airport"
-            />
-          </span>
-          <TimeoutTransitionGroup
-            enterTimeout={300}
-            leaveTimeout={300}
-            transitionName="fade"
-          >
-            {(this.state.showSearchResults) ? [
-              <SearchResults
-                flux={this.props.flux}
-                airports={this.props.airports}
-                selectedAirport={this.props.selectedAirport}
-                selectAirport={this.handleSetAirport}
-                showList={this.state.showSearchResults}
+      <div>
+        <div className={classSet(formClasses)}>
+          <h1>DISCOVER THE WORLD</h1>
+          <form>
+            <span className="wrapper">
+              <input
+                ref="searchBar"
+                value={airportSearch}
+                onFocus={(event) => this.handleOnFocus(event, true)}
+                onBlur={(event) => this.handleOnFocus(event, false)}
+                onChange={(event) => this.handleSearchAirport(event)}
+                placeholder="Starting airport"
               />
-            ] : []}
-          </TimeoutTransitionGroup>
-          <span className="wrapper">
-            <DateRangePicker
-              ref="dates"
-              startDate={this.props.dates.startDate}
-              endDate={this.props.dates.endDate}
-              onEvent={this.handleDatePicker}>
-              <span className="DatePicker">{label}</span>
-            </DateRangePicker>
-          </span>
-          <button onClick={(event) => this.handleCreateJourney(event)}>
-            Create journey
-          </button>
-        </form>
-        <div>{this.props.schedule}</div>
+            </span>
+            <TimeoutTransitionGroup
+              enterTimeout={300}
+              leaveTimeout={300}
+              transitionName="fade"
+            >
+              {(this.state.showSearchResults) ? [
+                <SearchResults
+                  flux={this.props.flux}
+                  airports={this.props.airports}
+                  selectedAirport={this.props.selectedAirport}
+                  selectAirport={this.handleSetAirport}
+                  showList={this.state.showSearchResults}
+                  min={this.state.minimizeSearchResults}
+                />
+              ] : []}
+            </TimeoutTransitionGroup>
+            <span className="wrapper">
+              <DateRangePicker
+                ref="dates"
+                startDate={this.props.dates.startDate}
+                endDate={this.props.dates.endDate}
+                onEvent={this.handleDatePicker}>
+                <span className="DatePicker">{label}</span>
+              </DateRangePicker>
+            </span>
+            <button onClick={(event) => this.handleCreateJourney(event)}>
+              Create journey
+            </button>
+          </form>
+          <div>{this.props.schedule}</div>
+        </div>
+        <JourneyPlan 
+          flights={this.props.flights}
+          display={this.state.showJourneyPlan}
+        />
       </div>
     );
   },
@@ -138,7 +149,9 @@ const App = React.createClass({
       return;
     }
     this.setState({showLandingPage: !this.state.showLandingPage});
+    this.setState({showJourneyPlan: !this.state.showJourneyPlan});
     this.props.flux.getActions('FlightActions').createJourney();
+    
   }
 });
 
