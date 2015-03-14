@@ -77,9 +77,24 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       return;
     }
 
+    var chosenIndex = 0;
 
-    var cheapestFlight = fares[0];
+    for(var airport in airports){
 
+     //DO ALL THE CHECKING HERE FOR SELECTING THE NEXT AIRPORT
+
+     var distance = findDistance(airports[airport].lat,airports[airport].lon,travelingInfo.departure.lat,travelingInfo.departure.lon);
+     console.log("dist",distance)
+     if(distance > 1000){
+        break;
+     }
+
+     chosenIndex++;
+
+     }
+
+    //select the cheapest fair that fits our needs
+    var cheapestFlight = fares[chosenIndex];
 
     if (fares.length) {
       if (!travelingInfo.goHome) {
