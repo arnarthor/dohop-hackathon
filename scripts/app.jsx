@@ -26,10 +26,22 @@ const App = React.createClass({
       showSearchResults: true,
       minimizeSearchResults: false,
       showJourneyPlan: false,
+      location: {
+        lat: null,
+        lon: null,
+      },
     };
   },
 
   componentDidMount() {
+    navigator.geolocation.getCurrentPosition(location => {
+      this.setState({
+        location: {
+          lat: location.coords.latitude,
+          lon: location.coords.longitude
+        }
+      });
+    });
     this.refs.searchBar.getDOMNode().focus();
     this.props.flux.getActions('FlightActions').connectIo();
   },
@@ -104,6 +116,7 @@ const App = React.createClass({
         />
         <GoogleMap
           flights={this.props.flights}
+          location={this.state.location}
         />
       </div>
     );

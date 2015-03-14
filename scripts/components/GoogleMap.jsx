@@ -16,7 +16,7 @@ let GoogleMap = React.createClass({
   getInitialState() {
     return {
       center: new LatLng(41.879535, -87.624333),
-      zoom: 7,
+      zoom: 5,
       linePath: [],
       height: 1000,
       width: 1000,
@@ -25,7 +25,18 @@ let GoogleMap = React.createClass({
 
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize);
-    this.setState({height: window.innerHeight, width: window.innerWidth});
+    this.setState({
+      height: window.innerHeight,
+      width: window.innerWidth,
+      center: new LatLng(this.props.location.lat, this.props.location.lon),
+    });
+  },
+
+  componentWillReceiveProps(nextProps) {
+    var linePath = _.clone(this.state.linePath);
+    this.setState({
+      center: new LatLng(nextProps.location.lat, nextProps.location.lon),
+    });
   },
 
   propTypes: {
@@ -33,15 +44,14 @@ let GoogleMap = React.createClass({
   },
 
   render() {
-    console.log(this.state);
     return (
       <div className="GoogleMap">
         <Map
           initialZoom={this.state.zoom}
-          initialCenter={this.state.center}
+          center={this.state.center}
           width={this.state.width}
           height={this.state.height}
-          onClick={this.handleMapClick}
+          onCenterChange={this.handleCenterChange}
         >
           <Polyline
             geodesic
@@ -55,20 +65,13 @@ let GoogleMap = React.createClass({
     );
   },
 
-  handleMapClick(mapEvent) {
-    var linePath = React.addons
-      .update(this.state.linePath, {
-        $push: [mapEvent.latLng]
-      });
-
-    this.setState({
-      linePath: linePath
-    });
-  },
-
   handleWindowResize(event) {
     this.setState({height: event.target.innerHeight, width: event.target.innerWidth});
-  }
+  },
+
+  handleCenterChange(mapNode) {
+    this.setState({center: mapNode.getCenter()});
+  },
 });
 
 export default GoogleMap;
