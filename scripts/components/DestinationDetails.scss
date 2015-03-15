@@ -1,11 +1,11 @@
 .DestinationDetails__items__destination {
   height: 115px;
-  background: url('/img/bg.png') center center no-repeat;
-  background-size: cover cover;
+  background: center center no-repeat;
+  background-size: 100%;
   text-align: center;
   max-height:0;
   overflow: hidden;
-  transition: max-height 3s 400ms ease-out;
+  transition: max-height 2.5s 1s ease-out;
 }
 
 .DestinationDetails__items__destination__details {

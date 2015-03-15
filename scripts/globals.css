@@ -1,6 +1,6 @@
 .fade-enter {
   opacity: 0.01;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s 2s;
 }
 
 .fade-enter.fade-enter-active {
@@ -9,11 +9,30 @@
 
 .fade-leave {
   opacity: 1;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s 2s;
 }
 
 .fade-leave.fade-leave-active {
   opacity: 0.01;
+}
+
+
+.collapse-enter {
+  max-height: 0px;
+  transition: max-height 800ms ease-in;
+}
+
+.collapse-enter.collapse-enter-active {
+  max-height: 380px;
+}
+
+.collapse-leave {
+  max-height: 380px;
+  transition: max-height 200ms ease-out;
+}
+
+.collapse-leave.collapse-leave-active {
+  max-height: 0px;
 }
 
 

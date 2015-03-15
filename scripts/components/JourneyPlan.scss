@@ -11,7 +11,7 @@
 	border-radius: 5px;
   overflow: hidden;
 	z-index: 1;
-  box-shadow: 0px 3px 2px rgba(0,0,0,0.2);
+  box-shadow: 0px 2px 0px rgba(0,0,0,0.1);
 }
 
 .JourneyPlanShow {
@@ -20,10 +20,11 @@
 
 .JourneyPlanTitle {
 	text-align: center;
-	color: $color-orange;
+	color: white;
+  background-color: $color-orange;
 	font-size: 1.2em;
 	padding: 15px 0;
-	border-bottom: 1px solid $color-light-gray;
+  box-shadow: 0px 1px 0px rgba(0,0,0,0.15);
 }
 
 .JourneyPlan__items {
@@ -34,6 +35,16 @@
   overflow-y: scroll;
   max-height: 78vh;
 }
+
+.JourneyPlan__items:last-child {
+  padding-bottom: 54px;
+}
+
+.JourneyPlan__items__item{
+  display: block;
+  overflow: hidden;
+}
+
 
 .JourneyPlan__items__flight {
 	padding: 5px;
@@ -61,7 +72,7 @@
 	text-transform: uppercase;
 }
 
-.JourneyPlan__items__flight__details{
+.JourneyPlan__items__flight__details {
   padding: 9px 0px 3px 0px;
   text-align: center;
 }
@@ -72,31 +83,31 @@
 }
 
 .JourneyPlan__items__flight__from__airportName,
-.JourneyPlan__items__flight__to__airportName{
+.JourneyPlan__items__flight__to__airportName {
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 98px;
+  max-width: 94px;
   overflow:hidden;
 }
 
 .JourneyPlan__items__flight__from__airportName:after,
-.JourneyPlan__items__flight__to__airportName:after{
+.JourneyPlan__items__flight__to__airportName:after {
   content: "\00a0 ";
 }
 
 .JourneyPlan__items__flight__from__airportCode,
-.JourneyPlan__items__flight__to__airportCode{
+.JourneyPlan__items__flight__to__airportCode {
   display: inline-block;
   overflow:hidden;
 }
 
-.JourneyPlan__items__flight__plane{
+.JourneyPlan__items__flight__plane {
 	display: inline-block;
   overflow:hidden;
 }
 
-.JourneyPlan__items__flight__plane::after{
+.JourneyPlan__items__flight__plane::after {
   padding: 0 6px;
   margin-top: -10px;
   display: inline-block;
@@ -106,9 +117,26 @@
   transform: rotate(45deg);
 }
 
-.JourneyPlan__items__flight__price{
+.JourneyPlan__items__flight__price {
   display: inline-block;
   float:right;
   padding-right: 5px;
   color: $color-orange;
+}
+
+.JourneyPlan__items__total {
+  position: absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  font-size: 1.2em;
+  text-align: right;
+  padding: 15px;
+  color: white;
+  background-color: $color-orange;
+  box-shadow: 0px -1px 0px rgba(0,0,0,0.15);
+}
+
+.JourneyPlan__items__total__price {
+  font-weight: 700;
 }
