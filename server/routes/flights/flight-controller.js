@@ -24,31 +24,29 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
 
-  //Init the duration and change the departure
-  if (travelingInfo.flights.length === 0){
-   var duration = createStopDuration(travelingInfo.departure.from,travelingInfo.departure.to);
+  // Init the duration and change the departure
+  if (travelingInfo.flights.length === 0) {
+    var duration = createStopDuration(travelingInfo.departure.from, travelingInfo.departure.to);
 
-   travelingInfo.stopDuration = duration;
-   console.log('duration', duration);
+    travelingInfo.stopDuration = duration;
+    console.log('duration', duration);
 
-   //FLY ON THE DAY THAT HE WANTS
-   travelingInfo.departure.to = travelingInfo.departure.from;
-   travelingInfo.endDate = travelingInfo.departure.to;
+    // Try to find a flight within 3 days of the request.
+    travelingInfo.departure.to = moment(travelingInfo.departure.from).add(3, 'days');
+    travelingInfo.endDate = travelingInfo.departure.to;
   }
 
 
-  //start going home after 5 days TODO DODISBETTER
-  if(travelingInfo.stopDuration.totalDays-5<moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate),'days')){
-    console.log("hallo")
+  // start going home after 5 days TODO DODISBETTER
+  if (travelingInfo.stopDuration.totalDays - 5 < moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate), 'days')) {
+    console.log('hallo');
     travelingInfo.goHome = true;
-    travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
-    console.log(travelingInfo.departure.to + " wewedw");
-    console.log(travelingInfo.departure.from)
-    console.log("bla" + moment(travelingInfo.departure.to).diff(moment(travelingInfo.endDate),'days'));
-    
+    travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100, 'days').format('YYYY-MM-DD');
+    console.log(travelingInfo.departure.to + ' wewedw');
+    console.log(travelingInfo.departure.from);
+    console.log('bla' + moment(travelingInfo.departure.to).diff(moment(travelingInfo.endDate), 'days'));
+  }
 
-  };
-    
 
 
 
@@ -77,6 +75,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       travelingInfo.departure.to
     ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
   }
+  console.log(url);
   superagent.get(url)
 	.end(function(err, response) {
 		if (err) {
@@ -96,10 +95,10 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
 
     //check if we have travled there before
-    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {  
+    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {
 
-   
-      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
+
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) {
           continue;
       }
 
@@ -113,14 +112,14 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     };
 
     console.log(fares.length)
-        //go home 
+        //go home
     if (travelingInfo.flights.length && fares.length === cheapest) {
       console.log("home")
       socket.emit('go-home', true);
       return;
     }
 
-    
+
     //HANDLE EDGE CASE IF NO FLIGHT IS HOME HERE
 
 
@@ -202,7 +201,7 @@ function createStopDuration(startDate, endDate){
   if (days >= 24*7) {
     duration.lowBound = 7;
     duration.highBound = 21;
-  } else if (days >=12*7) { 
+  } else if (days >=12*7) {
     duration.lowBound = 5;
     duration.highBound = 10;
   } else if (days >= 4*7) {
