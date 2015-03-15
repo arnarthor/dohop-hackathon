@@ -62,7 +62,7 @@ let JourneyPlan = React.createClass({
                 daysStaying = _.initial(flight.daysStaying.split(' ')).join(' ');
               }
               return (
-                <span className="JourneyPlan__items__item">
+                <span key={flight.departureCountry.airportName} className="JourneyPlan__items__item">
                   <li className="JourneyPlan__items__flight">
                     <div className="JourneyPlan__items__flight__date">
                       <div className="JourneyPlan__items__flight__date__day">{date}</div>

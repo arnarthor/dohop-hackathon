@@ -101,6 +101,7 @@ const App = React.createClass({
             >
               {(this.state.showSearchResults) ? [
                 <SearchResults
+                  key={this.props.airports}
                   flux={this.props.flux}
                   airports={this.props.airports}
                   selectedAirport={this.props.selectedAirport}
