@@ -14,6 +14,7 @@ class FlightStore extends Store {
     this.register(flightActions.airportList, this.airportList);
     this.register(flightActions.setUUID, this.setUUID);
     this.register(flightActions.clearAirports, this.clearAirports);
+    this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
     this.register(flightActions.setAirport, this.setAirport);
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
@@ -39,8 +40,8 @@ class FlightStore extends Store {
 
     let selectedAirport = _.clone(this.state.selectedAirport);
 
-    //FETCH FIRST FLIGHT
-    //THE SERVER CALCULATES THE stopTime and stayTime and so forth
+    // Fetch first flight
+    // The server calculates the stopTime and stayTime and so forth
     let travelingData = {
       departure: {
         airportName: selectedAirport.name,
@@ -57,6 +58,10 @@ class FlightStore extends Store {
     };
 
     this.socket.emit('request-flight', travelingData);
+  }
+
+  clearSelectedAirport() {
+    this.setState({selectedAirport: null});
   }
 
   clearAirports() {
@@ -80,35 +85,25 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
-
-
-        //If we are home
+    // If we are home
     if(flight.stateData === 'homeDest'){
       return;
     }
 
-    console.log(flight)
-
-
     let flights = _.clone(this.state.flights);
-
     let lastFlight;
 
-    //If we got a succesfull new flight
+    // If we got a succesfull new flight
     if (flights.length> 0) {
       lastFlight = _.last(flights);
-      console.log(lastFlight)
       let currentArrival = moment(lastFlight.departure);
       let nextArrival = moment(flight.departure);
       lastFlight.daysStaying = currentArrival.from(nextArrival);
       flights = _.initial(flights).concat(lastFlight);
     }
 
-    //update the flights global array
+    // Update the flights global array
     this.setState({flights: flights.concat(flight)});
-
-
-
     //Fetch another flight
     let travelingData = {
       departure: {
