@@ -42,9 +42,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     console.log("hallo")
     travelingInfo.goHome = true;
     travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
-    console.log(travelingInfo.departure.to + " wewedw");
-    console.log(travelingInfo.departure.from)
-    console.log("bla" + moment(travelingInfo.departure.to).diff(moment(travelingInfo.endDate),'days'));
+   
     
 
   };
