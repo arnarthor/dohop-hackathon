@@ -17,19 +17,38 @@ let JourneyPlan = React.createClass({
     flights: Props.array,
   },
 
+  getInitialState() {
+    return {
+      journeyPlanCollapsed: false,
+    };
+  },
+
   render() {
     let journeyPlanClasses = {
       JourneyPlan: true,
       JourneyPlanShow: this.props.display,
     };
 
+    let journeyPlanToggleClasses = {
+      noselect: true,
+      JourneyPlan__title__toggle: true,
+      JourneyPlan__title__toggle__active: this.state.journeyPlanCollapsed,
+    }
+
+    let journeyPlanItemsClasses = {
+      JourneyPlan__items: true,
+      JourneyPlan__items__collapsed: this.state.journeyPlanCollapsed,
+    }
+
     let totalPrice = 0;
     _.map(this.props.flights, function(flight){totalPrice += flight.price});
 
     return (
       <div className={classSet(journeyPlanClasses)}>
-      	<div className="JourneyPlanTitle">MY JOURNEY</div>
-      	<ul className="JourneyPlan__items">
+      	<div className="JourneyPlan__title" onClick={(event) => this.setState({journeyPlanCollapsed: !this.state.journeyPlanCollapsed})}>MY JOURNEY
+          <span className={classSet(journeyPlanToggleClasses)} onClick={(event) => this.setState({journeyPlanCollapsed: !this.state.journeyPlanCollapsed})}></span>
+        </div>
+      	<ul className={classSet(journeyPlanItemsClasses)}>
           <TimeoutTransitionGroup
           enterTimeout={800}
           leaveTimeout={200}
@@ -77,6 +96,8 @@ let JourneyPlan = React.createClass({
       </div>
     );
   }
+
+
 });
 
 
