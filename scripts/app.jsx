@@ -177,7 +177,6 @@ const App = React.createClass({
       airportSearch: `${airport.name} (${airport.airportCode})`
     });
     this.props.flux.getActions('FlightActions').fetchAirport(airport);
-    this.refs.dates.getDOMNode().focus();
   },
 
   handleSearchAirport(event) {
