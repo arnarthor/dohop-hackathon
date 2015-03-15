@@ -22,6 +22,7 @@ const App = React.createClass({
   getInitialState() {
     return {
       airportSearch: '',
+      activeAirport: 1,
       useSelectedAirport: false,
       showLandingPage: true,
       showSearchResults: true,
@@ -91,6 +92,7 @@ const App = React.createClass({
                 onFocus={(event) => this.handleOnFocus(event, true)}
                 onBlur={(event) => this.handleOnFocus(event, false)}
                 onChange={(event) => this.handleSearchAirport(event)}
+                onKeyDown={this.handleKeyDown}
                 placeholder="Starting airport"
               />
             </span>
@@ -101,6 +103,7 @@ const App = React.createClass({
             >
               {(this.state.showSearchResults) ? [
                 <SearchResults
+                  active={this.state.activeAirport}
                   key={this.props.airports}
                   flux={this.props.flux}
                   airports={this.props.airports}
@@ -143,6 +146,24 @@ const App = React.createClass({
     );
   },
 
+  handleKeyDown(event) {
+    if (event.key !== 'ArrowUp' &&
+      event.key !== 'ArrowDown' &&
+      event.key !== 'Enter') {
+      return;
+    }
+    event.preventDefault();
+    if (event.key === 'ArrowUp') {
+      if (this.state.activeAirport - 1 < 1) return;
+      this.setState({activeAirport: this.state.activeAirport - 1});
+    } else if (event.key === 'ArrowDown') {
+      if (this.state.activeAirport + 1 > this.props.airports.length) return;
+      this.setState({activeAirport: this.state.activeAirport + 1});
+    } else if (event.key === 'Enter') {
+      this.handleSetAirport(event, this.props.airports[this.state.activeAirport - 1]);
+    }
+  },
+
   handleDatePicker(event, picker) {
     this.props.flux.getActions('FlightActions').setDates(picker);
   },
@@ -154,7 +175,10 @@ const App = React.createClass({
 
   handleSearchAirport(event) {
     let airportSearch = event.target.value;
-    this.setState({airportSearch, useSelectedAirport: false})
+    this.setState({airportSearch,
+      useSelectedAirport: false,
+      activeAirport: 1,
+      showSearchResults: true});
     this.performSearch();
   },
 
