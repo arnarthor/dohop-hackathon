@@ -97,7 +97,7 @@ function initFirstFlight(travelingInfo){
 
 function goHome(travelingInfo){
     //total amount of days where you should be thinking about going home
-    var dayAmount = 5;
+    var dayAmount = 2;
     if ((travelingInfo.stopDuration.totalDays - dayAmount) < moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate), 'days')) {
     //MABY  travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
 
@@ -280,7 +280,7 @@ function goHome(travelingInfo){
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
 
-          continue;
+          //continue;
       }
 
       //check if it is within our travel limits
@@ -302,8 +302,6 @@ function goHome(travelingInfo){
 
 
   }
-
-  
 
 
 function findDistance(lat1, lon1, lat2, lon2){
