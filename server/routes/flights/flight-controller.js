@@ -2,10 +2,13 @@
 var superagent = require('superagent');
 var config = require('../../config');
 var _ = require("lodash");
+var moment = require('moment');
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
 };
+
+
 
 exports.searchAirport = function(req, res) {
   superagent.get(config.api + '/picker/en/' + req.params.airport)
@@ -21,8 +24,21 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
 
+  //Init the duration and change the departure
+  if (travelingInfo.flights.length === 0){
+   var duration = createStopDuration(travelingInfo.departure.from,travelingInfo.departure.to);
+
+   travelingInfo.stopDuration = duration;
+   console.log(duration);
+
+   //FLY ON THE DAY THAT HE WANTS
+   travelingInfo.departure.to = travelingInfo.departure.from;
+  }
+
+
 
   if (travelingInfo.goHome) {
+
     url = [
       config.api,
       'livestore',
@@ -58,9 +74,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     var airports = responseData.airports;
 
 
-
-
- var cheapest = 0;
+    var cheapest = 0;
     var countries = _.map(travelingInfo.flights, function(item) {
       return item['departureCountry'].country;
     });
@@ -95,17 +109,18 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
 
     var cheapestFlight = fares[cheapest];
-    console.log(cheapestFlight)
     if (fares.length) {
       //console.log(fares[chosenIndex])
       //MABY NO FLIGHT TO ICELAND HERE
       
       var travelInfo = {
+
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,
         price: cheapestFlight.conv_fare,
         departure: cheapestFlight.d1,
-        departureCountry: travelingInfo.departure
+        departureCountry: travelingInfo.departure,
+        stopDuration: travelingInfo.stopDuration,
       };
       if (airports[cheapestFlight.b]) {
         travelInfo.arrivalCountry = {
@@ -156,3 +171,33 @@ function deg2rad (deg){
 
   return deg * (Math.PI/180);
 }
+
+function createStopDuration (startDate,endDate){
+
+  var weeks = moment(endDate).diff(moment(startDate),'weeks');
+
+  var duration = { lowBound:'',highBound:''};
+
+  if(weeks >=24){
+    duration.lowBound = 7;
+    duration.highBound = 21;
+  }
+  else if(weeks >=12){
+    duration.lowBound = 5;
+    duration.highBound = 10;
+
+  }
+  else if(weeks >= 4){
+  duration.lowBound = 3;
+  duration.highBound = 8;
+
+  }
+  else{
+  duration.lowBound = 2;
+  duration.highBound = 4;
+
+  }
+
+  return duration;
+
+};
