@@ -34,7 +34,6 @@ let JourneyPlan = React.createClass({
               daysStaying = _.initial(flight.daysStaying.split(' ')).join(' ');
             }
             return (
-            </TimeoutTransitionGroup>
               <span>
                 <li className="JourneyPlan__items__flight">
                   <div className="JourneyPlan__items__flight__date">
