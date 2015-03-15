@@ -23,9 +23,17 @@ let DestinationDetails = React.createClass({
         maxHeight: '500px',
       }
     }
-
+http://hotel.dohop.com/searchresults.html?ss=London+Heathrow%2C+London%2C+United+Kingdom&interval_of_time=any&flex_checkin_year_month=any&no_rooms=1&group_adults=2&group_children=0&aid=376223&checkin_year_month=2015-03&checkin_monthday=23&checkout_year_month=2015-04&checkout_monthday=30&dest_type=city&dest_id=-2601889&label=searchform&si=ai%2Cco%2Cci%2Cre%2Cdi&lang=en
     return (
      <li className="DestinationDetails__items__destination" style={destinationStyle}>
+      <div className="DestinationDetails__items__destination__menu">
+        <div className="DestinationDetails__items__destination__menu__icon"></div>
+        <ul className="DestinationDetails__items__destination__menu__actions">
+          <a href="" target="_blank"><li className="DestinationDetails__items__destination__menu__actions__button attractions">Attractions</li></a>
+          <a href="" target="_blank"><li className="DestinationDetails__items__destination__menu__actions__button hotels">Hotels</li></a>
+          <li className="DestinationDetails__items__destination__menu__actions__button streetview">Streetview</li>
+        </ul>
+      </div>
       <div className="DestinationDetails__items__destination__details">
         {this.props.daysStaying && (
           <div>
