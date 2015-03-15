@@ -76,7 +76,7 @@ const App = React.createClass({
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
     }
 
-    let location = this.props.selectedAirport && this.props.selectedAirport.location;
+    let location = this.props.selectedAirport && this.props.selectedAirport.location || this.state.location;
 
     return (
       <div>
