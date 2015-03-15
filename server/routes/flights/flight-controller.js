@@ -26,7 +26,7 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
 
 
-console.log(travelingInfo.stateData);
+//console.log(travelingInfo.stateData);
   //FIRSTFLIGHT
   if(travelingInfo.stateData === 'firstFlight') {
      //UPDATE THE TRAVELING INFO FOR THE FIRST FLIGHT
@@ -89,9 +89,8 @@ function initFirstFlight(travelingInfo){
      travelingInfo.departure.to = travelingInfo.departure.from;
      travelingInfo.endDate = travelingInfo.departure.to;
 
-     //console.log(normalDistribution(14, 14, 4, 1));
-     //console.log(normalDist(13, 14, 4, 1, 0.25));
-     console.log('travelingInfo', travelingInfo);
+
+     //console.log('travelingInfo', travelingInfo);
      return travelingInfo;
    }
 
@@ -219,15 +218,11 @@ function goHome(travelingInfo){
       var countries = _.map(travelingInfo.flights, function(item) {
         return item['departureCountry'].country;
       });
-      console.log('travelingInfo', travelingInfo);
-     var home = {
-        lat: travelingInfo.startingPoint.location.lat,
-        lon: travelingInfo.startingPoint.location.lon
-      };
-      //FIND THE APROPREATE FLIGHT
-      var flightIndex = isValidFlight(fares, airports, countries, home);
 
-      console.log('fares', fares);
+      //FIND THE APROPREATE FLIGHT
+      var flightIndex = isValidFlight(fares, airports, countries, travelingInfo);
+
+      //console.log('fares', fares);
       //
       if(flightIndex > -1) {
 
@@ -269,7 +264,7 @@ function goHome(travelingInfo){
   };
 
 
-  function isValidFlight(fares,airports,countries, home){
+  function isValidFlight(fares,airports,countries, travelingInfo){
 
     //ADD VALIDATION HERE --------------------------
     //check if we have travled there before
@@ -284,16 +279,41 @@ function goHome(travelingInfo){
       }
 
       //check if it is within our travel limits
-      var dist = findDistance(home.lat, home.lon, airports[fares[cheapest].b].lat, airports[fares[cheapest].b].lon);
-      if (dist < bestDistance || indexCheapest === -1) {
+      var dist = findDistance(travelingInfo.startingPoint.location.lat, travelingInfo.startingPoint.location.lng, airports[fares[cheapest].b].lat, airports[fares[cheapest].b].lon);
+
+      console.log('dist', dist);
+
+      var thisDay = moment(fares[cheapest].d1).diff(moment(travelingInfo.stopDuration.startDate), 'days');
+      var totalDays = travelingInfo.stopDuration.totalDays;
+      var stopDuration = travelingInfo.stopDuration.highBound;
+      var dfhMax = travelingInfo.stopDuration.dfhMax;
+      var dfhW = travelingInfo.stopDuration.dfhW;
+      var idealDist = normalDist(thisDay, totalDays, stopDuration, dfhMax, dfhW);
+
+
+      var diff = Math.abs(idealDist - dist);
+
+      console.log('thisDay', thisDay);
+      console.log('totalDays', totalDays);
+      console.log('stopDuration', stopDuration);
+      console.log('dfhMax', dfhMax);
+      console.log('dfhW', dfhW);
+      console.log('idealDist', idealDist);
+      console.log('diff', diff);
+
+
+      if ( diff < bestDistance || indexCheapest === -1) {
           indexCheapest = cheapest;
           bestDistance = dist;
       }
     }
 
+    
+    console.log('bestDistance', bestDistance);
+
     //YOU HAVE NOTHING ELSE TODO
     if (cheapest === -1) {
-      console.log("GOHOME");
+      //console.log("GOHOME");
       return -1;
     }
 
@@ -309,7 +329,6 @@ function goHome(travelingInfo){
 function findDistance(lat1, lon1, lat2, lon2){
 
   //HAVERSIN FORMULA
-
 
   var dLat = deg2rad(lat2 - lat1);
   var dLon = deg2rad(lon2 - lon1);
@@ -341,6 +360,7 @@ function createStopDuration(startDate, endDate){
     priceW: 0,
     dfhW: 0,
     totalDays: days,
+    startDate: startDate,
   };
 
   if (days >= 24 * 7) {
