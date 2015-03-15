@@ -58,48 +58,48 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     var airports = responseData.airports;
 
 
-    var cheapest = 0;
+
+
+ var cheapest = 0;
     var countries = _.map(travelingInfo.flights, function(item) {
       return item['departureCountry'].country;
     });
 
 
     //check if we have travled there before
-    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {      
-      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  === -1) { 
-        break;
+    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {  
+
+   
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
+          continue;
       }
+
+      if (findDistance(airports[fares[cheapest].a].lat,airports[fares[cheapest].a].lon,airports[fares[cheapest].b].lat,airports[fares[cheapest].b].lon)<config.minDistance){
+          continue;
+      }
+
+      break;
+
+
     };
 
-    //go home 
+        //go home 
     if (travelingInfo.flights.length && fares.length === cheapest) {
+      console.log("home")
       socket.emit('go-home', true);
       return;
     }
 
-    var chosenIndex = 0;
+    
+    //HANDLE EDGE CASE IF NO FLIGHT IS HOME HERE
 
-    for(var airport in airports){
 
-     //DO ALL THE CHECKING HERE FOR SELECTING THE NEXT AIRPORT
-
-     var distance = findDistance(airports[airport].lat,airports[airport].lon,travelingInfo.departure.lat,travelingInfo.departure.lon);
-     console.log("dist",distance)
-     if(distance > 1000){
-        break;
-     }
-
-     chosenIndex++;
-
-     }
-
-    //select the cheapest fair that fits our needs
-    var cheapestFlight = fares[chosenIndex];
-
+    var cheapestFlight = fares[cheapest];
+    console.log(cheapestFlight)
     if (fares.length) {
-      if (!travelingInfo.goHome) {
-        cheapestFlight = fares[cheapest];
-      }
+      //console.log(fares[chosenIndex])
+      //MABY NO FLIGHT TO ICELAND HERE
+      
       var travelInfo = {
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,
@@ -122,6 +122,13 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       }
       socket.emit('new-flight', travelInfo);
     }
+
+
+    //whattodo
+   else{
+
+
+   }
 	});
 };
 
@@ -132,16 +139,20 @@ function findDistance(lat1,lon1,lat2,lon2){
 
   //HAVERSIN FORMULA
 
-  var radiusEarth = 6371; //radius in km
 
-  var dLat = lat2-lat1;
-  var dLon = lon2-lon1;
+  var dLat = deg2rad(lat2-lat1);
+  var dLon = deg2rad(lon2-lon1);
 
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
 
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-  var d = radiusEarth * c; //distance in km
+  var d = config.earthRadius * c; //distance in km
 
   return d;
+}
+
+function deg2rad (deg){
+
+  return deg * (Math.PI/180);
 }
