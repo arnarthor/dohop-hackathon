@@ -37,7 +37,7 @@ class FlightActions extends Actions {
   }
 
   async fetchAirport(airport) {
-    request.get(`${constants.googleMapsAPI}/json?address=${airport.airportCode} ${airport.name} ${airport.country} airport&sensor=false`)
+    request.get(`${constants.googleMapsAPI}/json?address=${airport.airportCode} airport ${airport.name} ${airport.country}&sensor=false`)
       .end(res => {
         let airportWithLocations = _.clone(airport);
         airportWithLocations.location = res.body.results[0].geometry.location;
