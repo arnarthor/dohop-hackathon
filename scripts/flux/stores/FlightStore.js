@@ -30,6 +30,7 @@ class FlightStore extends Store {
         startDate: moment().add(1, 'days'),
         endDate: moment().add(32, 'days')
       },
+
     };
   }
 
@@ -37,6 +38,9 @@ class FlightStore extends Store {
     this.setState({flights: [], flightHash, goHome: false});
 
     let selectedAirport = _.clone(this.state.selectedAirport);
+
+    //handle the logic about how the to/from
+
     let travelingData = {
       departure: {
         airportName: selectedAirport.name,
@@ -76,9 +80,7 @@ class FlightStore extends Store {
   }
 
   addFlight(flight) {
-    if (this.state.flights.length === 5) {
-      this.setHome(true);
-    }
+
 
     let flights = _.clone(this.state.flights);
 
@@ -93,20 +95,21 @@ class FlightStore extends Store {
     this.setState({flights: flights.concat(flight)});
     if (flight.destAirport === this.state.selectedAirport.airportCode) return;
 
-
     let travelingData = {
       departure: {
         airportName: flight.arrivalCountry.airportName,
         country: flight.arrivalCountry.countryCode,
         airportCode: flight.destAirport,
-        from: moment(flight.departure).add(2, 'days').format('YYYY-MM-DD'),
-        to: moment(flight.departure).add(7, 'days').format('YYYY-MM-DD'),
+        from: moment(flight.departure).add(flight.stopDuration.lowBound,'days').format('YYYY-MM-DD'),
+        to: moment(flight.departure).add(flight.stopDuration.highBound, 'days').format('YYYY-MM-DD'),
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
       },
       goHome: this.state.goHome,
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
+      stopDuration:flight.stopDuration,
+      endDate:flight.endDate,
     };
     this.socket.emit('request-flight', travelingData);
   }

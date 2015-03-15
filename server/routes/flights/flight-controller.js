@@ -2,10 +2,13 @@
 var superagent = require('superagent');
 var config = require('../../config');
 var _ = require("lodash");
+var moment = require('moment');
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
 };
+
+
 
 exports.searchAirport = function(req, res) {
   superagent.get(config.api + '/picker/en/' + req.params.airport)
@@ -21,8 +24,36 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
   var url = '';
 
+  //Init the duration and change the departure
+  if (travelingInfo.flights.length === 0){
+   var duration = createStopDuration(travelingInfo.departure.from,travelingInfo.departure.to);
+
+   travelingInfo.stopDuration = duration;
+   console.log(duration);
+
+   //FLY ON THE DAY THAT HE WANTS
+   travelingInfo.departure.to = travelingInfo.departure.from;
+   travelingInfo.endDate = travelingInfo.departure.to;
+  }
+
+
+  //start going home after 5 days TODO DODISBETTER
+  if(travelingInfo.stopDuration.totalDays-5<moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate),'days')){
+    console.log("hallo")
+    travelingInfo.goHome = true;
+    travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
+    console.log(travelingInfo.departure.to + " wewedw");
+    console.log(travelingInfo.departure.from)
+    console.log("bla" + moment(travelingInfo.departure.to).diff(moment(travelingInfo.endDate),'days'));
+    
+
+  };
+    
+
+
 
   if (travelingInfo.goHome) {
+
     url = [
       config.api,
       'livestore',
@@ -65,47 +96,48 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
 
     //check if we have travled there before
-    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {      
-      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  === -1) { 
-        break;
+    for (;!travelingInfo.goHome && cheapest < fares.length; cheapest++) {  
+
+   
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
+          continue;
       }
+
+      if (findDistance(airports[fares[cheapest].a].lat,airports[fares[cheapest].a].lon,airports[fares[cheapest].b].lat,airports[fares[cheapest].b].lon)<config.minDistance){
+          continue;
+      }
+
+      break;
+
+
     };
 
-    //go home 
+    console.log(fares.length)
+        //go home 
     if (travelingInfo.flights.length && fares.length === cheapest) {
+      console.log("home")
       socket.emit('go-home', true);
       return;
     }
 
-    var chosenIndex = 0;
+    
+    //HANDLE EDGE CASE IF NO FLIGHT IS HOME HERE
 
-    for(var airport in airports){
 
-     //DO ALL THE CHECKING HERE FOR SELECTING THE NEXT AIRPORT
-
-     var distance = findDistance(airports[airport].lat,airports[airport].lon,travelingInfo.departure.lat,travelingInfo.departure.lon);
-     console.log("dist",distance)
-     if(distance > 1000){
-        break;
-     }
-
-     chosenIndex++;
-
-     }
-
-    //select the cheapest fair that fits our needs
-    var cheapestFlight = fares[chosenIndex];
-
+    var cheapestFlight = fares[cheapest];
     if (fares.length) {
-      if (!travelingInfo.goHome) {
-        cheapestFlight = fares[cheapest];
-      }
+      //console.log(fares[chosenIndex])
+      //MABY NO FLIGHT TO ICELAND HERE
+      console.log(travelingInfo.departure);
       var travelInfo = {
+
         fromAirport: cheapestFlight.a,
         destAirport: cheapestFlight.b,
         price: cheapestFlight.conv_fare,
         departure: cheapestFlight.d1,
-        departureCountry: travelingInfo.departure
+        departureCountry: travelingInfo.departure,
+        stopDuration: travelingInfo.stopDuration,
+        endDate:travelingInfo.endDate,
       };
       if (airports[cheapestFlight.b]) {
         travelInfo.arrivalCountry = {
@@ -122,6 +154,13 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
       }
       socket.emit('new-flight', travelInfo);
     }
+
+
+    //whattodo
+   else{
+
+
+   }
 	});
 };
 
@@ -132,16 +171,52 @@ function findDistance(lat1,lon1,lat2,lon2){
 
   //HAVERSIN FORMULA
 
-  var radiusEarth = 6371; //radius in km
 
-  var dLat = lat2-lat1;
-  var dLon = lon2-lon1;
+  var dLat = deg2rad(lat2-lat1);
+  var dLon = deg2rad(lon2-lon1);
 
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
 
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-  var d = radiusEarth * c; //distance in km
+  var d = config.earthRadius * c; //distance in km
 
   return d;
 }
+
+function deg2rad (deg){
+
+  return deg * (Math.PI/180);
+}
+
+//derp
+function createStopDuration (startDate,endDate){
+
+  var days = moment(endDate).diff(moment(startDate),'days');
+
+  var duration = { lowBound:'',highBound:'',totalDays:days};
+
+  if(days >=24*7){
+    duration.lowBound = 7;
+    duration.highBound = 21;
+  }
+  else if(days >=12*7){
+    duration.lowBound = 5;
+    duration.highBound = 10;
+
+  }
+  else if(days >= 4*7){
+  duration.lowBound = 3;
+  duration.highBound = 8;
+
+  }
+  else{
+  duration.lowBound = 2;
+  duration.highBound = 4;
+
+  }
+
+
+  return duration;
+
+};
