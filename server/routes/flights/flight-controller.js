@@ -25,6 +25,7 @@ exports.searchAirport = function(req, res) {
 
 exports.findCheapestFlight = function(travelingInfo, socket) {
 
+
 console.log(travelingInfo.stateData);
   //FIRSTFLIGHT
   if(travelingInfo.stateData === 'firstFlight'){
@@ -54,7 +55,7 @@ console.log(travelingInfo.stateData);
      
      flyNormal(travelingInfo,socket);
    }
-    //NORMAL FLIGHT
+
   }
 
   if(travelingInfo.stateData === 'homeFlight'){
@@ -64,6 +65,7 @@ console.log(travelingInfo.stateData);
 
   }
 };
+
 
 function initFirstFlight(travelingInfo){
 
@@ -182,6 +184,7 @@ function goHome(travelingInfo){
       travelingInfo.departure.from,
       travelingInfo.departure.to
     ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
+
   
 
     //DO THE REQUEST
@@ -198,6 +201,7 @@ function goHome(travelingInfo){
       var responseData = JSON.parse(response.text);
       var fares = responseData.fares;
       var airports = responseData.airports;
+
 
 
       //Get the countrys we have allreddy been to
@@ -258,6 +262,7 @@ function goHome(travelingInfo){
 
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
+
           continue;
       }
 
@@ -278,6 +283,7 @@ function goHome(travelingInfo){
     }
 
     return cheapest;
+
 
 
   }
@@ -322,7 +328,7 @@ function createStopDuration(startDate, endDate){
   if (days >= 24*7) {
     duration.lowBound = 7;
     duration.highBound = 21;
-  } else if (days >=12*7) { 
+  } else if (days >=12*7) {
     duration.lowBound = 5;
     duration.highBound = 10;
   } else if (days >= 4*7) {
