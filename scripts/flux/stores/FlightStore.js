@@ -39,8 +39,8 @@ class FlightStore extends Store {
 
     let selectedAirport = _.clone(this.state.selectedAirport);
 
-    //handle the logic about how the to/from
-
+    //FETCH FIRST FLIGHT
+    //THE SERVER CALCULATES THE stopTime and stayTime and so forth
     let travelingData = {
       departure: {
         airportName: selectedAirport.name,
@@ -51,9 +51,9 @@ class FlightStore extends Store {
         lat: selectedAirport.location.lat,
         lon: selectedAirport.location.lng,
       },
-      goHome: false,
       flights: [],
       startingPoint: this.state.selectedAirport,
+      stateData:'firstFlight',
     };
 
     this.socket.emit('request-flight', travelingData);
@@ -82,19 +82,34 @@ class FlightStore extends Store {
   addFlight(flight) {
 
 
+        //If we are home
+    if(flight.stateData === 'homeDest'){
+      return;
+    }
+
+    console.log(flight)
+
+
     let flights = _.clone(this.state.flights);
 
     let lastFlight;
-    if (flights.length > 0) {
+
+    //If we got a succesfull new flight
+    if (flights.length> 0) {
       lastFlight = _.last(flights);
+      console.log(lastFlight)
       let currentArrival = moment(lastFlight.departure);
       let nextArrival = moment(flight.departure);
       lastFlight.daysStaying = currentArrival.from(nextArrival);
       flights = _.initial(flights).concat(lastFlight);
     }
-    this.setState({flights: flights.concat(flight)});
-    if (flight.destAirport === this.state.selectedAirport.airportCode) return;
 
+    //update the flights global array
+    this.setState({flights: flights.concat(flight)});
+
+
+
+    //Fetch another flight
     let travelingData = {
       departure: {
         airportName: flight.arrivalCountry.airportName,
@@ -105,11 +120,11 @@ class FlightStore extends Store {
         lat: flight.arrivalCountry.lat,
         lon: flight.arrivalCountry.lon,
       },
-      goHome: this.state.goHome,
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
       stopDuration:flight.stopDuration,
       endDate:flight.endDate,
+      stateData:'newFlight'
     };
     this.socket.emit('request-flight', travelingData);
   }
