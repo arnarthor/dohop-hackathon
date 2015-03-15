@@ -92,6 +92,7 @@ let GoogleMap = React.createClass({
         >
           {_.map(polyLineArrays, array =>
             <Polyline
+              key={array}
               geodesic
               path={array}
               strokeColor="#F58C5C"

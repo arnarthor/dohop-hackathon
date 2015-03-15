@@ -22,6 +22,55 @@ body {
   overflow: hidden;
 }
 
+@keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
+}
+@-webkit-keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
+}
+@-moz-keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
+}
+@-ms-keyframes move-twink-back {
+    from {background-position:0 0;}
+    to {background-position:-10000px 5000px;}
+}
+
+.twinkling-bg, .twinkling{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  height:100%;
+  display:block;
+  transition: transform 350ms;
+  
+  &.hide{
+    transform: translate3d(0,-100vh,0);
+  }
+}
+
+.twinkling-bg{
+  background-color: white;
+  z-index:5;
+}
+
+.twinkling{
+  opacity: 1;
+  background:transparent url(/img/twinkling.png) repeat top center;
+  z-index:6;
+  -moz-animation:move-twink-back 200s linear infinite;
+  -ms-animation:move-twink-back 200s linear infinite;
+  -o-animation:move-twink-back 200s linear infinite;
+  -webkit-animation:move-twink-back 200s linear infinite;
+  animation:move-twink-back 200s linear infinite;
+}
+
 .search {
   background: url(/img/bg.png) center bottom no-repeat;
   background-size: cover;
@@ -67,7 +116,7 @@ body {
 
   h1, form {
     left: 50%;
-    transform: translate3d(-50%,50vh,0);
+    transform: translate3d(-50%,46vh,0);
     min-width: 892px;
   }
 

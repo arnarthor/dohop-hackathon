@@ -29,7 +29,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
    var duration = createStopDuration(travelingInfo.departure.from,travelingInfo.departure.to);
 
    travelingInfo.stopDuration = duration;
-   console.log(duration);
+   console.log('duration', duration);
 
    //FLY ON THE DAY THAT HE WANTS
    travelingInfo.departure.to = travelingInfo.departure.from;
@@ -163,8 +163,6 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 };
 
 
-
-
 function findDistance(lat1,lon1,lat2,lon2){
 
   //HAVERSIN FORMULA
@@ -182,39 +180,36 @@ function findDistance(lat1,lon1,lat2,lon2){
   return d;
 }
 
-function deg2rad (deg){
 
+function deg2rad(deg) {
   return deg * (Math.PI/180);
 }
 
+
 //derp
-function createStopDuration (startDate,endDate){
+function createStopDuration(startDate, endDate){
 
   var days = moment(endDate).diff(moment(startDate),'days');
 
-  var duration = { lowBound:'',highBound:'',totalDays:days};
+  var duration = {
+    lowBound: '',
+    highBound: '',
+    totalDays: days,
+  };
 
-  if(days >=24*7){
+  if (days >= 24*7) {
     duration.lowBound = 7;
     duration.highBound = 21;
-  }
-  else if(days >=12*7){
+  } else if (days >=12*7) { 
     duration.lowBound = 5;
     duration.highBound = 10;
-
+  } else if (days >= 4*7) {
+    duration.lowBound = 3;
+    duration.highBound = 8;
+  } else {
+    duration.lowBound = 2;
+    duration.highBound = 4;
   }
-  else if(days >= 4*7){
-  duration.lowBound = 3;
-  duration.highBound = 8;
-
-  }
-  else{
-  duration.lowBound = 2;
-  duration.highBound = 4;
-
-  }
-
 
   return duration;
-
 };
