@@ -45,7 +45,7 @@ let JourneyPlan = React.createClass({
 
     return (
       <div className={classSet(journeyPlanClasses)}>
-      	<div className="JourneyPlan__title" onClick={(event) => this.setState({journeyPlanCollapsed: !this.state.journeyPlanCollapsed})}>MY JOURNEY
+      	<div className="JourneyPlan__title noselect" onClick={(event) => this.setState({journeyPlanCollapsed: !this.state.journeyPlanCollapsed})}>MY JOURNEY
           <span className={classSet(journeyPlanToggleClasses)} onClick={(event) => this.setState({journeyPlanCollapsed: !this.state.journeyPlanCollapsed})}></span>
         </div>
       	<ul className={classSet(journeyPlanItemsClasses)}>

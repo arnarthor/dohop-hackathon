@@ -76,6 +76,7 @@
 }
 
 .JourneyPlan__items:last-child {
+  transition: all 300ms;
   padding-bottom: 54px;
 }
 
@@ -86,8 +87,6 @@
 .JourneyPlan__items__collapsed:last-child {
   padding-bottom: 0;
 }
-
-
 
 .JourneyPlan__items__item{
   display: block;
@@ -187,5 +186,3 @@
 .JourneyPlan__items__total__price {
   font-weight: 700;
 }
-
-

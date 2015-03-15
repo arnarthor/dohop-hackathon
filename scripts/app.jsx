@@ -52,6 +52,17 @@ const App = React.createClass({
       search: true,
       min: !this.state.showLandingPage,
     };
+
+    let twinklingClasses = {
+      twinkling: true,
+      hide: !this.state.showLandingPage,
+    };
+
+    let twinklingBgClasses = {
+      twinkling_bg: true,
+      hide: !this.state.showLandingPage,
+    };
+
     let airportSearch = this.state.airportSearch;
     let selectedAirport = this.props.selectedAirport;
 
@@ -68,6 +79,8 @@ const App = React.createClass({
 
     return (
       <div>
+      <div className={classSet(twinklingClasses)}></div>
+        <div className={classSet(twinklingClasses)}></div>
         <div className={classSet(formClasses)}>
           <h1>DISCOVER THE WORLD</h1>
           <form>
