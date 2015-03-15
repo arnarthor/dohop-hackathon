@@ -32,7 +32,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     console.log('duration', duration);
 
     // Try to find a flight within 3 days of the request.
-    travelingInfo.departure.to = moment(travelingInfo.departure.from).add(3, 'days');
+    travelingInfo.departure.to = moment(travelingInfo.departure.from).add(3, 'days').format('YYYY-MM-DD');
     travelingInfo.endDate = travelingInfo.departure.to;
   }
 
