@@ -35,6 +35,11 @@
   max-height: 78vh;
 }
 
+.JourneyPlan__items__item{
+  display: block;
+  overflow: hidden;
+}
+
 .JourneyPlan__items__flight {
 	padding: 5px;
   font-size: 0.9em;
