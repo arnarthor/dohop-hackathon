@@ -155,10 +155,16 @@ const App = React.createClass({
     event.preventDefault();
     if (event.key === 'ArrowUp') {
       if (this.state.activeAirport - 1 < 1) return;
-      this.setState({activeAirport: this.state.activeAirport - 1});
+      this.setState({
+        activeAirport: this.state.activeAirport - 1,
+        showSearchResults: true
+      });
     } else if (event.key === 'ArrowDown') {
       if (this.state.activeAirport + 1 > this.props.airports.length) return;
-      this.setState({activeAirport: this.state.activeAirport + 1});
+      this.setState({
+        activeAirport: this.state.activeAirport + 1,
+        showSearchResults: true
+      });
     } else if (event.key === 'Enter') {
       this.handleSetAirport(event, this.props.airports[this.state.activeAirport - 1]);
     }
