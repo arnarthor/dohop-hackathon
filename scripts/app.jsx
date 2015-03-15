@@ -109,7 +109,6 @@ const App = React.createClass({
             </TimeoutTransitionGroup>
             <span className="wrapper">
               <DateRangePicker
-                ref="dates"
                 minDate={minDate}
                 startDate={this.props.dates.startDate}
                 endDate={this.props.dates.endDate}
@@ -158,7 +157,7 @@ const App = React.createClass({
         activeAirport: this.state.activeAirport + 1,
         showSearchResults: true
       });
-    } else if (event.key === 'Enter') {
+    } else if (event.key === 'Enter' && this.props.airports.length) {
       this.handleSetAirport(event, this.props.airports[this.state.activeAirport - 1]);
     }
   },
