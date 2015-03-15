@@ -28,37 +28,35 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
 console.log(travelingInfo.stateData);
   //FIRSTFLIGHT
-  if(travelingInfo.stateData === 'firstFlight'){
+  if(travelingInfo.stateData === 'firstFlight') {
      //UPDATE THE TRAVELING INFO FOR THE FIRST FLIGHT
      travelingInfo = initFirstFlight(travelingInfo);
 
      //is it time to go home?
-     if(goHome(travelingInfo)){
+     if (goHome(travelingInfo)) {
 
-      flyHome(travelingInfo,socket);
+      flyHome(travelingInfo, socket);
      }
-     else{
-     flyNormal(travelingInfo,socket);
-   }
-  };
+     else {
+     flyNormal(travelingInfo, socket);
+    }
+  }
 
   //FIND A NEW FLIGHT
-  if(travelingInfo.stateData === 'newFlight'){
+  if (travelingInfo.stateData === 'newFlight') {
 
     //is it time to go home?
      if(goHome(travelingInfo)){
 
-      flyHome(travelingInfo,socket);
+      flyHome(travelingInfo, socket);
      }
-     else{
-
-     
-     flyNormal(travelingInfo,socket);
+     else {
+     flyNormal(travelingInfo, socket);
    }
 
   }
 
-  if(travelingInfo.stateData === 'homeFlight'){
+  if (travelingInfo.stateData === 'homeFlight') {
 
     //find a way home
     flyHome(travelingInfo);
@@ -69,20 +67,20 @@ console.log(travelingInfo.stateData);
 
 function initFirstFlight(travelingInfo){
 
-     var duration = createStopDuration(travelingInfo.departure.from,travelingInfo.departure.to);
+    var duration = createStopDuration(travelingInfo.departure.from, travelingInfo.departure.to);
 
      travelingInfo.stopDuration = duration;
      //FLY ON THE DAY THAT HE WANTS
      travelingInfo.departure.to = travelingInfo.departure.from;
      travelingInfo.endDate = travelingInfo.departure.to;
 
-     return travelingInfo
-   };
+     return travelingInfo;
+   }
 
 function goHome(travelingInfo){
     //total amount of days where you should be thinking about going home
     var dayAmount = 5;
-    if((travelingInfo.stopDuration.totalDays-dayAmount)<moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate),'days')){
+    if ((travelingInfo.stopDuration.totalDays - dayAmount) < moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate), 'days')) {
     //MABY  travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
 
 
@@ -91,13 +89,12 @@ function goHome(travelingInfo){
     }
 
     return false;
-};
+}
 
-//DERP
-  function flyHome(travelingInfo,socket){
-    //FIND AWAY HOME BROTHER
+  function flyHome(travelingInfo, socket) {
+    // FIND AWAY HOME BROTHER
 
-    //maby change departur.to here so we deffently get home
+    // maby change departur.to here so we deffently get home
 
     var url = [
       config.api,
@@ -142,8 +139,8 @@ function goHome(travelingInfo){
             departure: cheapestFlight.d1,
             departureCountry: travelingInfo.departure,
             stopDuration: travelingInfo.stopDuration,
-            endDate:travelingInfo.endDate,
-            stateData:'homeDest',
+            endDate: travelingInfo.endDate,
+            stateData: 'homeDest',
           };
           if (airports[cheapestFlight.b]) {
             travelInfo.arrivalCountry = {
@@ -160,16 +157,14 @@ function goHome(travelingInfo){
           }
           socket.emit('new-flight', travelInfo);
         }
-      
-
 
       //á eftir að gera derp aergheariughaeirhg
 
       //
     });
-  };
+  }
 
-  function flyNormal(travelingInfo,socket){
+  function flyNormal(travelingInfo, socket) {
     //FIND AWAY HOME BROTHER
 
     //maby change departur.to here so we deffently get home
@@ -325,10 +320,10 @@ function createStopDuration(startDate, endDate){
     totalDays: days,
   };
 
-  if (days >= 24*7) {
+  if (days >= 24 * 7) {
     duration.lowBound = 7;
     duration.highBound = 21;
-  } else if (days >=12*7) {
+  } else if (days >= 12 * 7) {
     duration.lowBound = 5;
     duration.highBound = 10;
   } else if (days >= 4*7) {
@@ -340,4 +335,4 @@ function createStopDuration(startDate, endDate){
   }
 
   return duration;
-};
+}

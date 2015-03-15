@@ -26,8 +26,6 @@ let GoogleMap = React.createClass({
   propTypes: {
     flights: Props.array,
   },
-
-
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize);
     this.setState({

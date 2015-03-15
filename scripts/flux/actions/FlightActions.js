@@ -50,6 +50,7 @@ class FlightActions extends Actions {
       .end(res => {
         let location = res.body.results[0].geometry.location;
         console.log(location);
+        //return location;
       });
   }
 
