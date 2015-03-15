@@ -16,7 +16,7 @@ let GoogleMap = React.createClass({
   getInitialState() {
     return {
       center: new LatLng(41.879535, -87.624333),
-      zoom: 4,
+      zoom: 3,
       linePath: [],
       height: 1000,
       width: 1000,
@@ -33,17 +33,28 @@ let GoogleMap = React.createClass({
     this.setState({
       height: window.innerHeight,
       width: window.innerWidth,
-      center: new LatLng(this.props.location.lat, this.props.location.lon),
+      center: new LatLng(this.props.location.lat, this.props.location.lng),
     });
   },
 
   componentWillReceiveProps(nextProps) {
-    let {lat, lon} = nextProps.location;
-    if (lat === null || lon === null) return;
-    let firstLatLng = new LatLng(lat, lon);
-    let linePath = _.clone(this.state.linePath);
-    let firstCoord = _.first(linePath);
-    if (!firstCoord) {
+    let linePath, firstCoord;
+    let {lat, lng} = nextProps.location;
+
+    if (lat === null || lng === null) {
+      console.log('Missing lat, lng something went wrong');
+      return;
+    }
+
+    let firstLatLng = new LatLng(lat, lng);
+    if (nextProps.flightHash === this.props.flightHash) {
+      linePath = _.clone(this.state.linePath);
+      let firstCoord = _.first(linePath);
+      if (!firstCoord) {
+        linePath.push(firstLatLng);
+      }
+    } else {
+      linePath = [];
       linePath.push(firstLatLng);
     }
 
@@ -53,9 +64,6 @@ let GoogleMap = React.createClass({
         _.last(nextProps.flights).arrivalCountry.lat,
         _.last(nextProps.flights).arrivalCountry.lon
       );
-      console.log(nextProps.flights);
-      console.log(this.state.linePath);
-      console.log(lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D);
 
       if (lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D) {
         linePath.push(lastFlightCoord);
@@ -63,11 +71,16 @@ let GoogleMap = React.createClass({
     }
     this.setState({
       linePath: linePath,
-      center: new LatLng(nextProps.location.lat, nextProps.location.lon),
+      center: new LatLng(nextProps.location.lat, nextProps.location.lng),
     });
   },
 
   render() {
+    let polyLineArrays = [];
+    let linePath = this.state.linePath;
+    for(var i = 0; i < linePath.length - 1; i++) {
+      polyLineArrays.push([linePath[i], linePath[i + 1]]);
+    }
     return (
       <div className="GoogleMap">
         <Map
@@ -77,13 +90,15 @@ let GoogleMap = React.createClass({
           height={this.state.height}
           onCenterChange={this.handleCenterChange}
         >
-          <Polyline
-            geodesic
-            path={this.state.linePath}
-            strokeColor="#F58C5C"
-            strokeOpacity={0.8}
-            strokeWeight={3}
-          />
+          {_.map(polyLineArrays, array =>
+            <Polyline
+              geodesic
+              path={array}
+              strokeColor="#F58C5C"
+              strokeOpacity={0.8}
+              strokeWeight={3}
+            />
+          )}
         </Map>
       </div>
     );

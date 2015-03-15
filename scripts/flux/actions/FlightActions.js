@@ -15,10 +15,6 @@ class FlightActions extends Actions {
     return {startDate, endDate};
   }
 
-  clearSelectedAirport() {
-    return 'clear-airport';
-  }
-
   clearAirports() {
     return 'clear';
   }
@@ -40,15 +36,17 @@ class FlightActions extends Actions {
       });
   }
 
-  async fetchAirport(searchString) {
-    request.get(`${constants.googleMapsAPI}/json?address=${searchString.airportCode} airport&sensor=false`)
+  async fetchAirport(airport) {
+    request.get(`${constants.googleMapsAPI}/json?address=${airport.airportCode} ${airport.name} ${airport.country} airport&sensor=false`)
       .end(res => {
-        this.createJourney(res.body.results[0].geometry.location);
+        let airportWithLocations = _.clone(airport);
+        airportWithLocations.location = res.body.results[0].geometry.location;
+        this.setAirport(airportWithLocations);
       });
   }
 
-  createJourney(data) {
-    return data;
+  createJourney() {
+    return uuid.v4();
   }
 
   connectIo() {

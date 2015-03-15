@@ -19,7 +19,8 @@ let DestinationDetails = React.createClass({
     
     if(this.props.flight.image){
       destinationStyle = {
-        backgroundImage: `url(${this.props.flight.image})`
+        backgroundImage: `url(${this.props.flight.image})`,
+        maxHeight: '500px',
       } 
     }
     

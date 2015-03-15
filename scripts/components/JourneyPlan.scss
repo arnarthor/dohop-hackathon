@@ -8,10 +8,10 @@
 	right: 30px;
 	transform: translate3d(calc(100% + 30px),0,0);
 	transition: transform 400ms 250ms ease;
-  overflow-y: auto;
-  max-height: 88vh;
 	border-radius: 5px;
+  overflow: hidden;
 	z-index: 1;
+  box-shadow: 0px 3px 2px rgba(0,0,0,0.2);
 }
 
 .JourneyPlanShow {
@@ -30,16 +30,21 @@
 	padding:0;
 	margin:0;
 	list-style: none;
+
+  overflow-y: scroll;
+  max-height: 78vh;
 }
 
 .JourneyPlan__items__flight {
-	padding: 10px 5px;
-  font-size: 0.8em;
+	padding: 5px;
+  font-size: 0.9em;
   border-bottom: 1px solid $color-light-gray;
+  z-index: 1;
 }
 
 .JourneyPlan__items__flight__date {
-	width: 50px;
+  margin-top: -1px;
+  padding-left: 5px;
 	text-align: center;
 	color: $color-orange;
   float:left; clear:right;
@@ -47,17 +52,17 @@
 }
 
 .JourneyPlan__items__flight__date__day {
-	font-size: 2em;
+	font-size: 1.4em;
 }
 
 .JourneyPlan__items__flight__date__month {
-	margin-top: -6px;
-	font-size: 1.1em;
+	margin-top: -4px;
+	font-size: 0.8em;
 	text-transform: uppercase;
 }
 
 .JourneyPlan__items__flight__details{
-  padding: 16px 0 11px 0;
+  padding: 9px 0px 3px 0px;
   text-align: center;
 }
 
@@ -71,7 +76,7 @@
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 102px;
+  max-width: 98px;
   overflow:hidden;
 }
 
@@ -92,11 +97,18 @@
 }
 
 .JourneyPlan__items__flight__plane::after{
-  padding: 0 15px;
+  padding: 0 6px;
   margin-top: -10px;
   display: inline-block;
 	font-family: 'FontAwesome';
 	color: $color-orange;
 	content: "\f072";
   transform: rotate(45deg);
+}
+
+.JourneyPlan__items__flight__price{
+  display: inline-block;
+  float:right;
+  padding-right: 5px;
+  color: $color-orange;
 }

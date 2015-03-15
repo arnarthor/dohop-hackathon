@@ -22,13 +22,14 @@ const App = React.createClass({
   getInitialState() {
     return {
       airportSearch: '',
+      useSelectedAirport: false,
       showLandingPage: true,
       showSearchResults: true,
       minimizeSearchResults: false,
       showJourneyPlan: false,
       location: {
         lat: null,
-        lon: null,
+        lng: null,
       },
     };
   },
@@ -38,7 +39,7 @@ const App = React.createClass({
       this.setState({
         location: {
           lat: location.coords.latitude,
-          lon: location.coords.longitude
+          lng: location.coords.longitude
         }
       });
     });
@@ -59,9 +60,11 @@ const App = React.createClass({
     let label = start + ' - ' + end;
     let minDate = moment().add(1, 'days');
 
-    if (selectedAirport) {
+    if (selectedAirport && this.state.useSelectedAirport) {
       airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
     }
+
+    let location = this.props.selectedAirport && this.props.selectedAirport.location;
 
     return (
       <div>
@@ -115,10 +118,13 @@ const App = React.createClass({
           display={this.state.showJourneyPlan}
           flux={this.props.flux}
         />
-        <GoogleMap
-          flights={this.props.flights}
-          location={this.state.location}
-        />
+        {this.props.selectedAirport &&
+          <GoogleMap
+            flightHash={this.props.flightHash}
+            flights={this.props.flights}
+            location={location}
+          />
+        }
       </div>
     );
   },
@@ -134,15 +140,13 @@ const App = React.createClass({
 
   handleSearchAirport(event) {
     let airportSearch = event.target.value;
-    this.props.flux.getActions('FlightActions').clearSelectedAirport();
-    this.setState({airportSearch})
+    this.setState({airportSearch, useSelectedAirport: false})
     this.performSearch();
   },
 
   handleSetAirport(event, airport) {
-    this.setState({showSearchResults: false});
-    console.log(airport);
-    this.props.flux.getActions('FlightActions').setAirport(airport);
+    this.setState({showSearchResults: false, useSelectedAirport: true});
+    this.props.flux.getActions('FlightActions').fetchAirport(airport);
     this.refs.dates.getDOMNode().focus();
   },
 
@@ -172,7 +176,7 @@ const App = React.createClass({
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
-    this.props.flux.getActions('FlightActions').fetchAirport(this.props.selectedAirport);
+    this.props.flux.getActions('FlightActions').createJourney();
   }
 });
 
