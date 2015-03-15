@@ -1,9 +1,8 @@
 .DestinationDetails__items__destination {
   height: 115px;
   background: url('/img/bg.png') center center no-repeat;
-  background-size: cover;
+  background-size: cover cover;
   text-align: center;
-
   max-height:0;
   overflow: hidden;
   transition: max-height 3s 400ms ease-out;

@@ -34,6 +34,7 @@ let JourneyPlan = React.createClass({
               daysStaying = _.initial(flight.daysStaying.split(' ')).join(' ');
             }
             return (
+            </TimeoutTransitionGroup>
               <span>
                 <li className="JourneyPlan__items__flight">
                   <div className="JourneyPlan__items__flight__date">
@@ -50,6 +51,7 @@ let JourneyPlan = React.createClass({
                       <span className="JourneyPlan__items__flight__to__airportName">{flight.arrivalCountry.airportName}</span>
                       <span className="JourneyPlan__items__flight__to__airportCode">({flight.arrivalCountry.airportCode})</span>
                     </div>
+                    <div className="JourneyPlan__items__flight__price">${Math.round(flight.price)}</div>
                   </div>
                 </li>
                 <DestinationDetails 
