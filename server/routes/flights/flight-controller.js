@@ -64,6 +64,21 @@ console.log(travelingInfo.stateData);
   }
 };
 
+/*function normalDistributionDiff(x, tripLength, stopDuration, dfh) {
+  var max = 20000;
+  stopDuration = stopDuration * 1.3;
+  max = max * dfh;
+  var a = Math.pow((x - (tripLength / 2 )), 2);
+  return max * Math.exp(a / (2 * Math.pow(stopDuration, 2)));
+}*/
+
+function normalDist(x, tripLength, stopDuration, dfh, dfhW) {
+  var max = 20000 * dfhW;
+  stopDuration = stopDuration;
+  max = max * dfh;
+  return max * Math.exp(-((Math.pow(x - (tripLength / 2), 2)) / (2 * Math.pow(stopDuration, 2))));
+}
+
 
 function initFirstFlight(travelingInfo){
 
@@ -74,6 +89,8 @@ function initFirstFlight(travelingInfo){
      travelingInfo.departure.to = travelingInfo.departure.from;
      travelingInfo.endDate = travelingInfo.departure.to;
 
+     //console.log(normalDistribution(14, 14, 4, 1));
+     console.log(normalDist(13, 14, 4, 1, 0.25));
      return travelingInfo;
    }
 
@@ -291,8 +308,8 @@ function findDistance(lat1,lon1,lat2,lon2){
   //HAVERSIN FORMULA
 
 
-  var dLat = deg2rad(lat2-lat1);
-  var dLon = deg2rad(lon2-lon1);
+  var dLat = deg2rad(lat2 - lat1);
+  var dLon = deg2rad(lon2 - lon1);
 
   var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
 
@@ -312,26 +329,41 @@ function deg2rad(deg) {
 //derp
 function createStopDuration(startDate, endDate){
 
-  var days = moment(endDate).diff(moment(startDate),'days');
+  var days = moment(endDate).diff(moment(startDate), 'days');
 
   var duration = {
     lowBound: '',
     highBound: '',
+    dfhMax: 0,
+    priceW: 0,
+    dfhW: 0,
     totalDays: days,
   };
 
   if (days >= 24 * 7) {
     duration.lowBound = 7;
     duration.highBound = 21;
+    duration.dfhMax = 1;
+    duration.priceW = 0.8;
+    duration.dfhW = 0.25;
   } else if (days >= 12 * 7) {
     duration.lowBound = 5;
     duration.highBound = 10;
-  } else if (days >= 4*7) {
+    duration.dfhMax = 0.75;
+    duration.priceW = 0.6;
+    duration.dfhW = 0.50;
+  } else if (days >= 4 * 7) {
     duration.lowBound = 3;
     duration.highBound = 8;
+    duration.dfhMax = 0.5;
+    duration.priceW = 0.4;
+    duration.dfhW = 0.75;
   } else {
     duration.lowBound = 2;
     duration.highBound = 4;
+    duration.dfhMax = 0.25;
+    duration.priceW = 0;
+    duration.dfhW = 1;
   }
 
   return duration;
