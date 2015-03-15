@@ -54,18 +54,12 @@ class FlightActions extends Actions {
   }
 
   getFlickrImage(date, lat, long, fallback) {
-    let query = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=f07305911011fb8f88eb92e9d2ab1749&privacy_filter=1&accuracy=4&safe_search=1&content_type=1&media=photos&lat=${lat}&lon=${long}&sort=interestingness-desc&format=json&nojsoncallback=1`;
-    if(!fallback) query += `&is_getty=true`;
+    let query = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=f07305911011fb8f88eb92e9d2ab1749&privacy_filter=1&accuracy=4&safe_search=1&content_type=1&media=photos&lat=${lat}&lon=${long}&is_getty=true&sort=interestingness-desc&format=json&nojsoncallback=1`;
     request.get(query)
       .end(res => {
         if (res.ok) {
           let photo = res.body.photos.photo[0];
-          if(photo) {
-            this.setImage(date, `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_c.jpg`);
-          }
-          else {
-            getFlickrImage(date, lat, long, true);
-          }
+          this.setImage(date, `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`);
         } else {
           console.log('Flickr API Error: ' + res.text);
       }
