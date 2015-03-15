@@ -23,6 +23,9 @@ let JourneyPlan = React.createClass({
       JourneyPlanShow: this.props.display,
     };
 
+    let totalPrice = 0;
+    _.map(this.props.flights, function(flight){totalPrice += flight.price});
+
     return (
       <div className={classSet(journeyPlanClasses)}>
       	<div className="JourneyPlanTitle">MY JOURNEY</div>
@@ -68,7 +71,9 @@ let JourneyPlan = React.createClass({
               );
             })}
           </TimeoutTransitionGroup>
+          <li className="JourneyPlan__items__total">Total: <span className="JourneyPlan__items__total__price">${Math.round(totalPrice)}</span></li>
       	</ul>
+
       </div>
     );
   }

@@ -54,11 +54,11 @@ class FlightActions extends Actions {
   }
 
   getFlickrImage(date, lat, long) {
-    request.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=f07305911011fb8f88eb92e9d2ab1749&privacy_filter=1&accuracy=5&safe_search=1&content_type=1&media=photos&lat=${lat}&lon=${long}&is_getty=true&format=json&nojsoncallback=1`)
+    request.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=f07305911011fb8f88eb92e9d2ab1749&privacy_filter=1&accuracy=4&safe_search=1&content_type=1&media=photos&lat=${lat}&lon=${long}&is_getty=true&format=json&nojsoncallback=1`)
       .end(res => {
         if (res.ok) {
           let photo = res.body.photos.photo[0];
-          this.setImage(date, `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`);
+          this.setImage(date, `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_z.jpg`);
         } else {
           alert('Oh no! error ' + res.text);
       }
