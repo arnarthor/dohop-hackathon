@@ -90,7 +90,8 @@ function initFirstFlight(travelingInfo){
      travelingInfo.endDate = travelingInfo.departure.to;
 
      //console.log(normalDistribution(14, 14, 4, 1));
-     console.log(normalDist(13, 14, 4, 1, 0.25));
+     //console.log(normalDist(13, 14, 4, 1, 0.25));
+     console.log('travelingInfo', travelingInfo);
      return travelingInfo;
    }
 
@@ -100,8 +101,6 @@ function goHome(travelingInfo){
     if ((travelingInfo.stopDuration.totalDays - dayAmount) < moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate), 'days')) {
     //MABY  travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
 
-
-    console.log("hallo");
      return true;
     }
 
@@ -220,13 +219,17 @@ function goHome(travelingInfo){
       var countries = _.map(travelingInfo.flights, function(item) {
         return item['departureCountry'].country;
       });
-
+      console.log('travelingInfo', travelingInfo);
+     var home = {
+        lat: travelingInfo.startingPoint.location.lat,
+        lon: travelingInfo.startingPoint.location.lon
+      };
       //FIND THE APROPREATE FLIGHT
-      var flightIndex = isValidFlight(fares,airports,countries);
+      var flightIndex = isValidFlight(fares, airports, countries, home);
 
-
+      console.log('fares', fares);
       //
-      if(flightIndex > -1){
+      if(flightIndex > -1) {
 
         var cheapestFlight = fares[flightIndex];
 
@@ -266,11 +269,13 @@ function goHome(travelingInfo){
   };
 
 
-  function isValidFlight(fares,airports,countries){
+  function isValidFlight(fares,airports,countries, home){
 
     //ADD VALIDATION HERE --------------------------
     //check if we have travled there before
-    for (var cheapest = 0;cheapest < fares.length; cheapest++) {  
+    var indexCheapest = -1;
+    var bestDistance = -1;
+    for (var cheapest = 0; cheapest < fares.length; cheapest++) {  
 
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
@@ -279,22 +284,20 @@ function goHome(travelingInfo){
       }
 
       //check if it is within our travel limits
-      if (findDistance(airports[fares[cheapest].a].lat,airports[fares[cheapest].a].lon,airports[fares[cheapest].b].lat,airports[fares[cheapest].b].lon)<config.minDistance){
-          continue;
+      var dist = findDistance(home.lat, home.lon, airports[fares[cheapest].b].lat, airports[fares[cheapest].b].lon);
+      if (dist < bestDistance || indexCheapest === -1) {
+          indexCheapest = cheapest;
+          bestDistance = dist;
       }
-
-      //DO API CALL HERE TO CHECK IF THIS FARE IS A DEADZONE TOOOOOOOOOODO
-
-      break;
-    };
+    }
 
     //YOU HAVE NOTHING ELSE TODO
-    if (cheapest === fares.length){
-      console.log("GOHOME")
+    if (cheapest === -1) {
+      console.log("GOHOME");
       return -1;
     }
 
-    return cheapest;
+    return indexCheapest;
 
 
 
@@ -303,7 +306,7 @@ function goHome(travelingInfo){
   
 
 
-function findDistance(lat1,lon1,lat2,lon2){
+function findDistance(lat1, lon1, lat2, lon2){
 
   //HAVERSIN FORMULA
 
