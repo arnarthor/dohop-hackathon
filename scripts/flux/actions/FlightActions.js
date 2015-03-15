@@ -45,6 +45,14 @@ class FlightActions extends Actions {
       });
   }
 
+  async cityLocation(city) {
+    request.get(`${constants.googleMapsAPI}/json?address=${city}&sensor=false`)
+      .end(res => {
+        let location = res.body.results[0].geometry.location;
+        console.log(location);
+      });
+  }
+
   createJourney() {
     return uuid.v4();
   }

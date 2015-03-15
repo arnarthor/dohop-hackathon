@@ -36,9 +36,14 @@ let DestinationDetails = React.createClass({
         )}
         <div><span className="DestinationDetails__items__destination__details__city">{this.props.flight.arrivalCountry.city}</span></div>
         <div><span className="DestinationDetails__items__destination__details__country">{this.props.flight.arrivalCountry.countryName}</span></div>
+        <div onClick={(event) => this.handleGetCityLocation(event, this.props.flight.arrivalCountry.city)}>GET LOCATION</div>
       </div>
     </li>
     );
+  },
+
+  handleGetCityLocation(event, city) {
+    this.props.flux.getActions('FlightActions').cityLocation(city);
   },
 });
 
