@@ -33,7 +33,22 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
    //FLY ON THE DAY THAT HE WANTS
    travelingInfo.departure.to = travelingInfo.departure.from;
+   travelingInfo.endDate = travelingInfo.departure.to;
   }
+
+
+  //start going home after 5 days TODO DODISBETTER
+  if(travelingInfo.stopDuration.totalDays-5<moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate),'days')){
+    console.log("hallo")
+    travelingInfo.goHome = true;
+    travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
+    console.log(travelingInfo.departure.to + " wewedw");
+    console.log(travelingInfo.departure.from)
+    console.log("bla" + moment(travelingInfo.departure.to).diff(moment(travelingInfo.endDate),'days'));
+    
+
+  };
+    
 
 
 
@@ -97,6 +112,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
 
     };
 
+    console.log(fares.length)
         //go home 
     if (travelingInfo.flights.length && fares.length === cheapest) {
       console.log("home")
@@ -112,7 +128,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     if (fares.length) {
       //console.log(fares[chosenIndex])
       //MABY NO FLIGHT TO ICELAND HERE
-      
+      console.log(travelingInfo.departure);
       var travelInfo = {
 
         fromAirport: cheapestFlight.a,
@@ -121,6 +137,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
         departure: cheapestFlight.d1,
         departureCountry: travelingInfo.departure,
         stopDuration: travelingInfo.stopDuration,
+        endDate:travelingInfo.endDate,
       };
       if (airports[cheapestFlight.b]) {
         travelInfo.arrivalCountry = {
@@ -172,22 +189,23 @@ function deg2rad (deg){
   return deg * (Math.PI/180);
 }
 
+//derp
 function createStopDuration (startDate,endDate){
 
-  var weeks = moment(endDate).diff(moment(startDate),'weeks');
+  var days = moment(endDate).diff(moment(startDate),'days');
 
-  var duration = { lowBound:'',highBound:''};
+  var duration = { lowBound:'',highBound:'',totalDays:days};
 
-  if(weeks >=24){
+  if(days >=24*7){
     duration.lowBound = 7;
     duration.highBound = 21;
   }
-  else if(weeks >=12){
+  else if(days >=12*7){
     duration.lowBound = 5;
     duration.highBound = 10;
 
   }
-  else if(weeks >= 4){
+  else if(days >= 4*7){
   duration.lowBound = 3;
   duration.highBound = 8;
 
@@ -197,6 +215,7 @@ function createStopDuration (startDate,endDate){
   duration.highBound = 4;
 
   }
+
 
   return duration;
 

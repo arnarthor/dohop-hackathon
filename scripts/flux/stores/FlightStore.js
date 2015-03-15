@@ -109,6 +109,7 @@ class FlightStore extends Store {
       flights: this.state.flights,
       startingPoint: this.state.selectedAirport,
       stopDuration:flight.stopDuration,
+      endDate:flight.endDate,
     };
     this.socket.emit('request-flight', travelingData);
   }
