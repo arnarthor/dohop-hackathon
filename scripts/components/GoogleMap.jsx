@@ -9,6 +9,7 @@ const Props = React.PropTypes;
 const classSet = React.addons.classSet;
 const Map = ReactGoogleMaps.Map;
 const Polyline = ReactGoogleMaps.Polyline;
+const Circle = ReactGoogleMaps.Circle;
 const LatLng = window.google.maps.LatLng;
 
 let GoogleMap = React.createClass({
@@ -80,26 +81,32 @@ let GoogleMap = React.createClass({
       polyLineArrays.push([linePath[i], linePath[i + 1]]);
     }
     return (
-      <div className="GoogleMap">
-        <Map
-          initialZoom={this.state.zoom}
-          center={this.state.center}
-          width={this.state.width}
-          height={this.state.height}
-          onCenterChange={this.handleCenterChange}
-        >
-          {_.map(polyLineArrays, array =>
-            <Polyline
-              key={array}
-              geodesic
-              path={array}
-              strokeColor="#F58C5C"
-              strokeOpacity={0.8}
-              strokeWeight={3}
-            />
-          )}
-        </Map>
-      </div>
+      <Map
+        ref="map"
+        initialZoom={this.state.zoom}
+        center={this.state.center}
+        width={this.state.width}
+        height={this.state.height}
+        onCenterChange={this.handleCenterChange}
+      >
+        {_.map(polyLineArrays, array =>
+          <Polyline
+            key={array}
+            geodesic
+            path={array}
+            strokeColor="#F58C5C"
+            strokeOpacity={0.8}
+            strokeWeight={3}
+          />
+        )}
+        {_.map(this.state.linePath, coord =>
+          <Circle
+            strokeColor="#CE4000"
+            center={coord}
+            radius={10000}
+          />
+        )}
+      </Map>
     );
   },
 

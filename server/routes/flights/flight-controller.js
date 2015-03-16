@@ -85,7 +85,7 @@ function initFirstFlight(travelingInfo){
 
      travelingInfo.stopDuration = duration;
      //FLY ON THE DAY THAT HE WANTS
-     travelingInfo.departure.to = travelingInfo.departure.from;
+     travelingInfo.departure.to = moment(travelingInfo.departure.from).add(3, 'days').format('YYYY-MM-DD');
      travelingInfo.endDate = travelingInfo.departure.to;
 
 
@@ -156,7 +156,7 @@ function goHome(travelingInfo){
             stateData: 'homeDest',
           };
           var departureCount = fares[0];
-          
+
           var travelingAirport = homeDest.b;
           if (airports[travelingAirport]) {
             travelInfo.arrivalCountry = {
@@ -173,7 +173,6 @@ function goHome(travelingInfo){
           }
           socket.emit('new-flight', travelInfo);
         }
-
       //á eftir að gera derp aergheariughaeirhg
 
       //
@@ -196,7 +195,7 @@ function goHome(travelingInfo){
       travelingInfo.departure.to
     ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
 
-  
+
 
     //DO THE REQUEST
     superagent.get(url)
@@ -270,10 +269,10 @@ function goHome(travelingInfo){
     //check if we have travled there before
     var indexCheapest = -1;
     var bestDistance = -1;
-    for (var cheapest = 0; cheapest < fares.length; cheapest++) {  
+    for (var cheapest = 0; cheapest < fares.length; cheapest++) {
 
       //check if we have travled there before
-      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
+      if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) {
           continue;
       }
 
@@ -304,8 +303,6 @@ function goHome(travelingInfo){
     }
 
     return indexCheapest;
-
-
 
   }
 

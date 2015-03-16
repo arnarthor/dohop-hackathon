@@ -6,8 +6,8 @@
   box-sizing: border-box;
 }
 
-::-webkit-scrollbar { 
-    display: none; 
+::-webkit-scrollbar {
+    display: none;
 }
 
 body {
@@ -20,6 +20,11 @@ body {
   -webkit-font-smoothing: antialiased;
 
   overflow: hidden;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
 }
 
 @keyframes move-twink-back {
@@ -49,7 +54,7 @@ body {
   height:100%;
   display:block;
   transition: transform 350ms;
-  
+
   &.hide{
     transform: translate3d(0,-100vh,0);
   }
