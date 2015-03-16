@@ -34,7 +34,7 @@ let DestinationDetails = React.createClass({
       <div className="DestinationDetails__items__destination__menu">
         <div className="DestinationDetails__items__destination__menu__icon"></div>
         <ul className="DestinationDetails__items__destination__menu__actions">
-          <a href="" target="_blank"><li className="DestinationDetails__items__destination__menu__actions__button attractions">Attractions</li></a>
+          <a href={`http://www.yelp.com/search?find_loc=${this.props.flight.arrivalCountry.city},+${this.props.flight.arrivalCountry.countryName}`} target="_blank"><li className="DestinationDetails__items__destination__menu__actions__button attractions">Attractions</li></a>
           <a href={`http://www.lastminute.com/trips/hotellist/listInternal?checkInDate=${this.props.flight.departure}&checkOutDate=${checkOutDate.format('YYYY-MM-DD')}&numRooms=1&guestCodes=ADULT&guestCounts=2&city=${this.props.flight.arrivalCountry.city}&path=hotels`} target="_blank"><li className="DestinationDetails__items__destination__menu__actions__button hotels">Hotels</li></a>
           <li onClick={(event) => this.handleGetCityLocation(event, this.props.flight.arrivalCountry.city)}
             className="DestinationDetails__items__destination__menu__actions__button streetview">
