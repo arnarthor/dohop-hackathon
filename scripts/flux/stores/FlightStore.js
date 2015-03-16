@@ -81,13 +81,31 @@ class FlightStore extends Store {
 
   addFlight(flight) {
 
-
+    /***** SOLI SKOÐA ÞETTA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
         //If we are home
-    if(flight.stateData === 'homeDest'){
-      return;
+      console.log('IM HOME', flight);
+      if(flight.stateData === 'homeDest'){
+        let flights = _.clone(this.state.flights);
+        console.log(flights);
+
+          let lastFlight;
+
+          //If we got a succesfull new flight
+          if (flights.length> 0) {
+            lastFlight = _.last(flights);
+            console.log(lastFlight)
+            let currentArrival = moment(lastFlight.departure);
+            let nextArrival = moment(flight.departure);
+            lastFlight.daysStaying = currentArrival.from(nextArrival);
+            flights = _.initial(flights).concat(lastFlight);
+        }
+
+        //update the flights global array
+        this.setState({flights: flights.concat(flight)});
+        return;
     }
 
-    console.log(flight)
+    //console.log(flight);
 
 
     let flights = _.clone(this.state.flights);

@@ -99,8 +99,8 @@ function goHome(travelingInfo){
     var dayAmount = 2;
     if ((travelingInfo.stopDuration.totalDays - dayAmount) < moment(travelingInfo.departure.from).diff(moment(travelingInfo.endDate), 'days')) {
     //MABY  travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
-
-     return true;
+      console.log("GOHOME");
+      return true;
     }
 
     return false;
@@ -139,8 +139,8 @@ function goHome(travelingInfo){
       //HERNA VERÐA EITTHVER ÖNNUR SKYLYRÐI því heim er öðruvísi
 
 
-        var cheapestFlight = fares[0];
-
+        var cheapestFlight = fares[0][0];
+        console.log('cheapest', cheapestFlight);
 
         //if there is a flight there
         //DO THIS ELSE WHERE
@@ -157,19 +157,7 @@ function goHome(travelingInfo){
             endDate: travelingInfo.endDate,
             stateData: 'homeDest',
           };
-          if (airports[cheapestFlight.b]) {
-            travelInfo.arrivalCountry = {
-              airportCode: airports[cheapestFlight.b].a_i,
-              airportName: airports[cheapestFlight.b].a_n,
-              countryCode: airports[cheapestFlight.b].cc_c,
-              countryName: airports[cheapestFlight.b].cc_n,
-              city: airports[cheapestFlight.b].ci_n,
-              lat: airports[cheapestFlight.b].lat,
-              lon: airports[cheapestFlight.b].lon,
-              state: airports[cheapestFlight.b].r_n,
-              state_short: airports[cheapestFlight.b].r_c,
-            };
-          }
+          console.log('travelInfo', travelInfo);
           socket.emit('new-flight', travelInfo);
         }
 
@@ -275,13 +263,13 @@ function goHome(travelingInfo){
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
 
-          //continue;
+          continue;
       }
 
       //check if it is within our travel limits
       var dist = findDistance(travelingInfo.startingPoint.location.lat, travelingInfo.startingPoint.location.lng, airports[fares[cheapest].b].lat, airports[fares[cheapest].b].lon);
 
-      console.log('dist', dist);
+     // console.log('dist', dist);
 
       var thisDay = moment(fares[cheapest].d1).diff(moment(travelingInfo.stopDuration.startDate), 'days');
       var totalDays = travelingInfo.stopDuration.totalDays;
@@ -293,13 +281,13 @@ function goHome(travelingInfo){
 
       var diff = Math.abs(idealDist - dist);
 
-      console.log('thisDay', thisDay);
+      /*console.log('thisDay', thisDay);
       console.log('totalDays', totalDays);
       console.log('stopDuration', stopDuration);
       console.log('dfhMax', dfhMax);
       console.log('dfhW', dfhW);
       console.log('idealDist', idealDist);
-      console.log('diff', diff);
+      console.log('diff', diff);*/
 
 
       if ( diff < bestDistance || indexCheapest === -1) {
@@ -313,7 +301,6 @@ function goHome(travelingInfo){
 
     //YOU HAVE NOTHING ELSE TODO
     if (cheapest === -1) {
-      //console.log("GOHOME");
       return -1;
     }
 
