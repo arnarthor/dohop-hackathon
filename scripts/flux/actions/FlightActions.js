@@ -53,7 +53,7 @@ class FlightActions extends Actions {
     request.get(`${constants.googleMapsAPI}/json?address=${city}&sensor=false`)
       .end(res => {
         let location = res.body.results[0].geometry.location;
-        window.location.assign(`https://www.google.com/maps?q&layer=c&cbll=${location.lat},${location.lng}&cbp=11,0,0,0,0`);
+        window.open(`https://www.google.com/maps?q&layer=c&cbll=${location.lat},${location.lng}&cbp=11,0,0,0,0`,'_blank');
       });
   }
 
