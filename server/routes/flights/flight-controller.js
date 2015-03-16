@@ -298,9 +298,9 @@ function goHome(travelingInfo){
     }
 
 
-    //YOU HAVE NOTHING ELSE TODO
-    if (cheapest === -1) {
-      return -1;
+    //If we have option, but not to any country we havn't visited
+    if (indexCheapest === -1 && fares.length > 0) {
+      indexCheapest = 0;
     }
 
     return indexCheapest;
