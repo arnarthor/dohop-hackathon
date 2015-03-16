@@ -41,7 +41,7 @@
     transition: all 150ms;
     content: '';
     width: 15px;
-    border: 2px solid white;
+    border: 3px solid white;
     display:block;
   }
 
@@ -50,7 +50,7 @@
   }
 
   &:after {
-    transform: rotate3d(0,0,1,-45deg) translate3d(-3px,-9px,0);
+    transform: rotate3d(0,0,1,-45deg) translate3d(-3px,-10px,0);
   }
 }
 
