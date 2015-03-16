@@ -34,7 +34,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
      //is it time to go home?
      if (goHome(travelingInfo)) {
 
-      flyHome(travelingInfo, socket);
+      flyHome(travelingInfo, socket, travelingInfo.departure.to);
      }
      else {
      flyNormal(travelingInfo, socket);
@@ -47,7 +47,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
     //is it time to go home?
      if(goHome(travelingInfo)){
 
-      flyHome(travelingInfo, socket);
+      flyHome(travelingInfo, socket, travelingInfo.departure.to);
      }
      else {
      flyNormal(travelingInfo, socket);
@@ -58,7 +58,7 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
   if (travelingInfo.stateData === 'homeFlight') {
 
     //find a way home
-    flyHome(travelingInfo);
+    flyHome(travelingInfo, socket, travelingInfo.departure.to);
 
   }
 };
@@ -104,81 +104,86 @@ function goHome(travelingInfo){
     return false;
 }
 
-  function flyHome(travelingInfo, socket) {
-    // FIND AWAY HOME BROTHER
+function flyHome(travelingInfo, socket, dateTo) {
+  // FIND AWAY HOME BROTHER
 
-    // maby change departur.to here so we deffently get home
+  // maby change departur.to here so we deffently get home
 
-    var url = [
-      config.api,
-      'livestore',
-      'en',
-      travelingInfo.departure.country,
-      'per-airport',
-      travelingInfo.departure.airportCode,
-      travelingInfo.startingPoint.airportCode,
-      travelingInfo.departure.from,
-      travelingInfo.departure.to
-    ].join('/') + '?currency=USD&stay=1-365&include_split=true&airport-format=full&fare-format=full&id=H4cK3r';
+  var url = [
+    config.api,
+    'livestore',
+    'en',
+    travelingInfo.departure.country,
+    'per-airport',
+    travelingInfo.departure.airportCode,
+    travelingInfo.startingPoint.airportCode,
+    travelingInfo.departure.from,
+    dateTo
+  ].join('/') + '?currency=USD&stay=1-365&include_split=true&airport-format=full&fare-format=full&id=H4cK3r';
 
-    //DO THE REQUEST
-    superagent.get(url)
-     .end(function(err, response) {
-      if (err) {
-        socket.emit('error', 'something went wrong in the socket');
-        return;
+  //DO THE REQUEST
+  superagent.get(url)
+   .end(function(err, response) {
+    if (err) {
+      socket.emit('error', 'something went wrong in the socket');
+      return;
+    }
+
+    //HANDLE THE RESULT
+    var responseData = JSON.parse(response.text);
+    var fares = responseData.fares;
+    console.log('fares', dateTo);
+    console.log('url', url);
+    if(fares.length <= 0) {
+      flyHome(travelingInfo, socket, moment(dateTo).add(3, 'days').format('YYYY-MM-DD'));
+      return;
+    }
+    var airports = responseData.airports;
+    //HERNA VERÐA EITTHVER ÖNNUR SKYLYRÐI því heim er öðruvísi
+
+      var homeDest = fares[0];
+      if (homeDest.length > 1) {
+        homeDest = homeDest[0];
+      }
+      //if there is a flight there
+      //DO THIS ELSE WHERE
+      if (fares.length) {
+
+        var travelInfo = {
+
+          fromAirport: homeDest.a,
+          destAirport: homeDest.b,
+          price: homeDest.conv_fare,
+          departure: homeDest.d1,
+          departureCountry: travelingInfo.departure,
+          stopDuration: travelingInfo.stopDuration,
+          endDate: travelingInfo.endDate,
+          stateData: 'homeDest',
+        };
+        var departureCount = fares[0];
+        
+        var travelingAirport = homeDest.b;
+        if (airports[travelingAirport]) {
+          travelInfo.arrivalCountry = {
+            airportCode: airports[travelingAirport].a_i,
+            airportName: airports[travelingAirport].a_n,
+            countryCode: travelingInfo.de,
+            countryName: travelInfo.departure,
+            city: airports[travelingAirport].ci_n,
+            lat: airports[travelingAirport].lat,
+            lon: airports[travelingAirport].lon,
+            state: airports[travelingAirport].r_n,
+            state_short: airports[travelingAirport].r_c,
+          };
+        }
+        socket.emit('new-flight', travelInfo);
       }
 
-      //HANDLE THE RESULT
-      var responseData = JSON.parse(response.text);
-      var fares = responseData.fares;
-      var airports = responseData.airports;
+    //á eftir að gera derp aergheariughaeirhg
 
-      //HERNA VERÐA EITTHVER ÖNNUR SKYLYRÐI því heim er öðruvísi
-
-        var homeDest = fares[0];
-        if (homeDest.length > 1) {
-          homeDest = homeDest[0];
-        }
-        //if there is a flight there
-        //DO THIS ELSE WHERE
-        if (fares.length) {
-
-          var travelInfo = {
-
-            fromAirport: homeDest.a,
-            destAirport: homeDest.b,
-            price: homeDest.conv_fare,
-            departure: homeDest.d1,
-            departureCountry: travelingInfo.departure,
-            stopDuration: travelingInfo.stopDuration,
-            endDate: travelingInfo.endDate,
-            stateData: 'homeDest',
-          };
-          var departureCount = fares[0];
-          
-          var travelingAirport = homeDest.b;
-          if (airports[travelingAirport]) {
-            travelInfo.arrivalCountry = {
-              airportCode: airports[travelingAirport].a_i,
-              airportName: airports[travelingAirport].a_n,
-              countryCode: travelingInfo.de,
-              countryName: travelInfo.departure,
-              city: airports[travelingAirport].ci_n,
-              lat: airports[travelingAirport].lat,
-              lon: airports[travelingAirport].lon,
-              state: airports[travelingAirport].r_n,
-              state_short: airports[travelingAirport].r_c,
-            };
-          }
-          socket.emit('new-flight', travelInfo);
-        }
-
-      //á eftir að gera derp aergheariughaeirhg
-
-      //
-    });
-  }
+    //
+  });
+}
 
   function flyNormal(travelingInfo, socket) {
     //FIND AWAY HOME BROTHER
@@ -270,7 +275,7 @@ function goHome(travelingInfo){
     //check if we have travled there before
     var indexCheapest = -1;
     var bestDistance = -1;
-    for (var cheapest = 0; cheapest < fares.length; cheapest++) {  
+    for (var cheapest = 0; cheapest < fares.length; cheapest++) {
 
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
