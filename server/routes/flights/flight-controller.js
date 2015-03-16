@@ -26,7 +26,6 @@ exports.searchAirport = function(req, res) {
 exports.findCheapestFlight = function(travelingInfo, socket) {
 
 
-//console.log(travelingInfo.stateData);
   //FIRSTFLIGHT
   if(travelingInfo.stateData === 'firstFlight') {
      //UPDATE THE TRAVELING INFO FOR THE FIRST FLIGHT
@@ -90,7 +89,6 @@ function initFirstFlight(travelingInfo){
      travelingInfo.endDate = travelingInfo.departure.to;
 
 
-     //console.log('travelingInfo', travelingInfo);
      return travelingInfo;
    }
 
@@ -138,26 +136,41 @@ function goHome(travelingInfo){
 
       //HERNA VERÐA EITTHVER ÖNNUR SKYLYRÐI því heim er öðruvísi
 
-
-        var cheapestFlight = fares[0][0];
-        console.log('cheapest', cheapestFlight);
-
+        var homeDest = fares[0];
+        if (homeDest.length > 1) {
+          homeDest = homeDest[0];
+        }
         //if there is a flight there
         //DO THIS ELSE WHERE
         if (fares.length) {
 
           var travelInfo = {
 
-            fromAirport: cheapestFlight.a,
-            destAirport: cheapestFlight.b,
-            price: cheapestFlight.conv_fare,
-            departure: cheapestFlight.d1,
+            fromAirport: homeDest.a,
+            destAirport: homeDest.b,
+            price: homeDest.conv_fare,
+            departure: homeDest.d1,
             departureCountry: travelingInfo.departure,
             stopDuration: travelingInfo.stopDuration,
             endDate: travelingInfo.endDate,
             stateData: 'homeDest',
           };
-          console.log('travelInfo', travelInfo);
+          var departureCount = fares[0];
+          
+          var travelingAirport = homeDest.b;
+          if (airports[travelingAirport]) {
+            travelInfo.arrivalCountry = {
+              airportCode: airports[travelingAirport].a_i,
+              airportName: airports[travelingAirport].a_n,
+              countryCode: travelingInfo.de,
+              countryName: travelInfo.departure,
+              city: airports[travelingAirport].ci_n,
+              lat: airports[travelingAirport].lat,
+              lon: airports[travelingAirport].lon,
+              state: airports[travelingAirport].r_n,
+              state_short: airports[travelingAirport].r_c,
+            };
+          }
           socket.emit('new-flight', travelInfo);
         }
 
@@ -210,7 +223,6 @@ function goHome(travelingInfo){
       //FIND THE APROPREATE FLIGHT
       var flightIndex = isValidFlight(fares, airports, countries, travelingInfo);
 
-      //console.log('fares', fares);
       //
       if(flightIndex > -1) {
 
@@ -262,14 +274,12 @@ function goHome(travelingInfo){
 
       //check if we have travled there before
       if (countries.indexOf(airports[fares[cheapest].b].cc_c)  > -1) { 
-
           continue;
       }
 
       //check if it is within our travel limits
       var dist = findDistance(travelingInfo.startingPoint.location.lat, travelingInfo.startingPoint.location.lng, airports[fares[cheapest].b].lat, airports[fares[cheapest].b].lon);
 
-     // console.log('dist', dist);
 
       var thisDay = moment(fares[cheapest].d1).diff(moment(travelingInfo.stopDuration.startDate), 'days');
       var totalDays = travelingInfo.stopDuration.totalDays;
@@ -281,23 +291,12 @@ function goHome(travelingInfo){
 
       var diff = Math.abs(idealDist - dist);
 
-      /*console.log('thisDay', thisDay);
-      console.log('totalDays', totalDays);
-      console.log('stopDuration', stopDuration);
-      console.log('dfhMax', dfhMax);
-      console.log('dfhW', dfhW);
-      console.log('idealDist', idealDist);
-      console.log('diff', diff);*/
-
-
       if ( diff < bestDistance || indexCheapest === -1) {
           indexCheapest = cheapest;
           bestDistance = dist;
       }
     }
 
-    
-    console.log('bestDistance', bestDistance);
 
     //YOU HAVE NOTHING ELSE TODO
     if (cheapest === -1) {
