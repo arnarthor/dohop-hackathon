@@ -177,6 +177,7 @@ function flyNormal(travelingInfo, socket) {
       if (newFlightPath.length < 1){
         travelingInfo.tripDuration.start
         console.log("there is no trip for this airport");
+        return;
         //send to the socket and end the connection
 
         //try to lengthen the first
@@ -186,7 +187,7 @@ function flyNormal(travelingInfo, socket) {
       //send the array to the socket
 
       flyNormal(travelingInfo,socket);
-      socket.emit('flightPath', travelingInfo.flightPath);
+      socket.emit('updateFlightPath', travelingInfo.flightPath);
     }
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       
@@ -207,8 +208,17 @@ function flyNormal(travelingInfo, socket) {
       //push it to the end of the history array
       travelingInfo.flightPath.push(bestFlights);
 
-      flyNormal(travelingInfo,socket);
-      socket.emit('flightPath', travelingInfo.flightPath);
+      socket.emit('updateFlightPath', travelingInfo.flightPath);
+
+
+     var newLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
+
+      if(newLocation.a_i === startingPoint.selectedAirport.airportCode){
+        return;
+      }
+      else{
+        flyNormal(travelingInfo,socket);
+      }
     }
 
     //-----------------------------------------------
