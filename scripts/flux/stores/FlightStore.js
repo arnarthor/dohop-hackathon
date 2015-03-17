@@ -22,7 +22,6 @@ class FlightStore extends Store {
     this.socket = null;
     this.state = {
       desiredHash: '',
-      selectedAirport: null,
       flightPath: [],
       airports: [],
       dates: {
