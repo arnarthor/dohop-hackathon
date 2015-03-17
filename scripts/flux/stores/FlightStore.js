@@ -79,6 +79,21 @@ class FlightStore extends Store {
   setHome(home) {
     this.setState({goHome: home});
   }
+  removeLast(data){
+    console.log("hallo");
+    //REMOVE THE LAST LINE TODODODODOO
+
+    //and call the addFlight func again 
+    this.addFlight(data);
+  }
+  removeLastTwo(data){
+    console.log("Hallo");
+    //remove last two trips
+
+        //and call the addFlight func again 
+    this.addFlight(data);
+
+  }
 
   addFlight(flight) {
 
@@ -159,6 +174,10 @@ class FlightStore extends Store {
     this.socket.on('new-flight', (data) => this.addFlight(data));
     this.socket.on('error', (data) => this.debug(data));
     this.socket.on('go-home', (data) => this.setHome(data));
+    this.socket.on('removeLast-flight',(data) => this.removeLast(data));
+    this.socket.on('removeLastTwo-flight',(data) => this.removeLastTwo(data));
+
+
   }
 
   airportList(data) {

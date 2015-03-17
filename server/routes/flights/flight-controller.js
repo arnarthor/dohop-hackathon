@@ -226,17 +226,14 @@ function flyNormal(travelingInfo, socket) {
         return;
       }
 
-      console.log(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length );
       //IF THERE ARE FLIGHTS LEFT IN THAT NODE
-      if(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length > 1){
-
-        console.log("pop")
-
-        //REMOVE THE FIRST ITEM
-        travelingInfo.flightHistory[travelingInfo.flightHistory-1].shift();
-
+      if(travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length > 1){
 
         console.log("hallo")
+        //REMOVE THE FIRST ITEM
+        travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].shift();
+
+
         var cheapestFlight = travelingInfo.flightHistory[travelingInfo.flightHistory.length-1][travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length-1];
 
         var travelInfo = createTravelInfo(cheapestFlight,airports,travelingInfo);
@@ -248,21 +245,27 @@ function flyNormal(travelingInfo, socket) {
       //else you remove that node from the flightHistory
       else{
         
+
         travelingInfo.flightHistory.pop();
 
+         //CHECK 
+        if(travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length <1){
+          console.log("there is no world trip for your airport at this time")
+          return;
+
+        }
+
+
         //remove the first flight from the last node
-        travelingInfo.flightHistory[travelingInfo.flightHistory-1].shift();
+        travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].shift();
+
+
 
         //tell the client what happend
         var cheapestFlight = travelingInfo.flightHistory[travelingInfo.flightHistory.length-1][travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length-1];
         var travelInfo = createTravelInfo(cheapestFlight,airports,travelingInfo);
 
-        //maby there is no new guy
-        if(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length === 1){
-          console.log("there is no world trip for your airport at this time")
-          return;
 
-        }
 
         socket.emit('removeLastTwo-flight', travelInfo);
         return;
@@ -296,7 +299,6 @@ function flyNormal(travelingInfo, socket) {
       return item['departureCountry'].country;
     });
 
-    //FIND THE APROPREATE FLIGHT
     //var flightIndex = findBestFlight(fares, airports, countries, travelingInfo);
 
     
