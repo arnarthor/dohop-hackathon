@@ -54,6 +54,7 @@ class FlightStore extends Store {
       flights: [],
       startingPoint: this.state.selectedAirport,
       stateData:'firstFlight',
+      flightHistory:[],
     };
 
     this.socket.emit('request-flight', travelingData);
@@ -138,7 +139,8 @@ class FlightStore extends Store {
       startingPoint: this.state.selectedAirport,
       stopDuration:flight.stopDuration,
       endDate:flight.endDate,
-      stateData:'newFlight'
+      stateData:'newFlight',
+      flightHistory: flight.flightHistory,
     };
     this.socket.emit('request-flight', travelingData);
   }

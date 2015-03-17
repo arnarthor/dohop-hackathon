@@ -182,11 +182,15 @@ function flyHome(travelingInfo, socket, dateTo) {
   });
 }
 
+
+
 function flyNormal(travelingInfo, socket) {
   //FIND AWAY HOME BROTHER
 
   //maby change departur.to here so we deffently get home
 
+
+  
   var url = [
     config.api,
     'livestore',
@@ -212,10 +216,80 @@ function flyNormal(travelingInfo, socket) {
     var fares = responseData.fares;
     var airports = responseData.airports;
 
+    //DEADZONE
     if(fares.length === 0){
-      console.log('deadend!');
-      return;
+
+      //is there there somthinginside of the flightHistory
+      if(travelingInfo.flightHistory.length === 0){
+
+        console.log("there is no world trip for your airport at this time")
+        return;
+      }
+
+      console.log(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length );
+      //IF THERE ARE FLIGHTS LEFT IN THAT NODE
+      if(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length > 1){
+
+        console.log("pop")
+
+        //REMOVE THE FIRST ITEM
+        travelingInfo.flightHistory[travelingInfo.flightHistory-1].shift();
+
+
+        console.log("hallo")
+        var cheapestFlight = travelingInfo.flightHistory[travelingInfo.flightHistory.length-1][travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length-1];
+
+        var travelInfo = createTravelInfo(cheapestFlight,airports,travelingInfo);
+        socket.emit('removeLast-flight', travelInfo);
+        return;
+        //segðu client að remova síðasta gæja og prófa þennan
+      }
+
+      //else you remove that node from the flightHistory
+      else{
+        
+        travelingInfo.flightHistory.pop();
+
+        //remove the first flight from the last node
+        travelingInfo.flightHistory[travelingInfo.flightHistory-1].shift();
+
+        //tell the client what happend
+        var cheapestFlight = travelingInfo.flightHistory[travelingInfo.flightHistory.length-1][travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length-1];
+        var travelInfo = createTravelInfo(cheapestFlight,airports,travelingInfo);
+
+        //maby there is no new guy
+        if(travelingInfo.flightHistory[travelingInfo.flightHistory-1].length === 1){
+          console.log("there is no world trip for your airport at this time")
+          return;
+
+        }
+
+        socket.emit('removeLastTwo-flight', travelInfo);
+        return;
+      }
+    };
+
+
+    //insertion inside history array -----------------
+    var bestFlights = [];
+
+    //Take the 3 best flights if there are more then 3
+    if(fares.length > 3){
+
+      bestFlights = fares.splice(0,3);
     }
+    //else just take the ones who are there
+    else{
+      bestFlights = fares;
+    }
+
+    //push it to the end of the history array
+    travelingInfo.flightHistory.push(bestFlights);
+
+
+
+    //-----------------------------------------------
+
 
     //Get the countrys we have allreddy been to
     var countries = _.map(travelingInfo.flights, function(item) {
@@ -223,50 +297,52 @@ function flyNormal(travelingInfo, socket) {
     });
 
     //FIND THE APROPREATE FLIGHT
-    var flightIndex = findBestFlight(fares, airports, countries, travelingInfo);
+    //var flightIndex = findBestFlight(fares, airports, countries, travelingInfo);
 
-    //
-    if(flightIndex > -1) {
+    
+   // if(flightIndex > -1) {
 
-      var cheapestFlight = fares[flightIndex];
+    //HERE WE FETCH the cheapestFlight from our history
+    //---------------
+    var cheapestFlight = travelingInfo.flightHistory[travelingInfo.flightHistory.length-1][travelingInfo.flightHistory[travelingInfo.flightHistory.length-1].length-1];
+    //var cheapestFlight = fares[flightIndex];
 
+    var travelInfo = createTravelInfo(cheapestFlight,airports,travelingInfo);
+    socket.emit('new-flight', travelInfo);
 
-      //if there is a flight there
-      //DO THIS ELSE WHERE
-      if (fares.length) {
-        var travelInfo = {
-          fromAirport: cheapestFlight.a,
-          destAirport: cheapestFlight.b,
-          price: cheapestFlight.conv_fare,
-          departure: cheapestFlight.d1,
-          departureCountry: travelingInfo.departure,
-          stopDuration: travelingInfo.stopDuration,
-          endDate:travelingInfo.endDate,
-          stateData: 'newDest',
-        };
-
-        if (airports[cheapestFlight.b]) {
-          travelInfo.arrivalCountry = {
-            airportCode: airports[cheapestFlight.b].a_i,
-            airportName: airports[cheapestFlight.b].a_n,
-            countryCode: airports[cheapestFlight.b].cc_c,
-            countryName: airports[cheapestFlight.b].cc_n,
-            city: airports[cheapestFlight.b].ci_n,
-            lat: airports[cheapestFlight.b].lat,
-            lon: airports[cheapestFlight.b].lon,
-            state: airports[cheapestFlight.b].r_n,
-            state_short: airports[cheapestFlight.b].r_c,
-          };
-        }
-
-        isDeadend(travelInfo, function(deadend){
-          // IT'S A TRAP, DON'T GO THERE!
-          console.log(deadend);
-        });
-        socket.emit('new-flight', travelInfo);
-      }
-    }
   });
+}
+
+function createTravelInfo(cheapestFlight,airports,travelingInfo){
+
+  var travelInfo = {
+      fromAirport: cheapestFlight.a,
+      destAirport: cheapestFlight.b,
+      price: cheapestFlight.conv_fare,
+      departure: cheapestFlight.d1,
+      departureCountry: travelingInfo.departure,
+      stopDuration: travelingInfo.stopDuration,
+      endDate:travelingInfo.endDate,
+      stateData: 'newDest',
+      flightHistory : travelingInfo.flightHistory,
+    };
+
+    if (airports[cheapestFlight.b]) {
+      travelInfo.arrivalCountry = {
+        airportCode: airports[cheapestFlight.b].a_i,
+        airportName: airports[cheapestFlight.b].a_n,
+        countryCode: airports[cheapestFlight.b].cc_c,
+        countryName: airports[cheapestFlight.b].cc_n,
+        city: airports[cheapestFlight.b].ci_n,
+        lat: airports[cheapestFlight.b].lat,
+        lon: airports[cheapestFlight.b].lon,
+        state: airports[cheapestFlight.b].r_n,
+        state_short: airports[cheapestFlight.b].r_c,
+      };
+    }
+    return travelInfo;
+
+
 }
 
 
