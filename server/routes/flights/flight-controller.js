@@ -100,11 +100,12 @@ function flyNormal(travelingInfo, socket) {
   //FIND AWAY HOME BROTHER
 
   //maby change departur.to here so we deffently get home
-    console.log(travelingInfo);
 
 
 
   if(travelingInfo.firstFlight){
+    travelingInfo.firstFlight = false;
+    console.log("fyrsta")
       var url = [
       config.api,
       'livestore',  
@@ -130,7 +131,7 @@ function flyNormal(travelingInfo, socket) {
         config.api,
         'livestore',
         'en',
-        currentLocation.country,
+        currentLocation.a,
         'per-airport',
         currentLocation.airportCode,
         travelingInfo.startingPoint.selectedAirport.airportCode,
@@ -140,13 +141,14 @@ function flyNormal(travelingInfo, socket) {
     }
 
      else{
+      console.log( currentLocation);
       var url = [
           config.api,
           'livestore',
           'en',
-          currentLocation.country,
+          currentLocation.b,
           'per-country',
-          currentLocation.airportCode,
+          currentLocation.airportInfo.airportCode,
           currentLocation.from,
           currentLocation.to
         ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
@@ -162,13 +164,15 @@ function flyNormal(travelingInfo, socket) {
       return;
     }
 
+
+
     //HANDLE THE RESULT----------------------------------------------------------
 
     var responseData = JSON.parse(response.text);
     var fares = responseData.fares;
     var airports = responseData.airports;
 
-    console.log(responseData);
+
     //DEADZONE
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     if(fares.length === 0){
@@ -204,16 +208,21 @@ function flyNormal(travelingInfo, socket) {
       else{
         bestFlights = fares;
       }
-      console.log(bestFlights);
+
+      for(var j = 0; j<bestFlights.length;j++){
+        bestFlights.airportInfo = airports[bestFlights[j].b]
+      }
+
       //push it to the end of the history array
       travelingInfo.flightPath.push(bestFlights);
+
 
       socket.emit('updateFlightPath', travelingInfo.flightPath);
 
 
      var newLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
 
-      if(newLocation.a_i === startingPoint.selectedAirport.airportCode){
+      if(newLocation.a_i === travelingInfo.startingPoint.selectedAirport.airportCode){
         return;
       }
       else{
