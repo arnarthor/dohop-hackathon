@@ -128,15 +128,13 @@ const App = React.createClass({
           <div>{this.props.schedule}</div>
         </div>
         <JourneyPlan
-          flights={this.props.flights}
+          flightPath={this.props.flights}
           display={this.state.showJourneyPlan}
           flux={this.props.flux}
         />
         {this.props.selectedAirport &&
           <GoogleMap
-            flightHash={this.props.flightHash}
-            flights={this.props.flights}
-            location={location}
+            flightPath={this.props.flights}
           />
         }
       </div>
@@ -189,7 +187,7 @@ const App = React.createClass({
 
     this.setState({showLandingPage: false});
     this.setState({showJourneyPlan: true});
-    this.setState({minimizeSearchResults: !this.state.minimizeSearchResults});
+    this.setState({minimizeSearchResults: true});
     this.props.flux.getActions('FlightActions').createJourney();
   }
 });

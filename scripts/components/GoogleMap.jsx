@@ -24,20 +24,24 @@ let GoogleMap = React.createClass({
   },
 
   propTypes: {
-    flights: Props.array,
+    flightPath: Props.array,
   },
+
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize);
     this.setState({
       height: window.innerHeight,
       width: window.innerWidth,
-      center: new LatLng(this.props.location.lat, this.props.location.lng),
+      //center: new LatLng(this.props.location.lat, this.props.location.lng),
     });
   },
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(flightPath) {
+    console.log(flightPath);
+/*
     let linePath, firstCoord;
-    let {lat, lng} = nextProps.location;
+    let {lat, lng} = flightPath[flightPath.length - 1][0].location;
+
 
     if (lat === null || lng === null) {
       console.log('Missing lat, lng something went wrong');
@@ -71,6 +75,7 @@ let GoogleMap = React.createClass({
       linePath: linePath,
       center: new LatLng(nextProps.location.lat, nextProps.location.lng),
     });
+*/
   },
 
   render() {
