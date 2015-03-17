@@ -41,7 +41,7 @@ app.use('*', function(req, res, next) {
 app.use('/api', flightApi);
 
 io.on('connection', function(socket) {
-  socket.on('request-flight', function(data) {
+  socket.on('create-journey', function(data) {
     flightController.findCheapestFlight(data, socket);
   });
 });

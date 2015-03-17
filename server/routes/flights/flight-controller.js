@@ -58,7 +58,7 @@ function initFirstFlight(travelingInfo){
 function goHome(travelingInfo,currentLocation){
     //total amount of days where you should be thinking about going home
     var dayAmount = 5;
-    if ((travelingInfo.tripDuration.stopDuration.totalDays - dayAmount) < moment(travelingInfo.startingPoint.start).diff(moment(currentLocation.from), 'days')) {
+    if ((travelingInfo.tripDuration.stopDuration.totalDays - dayAmount) < moment(travelingInfo.startingPoint.selectedAirport.start).diff(moment(currentLocation.from), 'days')) {
     //MABY  travelingInfo.departure.to = moment(travelingInfo.departure.to).add(100,'days').format('YYYY-MM-DD')
       console.log("GOHOME");
       return true;
@@ -69,29 +69,29 @@ function goHome(travelingInfo,currentLocation){
 
 
 //
-function modifyFlightHistory(flightHistory){
+function modifyFlightPath(flightPath){
 
-  if(flightHistory.length === 0){
+  if(flightPath.length === 0){
 
     console.log("there is no world trip for youur airport");
-    return flightHistory;
+    return flightPath;
 
   }
 
   //if there are still items in the array 
-  if(flightHistory[flightHistory.length-1].length > 1){
+  if(flightPath[flightPath.length-1].length > 1){
 
-    flightHistory[flightHistory.length-1].shift();
+    flightPath[flightPath.length-1].shift();
 
-    return flightHistory;
+    return flightPath;
 
   }
 
   else{
 
-    flightHistory[flightHistory.length-1].pop();
+    flightPath[flightPath.length-1].pop();
 
-    return modifyFlightHistory(flightHistory);
+    return modifyFlightPath(flightPath);
   }
 }
 
@@ -100,12 +100,32 @@ function flyNormal(travelingInfo, socket) {
   //FIND AWAY HOME BROTHER
 
   //maby change departur.to here so we deffently get home
+    console.log(travelingInfo);
 
-  //SHOULD I GO HOME
-  var currentLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
-  var goHome = goHome(travelInfo,currentLocation);
 
-  if (goHome){
+
+  if(travelingInfo.firstFlight){
+      var url = [
+      config.api,
+      'livestore',  
+      'en',
+      travelingInfo.startingPoint.selectedAirport.country_code,
+      'per-country',
+      travelingInfo.startingPoint.selectedAirport.airportCode,
+      travelingInfo.tripDuration.start,
+      travelingInfo.tripDuration.start
+    ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
+  }
+
+
+
+  else{
+    var currentLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
+    var shouldGoHome = goHome(travelingInfo,currentLocation);
+
+    if (shouldGoHome){
+      var currentLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
+
       var url = [
         config.api,
         'livestore',
@@ -113,38 +133,26 @@ function flyNormal(travelingInfo, socket) {
         currentLocation.country,
         'per-airport',
         currentLocation.airportCode,
-        travelingInfo.startingPoint.airportCode,
+        travelingInfo.startingPoint.selectedAirport.airportCode,
         currentLocation.from,
         currentLocation.to,
       ].join('/') + '?currency=USD&stay=1-365&include_split=true&airport-format=full&fare-format=full&id=H4cK3r';
-  }
+    }
 
-  else if (travelingInfo.firstFlight){
+     else{
+      var url = [
+          config.api,
+          'livestore',
+          'en',
+          currentLocation.country,
+          'per-country',
+          currentLocation.airportCode,
+          currentLocation.from,
+          currentLocation.to
+        ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
+      }
+    }
 
-  var url = [
-      config.api,
-      'livestore',
-      'en',
-      travelingInfo.startingPoint.country,
-      'per-country',
-      travelingInfo.startingPoint.airportCode,
-      travelingInfo.tripDuration.start,
-      travelingInfo.tripDuration.start
-    ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
-  }
-
- else{
-  var url = [
-      config.api,
-      'livestore',
-      'en',
-      currentLocation.country,
-      'per-country',
-      currentLocation.airportCode,
-      currentLocation.from,
-      currentLocation.to
-    ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
-  }
 
   //DO THE REQUEST
   superagent.get(url)
@@ -160,25 +168,25 @@ function flyNormal(travelingInfo, socket) {
     var fares = responseData.fares;
     var airports = responseData.airports;
 
-
+    console.log(responseData);
     //DEADZONE
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     if(fares.length === 0){
-      var newFlightHistory = modifyFlightHistory(travelingInfo.flightHistory);
+      var newFlightPath = modifyFlightPath(travelingInfo.flightPath);
 
-      if (newFlightHistory.length < 1){
+      if (newFlightPath.length < 1){
         travelingInfo.tripDuration.start
         console.log("there is no trip for this airport");
         //send to the socket and end the connection
 
         //try to lengthen the first
       }
-      travelInfo.flightHistory = newFlightHistory;
+      travelingInfo.flightPath = newFlightPath;
 
       //send the array to the socket
 
-      flyNormal(travelInfo,socket);
-      socket.emit('flightPath', travelInfo.flightPath);
+      flyNormal(travelingInfo,socket);
+      socket.emit('flightPath', travelingInfo.flightPath);
     }
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       
@@ -197,10 +205,10 @@ function flyNormal(travelingInfo, socket) {
       }
       console.log(bestFlights);
       //push it to the end of the history array
-      travelingInfo.flightHistory.push(bestFlights);
+      travelingInfo.flightPath.push(bestFlights);
 
-      flyNormal(travelInfo,socket);
-      socket.emit('flightPath', travelInfo.flightPath);
+      flyNormal(travelingInfo,socket);
+      socket.emit('flightPath', travelingInfo.flightPath);
     }
 
     //-----------------------------------------------
@@ -228,7 +236,7 @@ function createTravelInfo(cheapestFlight,airports,travelingInfo){
       stopDuration: travelingInfo.stopDuration,
       endDate:travelingInfo.endDate,
       stateData: 'newDest',
-      flightHistory : travelingInfo.flightHistory,
+      flightPath : travelingInfo.flightPath,
     };
 
     if (airports[cheapestFlight.b]) {
