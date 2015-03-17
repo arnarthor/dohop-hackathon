@@ -37,7 +37,6 @@ let GoogleMap = React.createClass({
   },
 
   componentWillReceiveProps(flightPath) {
-    console.log(flightPath);
 /*
     let linePath, firstCoord;
     let {lat, lng} = flightPath[flightPath.length - 1][0].location;

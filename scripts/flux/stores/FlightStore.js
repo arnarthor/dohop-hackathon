@@ -39,8 +39,6 @@ class FlightStore extends Store {
 
     let selectedAirport = _.clone(this.state.selectedAirport);
 
-    console.log(selectedAirport);
-
     let journeyData = {
       startingPoint: {selectedAirport},
       tripDuration: {
@@ -71,6 +69,7 @@ class FlightStore extends Store {
 
   updateFlightPath(data) {
     console.log('Update path!');
+    console.log(data);
     this.setState({flightPath: data});
   }
 
