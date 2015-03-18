@@ -19,9 +19,11 @@ class FlightStore extends Store {
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
     this.register(flightActions.setImage, this.setImage);
+    this.register(flightActions.hideAlert, this.hideAlert);
 
     this.socket = null;
     this.state = {
+      showError: false,
       desiredHash: '',
       flightPath: [],
       airports: [],
@@ -77,6 +79,10 @@ class FlightStore extends Store {
 
   }
 
+  handleError(data){
+    this.setState({showError:true});
+  }
+
   setImage(data) {
     let flightPath = _.clone(this.state.flightPath)
     let flight = _.findWhere(flightPath, [{d1: data.date}]);
@@ -90,6 +96,7 @@ class FlightStore extends Store {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('updateFlightPath', (data) => this.updateFlightPath(data));
     this.socket.on('error', (data) => this.debug(data));
+    this.socket.on('badAirport',(data)=> this.handleError(data));
   }
 
   airportList(data) {
@@ -110,6 +117,10 @@ class FlightStore extends Store {
     if (hash === this.state.desiredHash) {
       this.setState({airports: airportList});
     }
+  }
+
+  hideAlert() {
+    this.setState({showError: false});
   }
 }
 

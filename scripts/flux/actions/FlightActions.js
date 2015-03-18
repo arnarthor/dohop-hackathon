@@ -87,6 +87,10 @@ class FlightActions extends Actions {
   setImage(date, url) {
     return {date, url};
   }
+
+  hideAlert() {
+    return false;
+  }
 }
 
 export default FlightActions;

@@ -75,7 +75,8 @@ function fly(travelingInfo, socket) {
 
   if(travelingInfo.id !== ACKid && !ACKfirst){
     console.log("ID:DFD")
-    //you 
+    //you
+    socket.emit('badAirport', travelingInfo);
     return;
   }
 
@@ -149,6 +150,7 @@ function fly(travelingInfo, socket) {
       newFlightPath = removeDeadends(travelingInfo.flightPath);
       if (newFlightPath.length < 1){
         console.log("there is no trip for this airport");
+        socket.emit('badAirport', travelingInfo);
         return;
         //send to the socket and end the connection
         //try to lengthen the first
@@ -231,6 +233,8 @@ function fly(travelingInfo, socket) {
 
         if (newFlightPath.length < 1){
           console.log("there is no trip for this airport");
+
+          socket.emit('badAirport', travelingInfo);
           return;
           //send to the socket and end the connection
           //try to lengthen the first
@@ -292,7 +296,6 @@ function fly(travelingInfo, socket) {
 
         });
       //////////////////////////////////////////////////////////////////////////////////
-      return;
     }
 
     //else we keep on trying

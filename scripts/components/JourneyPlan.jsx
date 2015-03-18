@@ -73,11 +73,6 @@ let JourneyPlan = React.createClass({
               let date = moment(flights[0].d1).date();
               let month = moment(flights[0].d1).format('MMM');
               let daysStaying;
-              /*
-              if (flights[0].daysStaying) {
-                daysStaying = _.initial(flights[0].daysStaying.split(' ')).join(' ');
-              }
-              */
               return (
                 <span className="JourneyPlan__items__item">
                   <li className="JourneyPlan__items__flight">
@@ -87,7 +82,7 @@ let JourneyPlan = React.createClass({
                     </div>
                     <div className="JourneyPlan__items__flight__details">
                       <div className="JourneyPlan__items__flight__from">
-                        <span className="JourneyPlan__items__flight__from__airportName"></span>
+                        <span className="JourneyPlan__items__flight__from__airportName">{flights[0].prevAirport}</span>
                         <span className="JourneyPlan__items__flight__to__airportCode">({flights[0].a})</span>
                       </div>
                       <div className="JourneyPlan__items__flight__plane"></div>
