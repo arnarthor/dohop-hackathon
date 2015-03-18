@@ -45,8 +45,14 @@ app.use('/api', flightApi);
 
 io.on('connection', function(socket) {
   socket.on('create-journey', function(data) {
+
+  	console.log("hallo");
     flightController.findCheapestFlight(data, socket);
   });
+  socket.on('ACK', function(data,data2) {
+    flightController.updateACK(data,data2, socket);
+  });
+
 });
 
 module.exports = server;

@@ -45,9 +45,10 @@ class FlightStore extends Store {
         end: this.state.dates.endDate.format('YYYY-MM-DD'), 
       },
       flightPath:[],
+      id:Math.random()*100,
     };
-
-    this.socket.emit('create-journey', journeyData);
+        this.socket.emit('ACK',journeyData.id,true);
+        this.socket.emit('create-journey', journeyData);
   }
 
   clearSelectedAirport() {
@@ -71,7 +72,9 @@ class FlightStore extends Store {
   }
 
   updateFlightPath(data) {
-    this.setState({flightPath: data});
+    this.setState({flightPath: data.flightPath});
+    this.socket.emit('ACK',data.id,false);
+
   }
 
   setImage(data) {

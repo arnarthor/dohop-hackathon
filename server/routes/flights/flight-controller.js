@@ -5,6 +5,9 @@ var _ = require("lodash");
 var moment = require('moment');
 var flight = require('../../models/flightModel.js')
 
+var ACKid = 0;
+var ACKfirst = true;
+
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
@@ -27,6 +30,11 @@ exports.findCheapestFlight = function(travelingInfo, socket) {
    travelingInfo = initFirstFlight(travelingInfo);
    fly(travelingInfo, socket);
 };
+
+exports.updateACK = function(data,data2,socket){
+  ACKid = data;
+  ACKfirst = data2;
+}
 
 
 function initFirstFlight(travelingInfo){
@@ -63,6 +71,14 @@ function removeDeadends(flightPath){
 }
 
 function fly(travelingInfo, socket) {
+
+
+  if(travelingInfo.id !== ACKid && !ACKfirst){
+    console.log("ID:DFD")
+    //you 
+    return;
+  }
+
   if(!travelingInfo.firstFlight){
     var timeToGoHome = goHome(travelingInfo,currentLocation);
 
@@ -127,7 +143,6 @@ function fly(travelingInfo, socket) {
     var airports = responseData.airports;
     var newFlightPath = [];
 
-    console.log(travelingInfo);
 
     // Check if deadend
     if(fares.length === 0){
@@ -184,9 +199,26 @@ function fly(travelingInfo, socket) {
         }
 
         if(!tempIsBZ){
-          var tempFlight = fares[s];
-          tempFlight.airportInfo = tempAirport;
 
+
+          var tempFlight = fares[s];
+          console.log(tempFlight);
+          tempFlight.airportInfo = tempAirport;
+          if(travelingInfo.flightPath.length === 0){
+            
+           tempFlight.prevAirport = travelingInfo.startingPoint.selectedAirport.name;
+          }
+          else{ 
+
+            tempFlight.prevAirport = travelingInfo.flightPath[travelingInfo.flightPath.length-1][0].airportInfo.a_n;
+
+          }
+
+          
+          
+          console.log(travelingInfo);
+
+                  //  console.log(travelingInfo);
           bestFlights.push(tempFlight);
           tempIsBZ = false;
         }
@@ -217,13 +249,30 @@ function fly(travelingInfo, socket) {
     if(timeToGoHome){
       //TODO FIND OUT ABOUT THOSE 3 LEG FLIGHTS
     }
-
-    socket.emit('updateFlightPath', travelingInfo.flightPath);
-
-    // Check if we're home
     var newLocation = travelingInfo.flightPath[travelingInfo.flightPath.length - 1][0];
     if(newLocation.b === travelingInfo.startingPoint.selectedAirport.airportCode){
+      for(var p = 0; p<travelingInfo.flightPath.length;p++){
+
+        if(p+1===travelingInfo.flightPath.length){
+          travelingInfo.flightPath[p][0].stayDuration = "forever"
+          break;
+        }
+
+        else{
+          travelingInfo.flightPath[p][0].stayDuration = moment(travelingInfo.flightPath[p+1][0].d1).diff(moment(travelingInfo.flightPath[p][0].d1),'days');
+        }
+      }
+    }
+
+    socket.emit('updateFlightPath', travelingInfo);
+
+    // Check if we're home
+    if(newLocation.b === travelingInfo.startingPoint.selectedAirport.airportCode){
+
+
+
       console.log('Journey:');
+
 
       //STORE THE ID OF THE DUDE HERE AND TELL THE CLIENT THE ID NUMBER
 
