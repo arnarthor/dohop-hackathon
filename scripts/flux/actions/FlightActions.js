@@ -6,6 +6,10 @@ import constants from '../../config/constants';
 
 class FlightActions extends Actions {
 
+  clearSelectedAirport() {
+    return 'clear-selected-airport';
+  }
+
   setAirport(airport) {
     return airport;
   }
@@ -45,12 +49,11 @@ class FlightActions extends Actions {
       });
   }
 
-  async cityLocation(city) {
+  cityLocation(city) {
     request.get(`${constants.googleMapsAPI}/json?address=${city}&sensor=false`)
       .end(res => {
         let location = res.body.results[0].geometry.location;
-        console.log(location);
-        //return location;
+        window.open(`https://www.google.com/maps?q&layer=c&cbll=${location.lat},${location.lng}&cbp=11,0,0,0,0`,'_blank');
       });
   }
 
@@ -75,10 +78,10 @@ class FlightActions extends Actions {
           else if(!fallback){
             this.getFlickrImage(date, lat, long, true);
           }
-        } else {
-          console.log('Flickr API Error: ' + res.text);
-      }
-    });
+          } else {
+            console.log('Flickr API Error: ' + res.text);
+          }
+      });
   }
 
   setImage(date, url) {

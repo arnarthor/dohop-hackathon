@@ -14,6 +14,7 @@ class FlightStore extends Store {
     this.register(flightActions.airportList, this.airportList);
     this.register(flightActions.setUUID, this.setUUID);
     this.register(flightActions.clearAirports, this.clearAirports);
+    this.register(flightActions.clearSelectedAirport, this.clearSelectedAirport);
     this.register(flightActions.setAirport, this.setAirport);
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
@@ -37,7 +38,6 @@ class FlightStore extends Store {
     this.setState({flightPath: [], flightHash});
 
     let selectedAirport = _.clone(this.state.selectedAirport);
-
     let journeyData = {
       startingPoint: {selectedAirport},
       tripDuration: {
@@ -48,6 +48,10 @@ class FlightStore extends Store {
     };
 
     this.socket.emit('create-journey', journeyData);
+  }
+
+  clearSelectedAirport() {
+    this.setState({selectedAirport: null});
   }
 
   clearAirports() {
@@ -70,67 +74,6 @@ class FlightStore extends Store {
     this.setState({flightPath: data});
   }
 
-/*
-  addFlight(flight) {
-
-        //If we are home
-      if(flight.stateData === 'homeDest'){        
-        console.log('IM HOME', flight);
-        let flights = _.clone(this.state.flights);
-
-        let lastFlight;
-
-        //If we got a succesfull new flight
-        if (flights.length> 0) {
-          lastFlight = _.last(flights);
-          let currentArrival = moment(lastFlight.departure);
-          let nextArrival = moment(flight.departure);
-          lastFlight.daysStaying = currentArrival.from(nextArrival);
-          flights = _.initial(flights).concat(lastFlight);
-        }
-
-        //update the flights global array
-        this.setState({flights: flights.concat(flight)});
-        return;
-    }
-
-    let flights = _.clone(this.state.flights);
-    let lastFlight;
-
-    //If we got a succesfull new flight
-    if (flights.length> 0) {
-      lastFlight = _.last(flights);
-      let currentArrival = moment(lastFlight.departure);
-      let nextArrival = moment(flight.departure);
-      lastFlight.daysStaying = currentArrival.from(nextArrival);
-      flights = _.initial(flights).concat(lastFlight);
-    }
-
-    //update the flights global array
-    this.setState({flights: flights.concat(flight)});
-
-    //Fetch another flight
-    let travelingData = {
-      departure: {
-        airportName: flight.arrivalCountry.airportName,
-        country: flight.arrivalCountry.countryCode,
-        airportCode: flight.destAirport,
-        from: moment(flight.departure).add(flight.stopDuration.lowBound,'days').format('YYYY-MM-DD'),
-        to: moment(flight.departure).add(flight.stopDuration.highBound, 'days').format('YYYY-MM-DD'),
-        lat: flight.arrivalCountry.lat,
-        lon: flight.arrivalCountry.lon,
-      },
-      flights: this.state.flights,
-      startingPoint: this.state.selectedAirport,
-      stopDuration:flight.stopDuration,
-      endDate:flight.endDate,
-      stateData:'newFlight',
-      flightHistory: flight.flightHistory,
-    };
-    this.socket.emit('request-flight', travelingData);
-  }
-  */
-
   setImage(data) {
     let flightPath = _.clone(this.state.flightPath)
     let flight = _.findWhere(flightPath, [{d1: data.date}]);
@@ -144,12 +87,6 @@ class FlightStore extends Store {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('updateFlightPath', (data) => this.updateFlightPath(data));
     this.socket.on('error', (data) => this.debug(data));
-    /*
-    this.socket.on('new-flight', (data) => this.addFlight(data));
-    this.socket.on('go-home', (data) => this.setHome(data));
-    this.socket.on('removeLast-flight',(data) => this.removeLast(data));
-    this.socket.on('removeLastTwo-flight',(data) => this.removeLastTwo(data));
-    */
   }
 
   airportList(data) {

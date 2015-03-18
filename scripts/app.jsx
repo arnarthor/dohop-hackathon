@@ -21,6 +21,7 @@ const App = React.createClass({
   getInitialState() {
     return {
       airportSearch: '',
+      activeAirport: 1,
       useSelectedAirport: false,
       showLandingPage: true,
       showSearchResults: true,
@@ -73,19 +74,12 @@ const App = React.createClass({
       hide: !this.state.showLandingPage,
     };
 
-    let airportSearch = this.state.airportSearch;
     let selectedAirport = this.props.selectedAirport;
-
     let start = this.props.dates.startDate.format('ll');
     let end = this.props.dates.endDate.format('ll');
     let label = start + ' - ' + end;
     let minDate = moment().add(1, 'days');
-
-    if (selectedAirport && this.state.useSelectedAirport) {
-      airportSearch = `${selectedAirport.name} (${selectedAirport.airportCode})`;
-    }
-
-    let location = this.props.selectedAirport && this.props.selectedAirport.location;
+    let location = selectedAirport && selectedAirport.location || this.state.location;
 
     return (
       <div>
@@ -97,10 +91,11 @@ const App = React.createClass({
             <span className="wrapper location">
               <input
                 ref="searchBar"
-                value={airportSearch}
+                value={this.state.airportSearch}
                 onFocus={(event) => this.handleOnFocus(event, true)}
                 onBlur={(event) => this.handleOnFocus(event, false)}
                 onChange={(event) => this.handleSearchAirport(event)}
+                onKeyDown={this.handleKeyDown}
                 placeholder="Starting airport"
               />
             </span>
@@ -111,10 +106,11 @@ const App = React.createClass({
             >
               {(this.state.showSearchResults) ? [
                 <SearchResults
+                  active={this.state.activeAirport}
                   key={this.props.airports}
                   flux={this.props.flux}
                   airports={this.props.airports}
-                  selectedAirport={this.props.selectedAirport}
+                  selectedAirport={selectedAirport}
                   selectAirport={this.handleSetAirport}
                   showList={this.state.showSearchResults}
                   min={this.state.minimizeSearchResults}
@@ -123,7 +119,6 @@ const App = React.createClass({
             </TimeoutTransitionGroup>
             <span className="wrapper">
               <DateRangePicker
-                ref="dates"
                 minDate={minDate}
                 startDate={this.props.dates.startDate}
                 endDate={this.props.dates.endDate}
@@ -153,6 +148,30 @@ const App = React.createClass({
     );
   },
 
+  handleKeyDown(event) {
+    if (event.key !== 'ArrowUp' &&
+      event.key !== 'ArrowDown' &&
+      event.key !== 'Enter') {
+      return;
+    }
+    event.preventDefault();
+    if (event.key === 'ArrowUp') {
+      if (this.state.activeAirport - 1 < 1) return;
+      this.setState({
+        activeAirport: this.state.activeAirport - 1,
+        showSearchResults: true
+      });
+    } else if (event.key === 'ArrowDown') {
+      if (this.state.activeAirport + 1 > this.props.airports.length) return;
+      this.setState({
+        activeAirport: this.state.activeAirport + 1,
+        showSearchResults: true
+      });
+    } else if (event.key === 'Enter' && this.props.airports.length) {
+      this.handleSetAirport(event, this.props.airports[this.state.activeAirport - 1]);
+    }
+  },
+
   handleDatePicker(event, picker) {
     this.props.flux.getActions('FlightActions').setDates(picker);
   },
@@ -162,16 +181,31 @@ const App = React.createClass({
     this.setState({showSearchResults: value});
   },
 
-  handleSearchAirport(event) {
-    let airportSearch = event.target.value;
-    this.setState({airportSearch, useSelectedAirport: false})
-    this.performSearch();
+  handleSetAirport(event, airport) {
+    this.setState({
+      showSearchResults: false,
+      airportSearch: `${airport.name} (${airport.airportCode})`
+    });
+    this.props.flux.getActions('FlightActions').fetchAirport(airport);
   },
 
-  handleSetAirport(event, airport) {
-    this.setState({showSearchResults: false, useSelectedAirport: true});
-    this.props.flux.getActions('FlightActions').fetchAirport(airport);
-    this.refs.dates.getDOMNode().focus();
+  handleSearchAirport(event) {
+    let airportSearch = event.target.value;
+    if (this.props.selectedAirport) {
+      this.props.flux.getActions('FlightActions').clearAirports();
+      if (airportSearch.length < this.state.airportSearch.length) {
+        airportSearch = '';
+      } else {
+        airportSearch = airportSearch.slice(-1);
+      }
+    }
+    this.props.flux.getActions('FlightActions').clearSelectedAirport();
+
+    this.setState({airportSearch,
+      useSelectedAirport: false,
+      activeAirport: 1,
+      showSearchResults: true});
+    this.performSearch();
   },
 
   performSearch: _.debounce(function() {
