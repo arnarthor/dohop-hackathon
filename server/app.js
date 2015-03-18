@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var superagent = require('superagent');
 
 var flightApi = require('./routes/flights');
+
 var flightController = require('./routes/flights/flight-controller');
 
 var config = require('./config');
@@ -38,7 +39,9 @@ app.use('*', function(req, res, next) {
   res.setHeader('Content-Type', 'application/json');
   next();
 });
+
 app.use('/api', flightApi);
+
 
 io.on('connection', function(socket) {
   socket.on('create-journey', function(data) {

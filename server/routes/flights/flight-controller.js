@@ -3,6 +3,8 @@ var superagent = require('superagent');
 var config = require('../../config');
 var _ = require("lodash");
 var moment = require('moment');
+var flight = require('../../models/flightModel.js')
+
 
 exports.index = function(req, res) {
   res.send({data: req.params.fromCountry});
@@ -19,27 +21,13 @@ exports.searchAirport = function(req, res) {
     });
 };
 
+
 exports.findCheapestFlight = function(travelingInfo, socket) {
    //UPDATE THE TRAVELING INFO FOR THE FIRST FLIGHT
    travelingInfo = initFirstFlight(travelingInfo);
    fly(travelingInfo, socket);
 };
 
-/*
-// Returns the optimal distance from home at current time in trip
-function optimalDfh(currentDay, tripLength, dfhMax) {
-  var maxDfh = 20000 * dfhMax;
-  var optimalDfh;
-
-  if (currentDay <= tripLength / 2) {
-    optimalDfh = (maxDfh * currentDay) / (tripLength / 2);
-  }
-  else {
-    optimalDfh = (maxDfh * (tripLength - currentDay)) / (tripLength / 2);
-  }
-  return optimalDfh;
-}
-*/
 
 function initFirstFlight(travelingInfo){
   var duration = createStopDuration(travelingInfo.tripDuration.start, travelingInfo.tripDuration.end);
@@ -98,7 +86,7 @@ function fly(travelingInfo, socket) {
   else if(timeToGoHome){
     // Go home case
     console.log("home")
-    var currentLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][travelingInfo.flightPath[travelingInfo.flightPath.length-1].length-1]
+    var currentLocation = travelingInfo.flightPath[travelingInfo.flightPath.length-1][0]
     var url = [
       config.api,
       'livestore',
@@ -139,6 +127,8 @@ function fly(travelingInfo, socket) {
     var airports = responseData.airports;
     var newFlightPath = [];
 
+    console.log(travelingInfo);
+
     // Check if deadend
     if(fares.length === 0){
       newFlightPath = removeDeadends(travelingInfo.flightPath);
@@ -153,9 +143,7 @@ function fly(travelingInfo, socket) {
 
     }
 
-    //check if inside blocked zoone
-
-      
+    //check if inside blocked zoone 
     else {
       var bestFlights = [];
 
@@ -174,6 +162,11 @@ function fly(travelingInfo, socket) {
           continue;
         }
 
+        //Is this trip maby to exspensive
+        if(fares[s].conv_fare > config.maxPrice && !timeToGoHome ){
+          continue;
+        }
+
         //IF IT IS OUR FIRST FLIGHT JUST PICK OUR
         if(travelingInfo.flightPath.length > 0){
 
@@ -186,6 +179,7 @@ function fly(travelingInfo, socket) {
             }
 
             //check if within price limit
+
           }
         }
 
@@ -198,20 +192,20 @@ function fly(travelingInfo, socket) {
         }
       }
 
-      // Check if deadend
+      // Check if blockedZone deadend
       if(bestFlights.length === 0){
         console.log("blockedZone deadend")
         newFlightPath = removeDeadends(travelingInfo.flightPath);
+
         if (newFlightPath.length < 1){
           console.log("there is no trip for this airport");
           return;
           //send to the socket and end the connection
           //try to lengthen the first
+
         }
 
         travelingInfo.flightPath = newFlightPath;
-
-
       }
 
       else{
@@ -221,7 +215,7 @@ function fly(travelingInfo, socket) {
     }
 
     if(timeToGoHome){
-      console.log(bestFlights);
+      //TODO FIND OUT ABOUT THOSE 3 LEG FLIGHTS
     }
 
     socket.emit('updateFlightPath', travelingInfo.flightPath);
@@ -230,10 +224,25 @@ function fly(travelingInfo, socket) {
     var newLocation = travelingInfo.flightPath[travelingInfo.flightPath.length - 1][0];
     if(newLocation.b === travelingInfo.startingPoint.selectedAirport.airportCode){
       console.log('Journey:');
-      for(var i=0; i < travelingInfo.flightPath.length; i++){
-        travelingInfo.flightPath[i][0];
-      }
-      console.log('\n\n');
+
+      //STORE THE ID OF THE DUDE HERE AND TELL THE CLIENT THE ID NUMBER
+
+      //MOVE TO DATABASE API TODO////////////////////////////////////////////////////////
+      flight.create({
+
+        travelingInfo:travelingInfo,
+        },function(err,msg){
+
+            if(err){
+              console.log(err);
+            }
+
+            console.log(msg.id);
+            // return the new id and the final array
+            return socket.emit('finishFlightPath', travelingInfo.flightPath,msg.id);
+
+        });
+      //////////////////////////////////////////////////////////////////////////////////
       return;
     }
 
@@ -246,98 +255,6 @@ function fly(travelingInfo, socket) {
 }
 
 
-/*
-function createTravelInfo(cheapestFlight,airports,travelingInfo){
-
-  var travelInfo = {
-      fromAirport: cheapestFlight.a,
-      destAirport: cheapestFlight.b,
-      price: cheapestFlight.conv_fare,
-      departure: cheapestFlight.d1,
-      departureCountry: travelingInfo.departure,
-      stopDuration: travelingInfo.stopDuration,
-      endDate:travelingInfo.endDate,
-      stateData: 'newDest',
-      flightPath : travelingInfo.flightPath,
-    };
-
-    if (airports[cheapestFlight.b]) {
-      travelInfo.arrivalCountry = {
-        airportCode: airports[cheapestFlight.b].a_i,
-        airportName: airports[cheapestFlight.b].a_n,
-        countryCode: airports[cheapestFlight.b].cc_c,
-        countryName: airports[cheapestFlight.b].cc_n,
-        city: airports[cheapestFlight.b].ci_n,
-        lat: airports[cheapestFlight.b].lat,
-        lon: airports[cheapestFlight.b].lon,
-        state: airports[cheapestFlight.b].r_n,
-        state_short: airports[cheapestFlight.b].r_c,
-      };
-    }
-    return travelInfo;
-}
-*/
-
-/*
-function findBestFlight(fares, airports, countries, travelingInfo){
-  var bestFlightIndex = -1;
-  var bestFlightDistance = -1;
-
-  var totalDays = travelingInfo.stopDuration.totalDays;
-  var stopDuration = travelingInfo.stopDuration.highBound;
-  var dfhMax = travelingInfo.stopDuration.dfhMax;
-
-  for (var i = 0; i < fares.length; i++) {
-
-    // Don't travel to same country again
-    if (countries.indexOf(airports[fares[i].b].cc_c)  > -1) continue;
-
-    var departureDay = moment(fares[i].d1).diff(moment(travelingInfo.stopDuration.startDate), 'days');
-    var flightDist = findDistance(travelingInfo.startingPoint.location.lat, travelingInfo.startingPoint.location.lng, airports[fares[i].b].lat, airports[fares[i].b].lon);    
-    var diff = Math.abs(optimalDfh(departureDay, totalDays, dfhMax) - flightDist);
-
-    if ( diff < bestFlightDistance || bestFlightIndex === -1) {
-        bestFlightIndex = i;
-        bestFlightDistance = flightDist;
-    }
-  }
-
-  // If there is no best flight return first 
-  if (bestFlightIndex === -1 && fares.length > 0) bestFlightIndex = 0;
-
-  return bestFlightIndex;
-}
-*/
-/*
-function isDeadend(flight, cb) {
-  var url = [
-    config.api,
-    'livestore',
-    'en',
-    flight.arrivalCountry.countryCode,
-    'per-country',
-    flight.destAirport,
-    moment(flight.departureCountry.to).add(flight.stopDuration.lowBound, 'days').format('YYYY-MM-DD'),
-    moment(flight.departureCountry.to).add(flight.stopDuration.highBound, 'days').format('YYYY-MM-DD')
-  ].join('/') + '?currency=USD&airport-format=full&fare-format=full&id=H4cK3r';
-
-  superagent.get(url)
-   .end(function(err, response) {
-    if (err) {
-      socket.emit('error', 'something went wrong in the socket');
-      return;
-    }
-    var fares = JSON.parse(response.text).fares;
-    console.log(fares.length);
-    if(fares.length > 0){
-      return cb(false);
-    }
-    else{
-      return cb(true);; 
-    } 
-  });
-}
-*/
 
 //
 function findDistance(lat1, lon1, lat2, lon2){
@@ -348,7 +265,7 @@ function findDistance(lat1, lon1, lat2, lon2){
   var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   var d = config.earthRadius * c; //distance in km
-  return 500>d;
+  return config.minDistance>d;
 }
 
 //
