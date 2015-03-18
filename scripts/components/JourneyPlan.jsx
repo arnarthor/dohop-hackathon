@@ -19,8 +19,19 @@ let JourneyPlan = React.createClass({
 
   getInitialState() {
     return {
-      journeyPlanCollapsed: false,
+      journeyPlanCollapsed: true,
     };
+  },
+
+  componentWillReceiveProps(props) {
+    if (props.display) {
+      window.setTimeout(function(){
+        this.setState({journeyPlanCollapsed: false});
+      }.bind(this), 700);
+    }
+    else{
+      this.setState({journeyPlanCollapsed: true});
+    }
   },
 
   render() {
@@ -44,7 +55,6 @@ let JourneyPlan = React.createClass({
     let totalPrice = 0;
 
     _.map(this.props.flightPath, function(flights){
-      console.log(flights);
       totalPrice += flights[0].conv_fare;
     });
 
@@ -88,11 +98,13 @@ let JourneyPlan = React.createClass({
                       <div className="JourneyPlan__items__flight__price">${Math.round(flights[0].conv_fare)}</div>
                     </div>
                   </li>
-                  <DestinationDetails 
-                    daysStaying={daysStaying}
-                    flight={flights[0]}
-                    flux={this.props.flux}
-                  />
+                  {this.props.display &&
+                    <DestinationDetails 
+                      daysStaying={daysStaying}
+                      flight={flights[0]}
+                      flux={this.props.flux}
+                    />
+                  }
                 </span>
               );
             })}

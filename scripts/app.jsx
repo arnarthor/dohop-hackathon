@@ -16,7 +16,6 @@ require('./components/daterangepicker/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
-
 const App = React.createClass({
 
   getInitialState() {
@@ -45,8 +44,17 @@ const App = React.createClass({
     });
     this.refs.searchBar.getDOMNode().focus();
     this.props.flux.getActions('FlightActions').connectIo();
+  },
 
-
+  componentWillReceiveProps(props) {
+    if(props.flightPath.length){
+      if(_.first(_.last(props.flightPath)).b === props.selectedAirport.airportCode){
+        this.setState({showJourneyPlan: true});
+      }
+      else{
+        this.setState({showJourneyPlan: false});
+      }
+    }
   },
 
   render() {
@@ -136,7 +144,9 @@ const App = React.createClass({
         />
         {this.props.selectedAirport &&
           <GoogleMap
-            flightPath={this.props.flights}
+            startingPoint={this.props.selectedAirport}
+            flightPath={this.props.flightPath}
+            flightHash={this.props.desiredHash}
           />
         }
       </div>
@@ -188,10 +198,9 @@ const App = React.createClass({
     }
 
     this.setState({showLandingPage: false});
-    this.setState({showJourneyPlan: true});
     this.setState({minimizeSearchResults: true});
     this.props.flux.getActions('FlightActions').createJourney();
-  }
+  },
 });
 
 export default App;

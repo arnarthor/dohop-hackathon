@@ -15,11 +15,12 @@ let GoogleMap = React.createClass({
 
   getInitialState() {
     return {
-      center: new LatLng(41.879535, -87.624333),
-      zoom: 3,
+      center: new LatLng(0, 0),
+      zoom: 2,
       linePath: [],
       height: 1000,
       width: 1000,
+      currentIndex: 0,
     };
   },
 
@@ -32,49 +33,27 @@ let GoogleMap = React.createClass({
     this.setState({
       height: window.innerHeight,
       width: window.innerWidth,
-      //center: new LatLng(this.props.location.lat, this.props.location.lng),
+
     });
   },
 
-  componentWillReceiveProps(flightPath) {
-/*
+  componentWillReceiveProps(props) {
     let linePath, firstCoord;
-    let {lat, lng} = flightPath[flightPath.length - 1][0].location;
+    let {lat, lng} = props.startingPoint.location;
 
+    linePath = [];
+    linePath.push(new LatLng(lat, lng));
 
-    if (lat === null || lng === null) {
-      console.log('Missing lat, lng something went wrong');
-      return;
+    for (var i = 0; i < props.flightPath.length; i++) {
+      linePath.push(new LatLng(
+        props.flightPath[i][0].airportInfo.lat,
+        props.flightPath[i][0].airportInfo.lon
+      ))
     }
 
-    let firstLatLng = new LatLng(lat, lng);
-    if (nextProps.flightHash === this.props.flightHash) {
-      linePath = _.clone(this.state.linePath);
-      let firstCoord = _.first(linePath);
-      if (!firstCoord) {
-        linePath.push(firstLatLng);
-      }
-    } else {
-      linePath = [];
-      linePath.push(firstLatLng);
-    }
-
-    if (nextProps.flights.length) {
-      let lastCoord = _.last(linePath);
-      let lastFlightCoord = new LatLng(
-        _.last(nextProps.flights).arrivalCountry.lat,
-        _.last(nextProps.flights).arrivalCountry.lon
-      );
-
-      if (lastCoord.k !== lastFlightCoord.k || lastCoord.D !== lastFlightCoord.D) {
-        linePath.push(lastFlightCoord);
-      }
-    }
     this.setState({
       linePath: linePath,
-      center: new LatLng(nextProps.location.lat, nextProps.location.lng),
     });
-*/
   },
 
   render() {
