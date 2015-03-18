@@ -131,7 +131,7 @@
             this.endDate = moment().endOf('day');
             this.timeZone = moment().utcOffset();
             this.minDate = false;
-            this.maxDate = false;
+            this.maxDate = moment().add(6, 'months');
             this.dateLimit = false;
 
             this.showDropdowns = false;
