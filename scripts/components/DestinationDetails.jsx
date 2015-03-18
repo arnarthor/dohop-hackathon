@@ -11,7 +11,7 @@ let DestinationDetails = React.createClass({
   },
 
   componentDidMount() {
-    this.props.flux.getActions('FlightActions').getFlickrImage(this.props.flight.departure, this.props.flight.arrivalCountry.lat, this.props.flight.arrivalCountry.lon);
+    //this.props.flux.getActions('FlightActions').getFlickrImage(this.props.flight.d1, this.props.flight.airportInfo.lat, this.props.flight.airportInfo.lon);
   },
 
   render() {
@@ -27,6 +27,7 @@ let DestinationDetails = React.createClass({
     return (
      <li className="DestinationDetails__items__destination" style={destinationStyle}>
       <div className="DestinationDetails__items__destination__details">
+       /*
         {this.props.daysStaying && (
           <div>
             <span className="DestinationDetails__items__destination__details__duration">
@@ -34,17 +35,14 @@ let DestinationDetails = React.createClass({
             </span>
           </div>
         )}
-        <div><span className="DestinationDetails__items__destination__details__city">{this.props.flight.arrivalCountry.city}</span></div>
-        <div><span className="DestinationDetails__items__destination__details__country">{this.props.flight.arrivalCountry.countryName}</span></div>
-        <div onClick={(event) => this.handleGetCityLocation(event, this.props.flight.arrivalCountry.city)}>GET LOCATION</div>
+*/
+        <div><span className="DestinationDetails__items__destination__details__city">{this.props.flight.airportInfo.ci_n}</span></div>
+        <div><span className="DestinationDetails__items__destination__details__country">{this.props.flight.airportInfo.cc_n}</span></div>
       </div>
     </li>
     );
   },
 
-  handleGetCityLocation(event, city) {
-    this.props.flux.getActions('FlightActions').cityLocation(city);
-  },
 });
 
 export default DestinationDetails;

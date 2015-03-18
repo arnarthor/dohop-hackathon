@@ -24,6 +24,7 @@ let JourneyPlan = React.createClass({
   },
 
   render() {
+
     let journeyPlanClasses = {
       JourneyPlan: true,
       JourneyPlanShow: this.props.display,
@@ -41,7 +42,11 @@ let JourneyPlan = React.createClass({
     }
 
     let totalPrice = 0;
-    _.map(this.props.flightPath, function(flights){totalPrice += flights[0].price});
+
+    _.map(this.props.flightPath, function(flights){
+      console.log(flights);
+      totalPrice += flights[0].conv_fare;
+    });
 
     return (
       <div className={classSet(journeyPlanClasses)}>
@@ -55,14 +60,16 @@ let JourneyPlan = React.createClass({
           transitionName="collapse"
           >
             {_.map(this.props.flightPath, flights => {
-              let date = moment(flights[0].departure).date();
-              let month = moment(flights[0].departure).format('MMM');
+              let date = moment(flights[0].d1).date();
+              let month = moment(flights[0].d1).format('MMM');
               let daysStaying;
+              /*
               if (flights[0].daysStaying) {
                 daysStaying = _.initial(flights[0].daysStaying.split(' ')).join(' ');
               }
+              */
               return (
-                <span key={flights[0].departureCountry.airportName} className="JourneyPlan__items__item">
+                <span className="JourneyPlan__items__item">
                   <li className="JourneyPlan__items__flight">
                     <div className="JourneyPlan__items__flight__date">
                       <div className="JourneyPlan__items__flight__date__day">{date}</div>
@@ -70,15 +77,15 @@ let JourneyPlan = React.createClass({
                     </div>
                     <div className="JourneyPlan__items__flight__details">
                       <div className="JourneyPlan__items__flight__from">
-                        <span className="JourneyPlan__items__flight__from__airportName">{flights[0].departureCountry.airportName}</span>
-                        <span className="JourneyPlan__items__flight__to__airportCode">({flights[0].departureCountry.airportCode})</span>
+                        <span className="JourneyPlan__items__flight__from__airportName"></span>
+                        <span className="JourneyPlan__items__flight__to__airportCode">({flights[0].a})</span>
                       </div>
                       <div className="JourneyPlan__items__flight__plane"></div>
                       <div className="JourneyPlan__items__flight__to">
-                        <span className="JourneyPlan__items__flight__to__airportName">{flights[0].arrivalCountry.airportName}</span>
-                        <span className="JourneyPlan__items__flight__to__airportCode">({flights[0].arrivalCountry.airportCode})</span>
+                        <span className="JourneyPlan__items__flight__to__airportName">{flights[0].airportInfo.a_n}</span>
+                        <span className="JourneyPlan__items__flight__to__airportCode">({flights[0].b})</span>
                       </div>
-                      <div className="JourneyPlan__items__flight__price">${Math.round(flights[0].price)}</div>
+                      <div className="JourneyPlan__items__flight__price">${Math.round(flights[0].conv_fare)}</div>
                     </div>
                   </li>
                   <DestinationDetails 

@@ -45,6 +45,8 @@ const App = React.createClass({
     });
     this.refs.searchBar.getDOMNode().focus();
     this.props.flux.getActions('FlightActions').connectIo();
+
+
   },
 
   render() {
@@ -128,7 +130,7 @@ const App = React.createClass({
           <div>{this.props.schedule}</div>
         </div>
         <JourneyPlan
-          flightPath={this.props.flights}
+          flightPath={this.props.flightPath}
           display={this.state.showJourneyPlan}
           flux={this.props.flux}
         />
