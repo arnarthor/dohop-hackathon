@@ -14,7 +14,9 @@ let DestinationDetails = React.createClass({
   componentDidMount() {
     this.props.flux.getActions('FlightActions').getFlickrImage(this.props.flight.d1, this.props.flight.airportInfo.lat, this.props.flight.airportInfo.lon);
   },
-
+  handleGetCityLocation(event, city) {
+    this.props.flux.getActions('FlightActions').cityLocation(city);
+  },
   render() {
     let destinationStyle = {};
     if(this.props.flight.image){

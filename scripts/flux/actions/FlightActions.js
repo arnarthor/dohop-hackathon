@@ -49,7 +49,7 @@ class FlightActions extends Actions {
       });
   }
 
-  cityLocation(city) {
+  async cityLocation(city) {
     request.get(`${constants.googleMapsAPI}/json?address=${city}&sensor=false`)
       .end(res => {
         let location = res.body.results[0].geometry.location;
