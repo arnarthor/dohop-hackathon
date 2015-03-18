@@ -100,6 +100,22 @@ const App = React.createClass({
           alertPositive={this.state.alertPositive}
           alertMessage={this.state.alertMessage}
         />
+        <div className="About">
+          <div className="About__title">About the project</div>
+          <p className="About__content">
+            Created for <a className="About__content__link" href="http://www.dohop.com/" target="_blank">Dohop Hackathon 2015</a>
+            <div className="About__content__authorstitle">Authors</div>
+            <ul className="About__content__list">
+              <a href="http://is.linkedin.com/pub/arnar-þór-sveinsson/77/447/844" target="_blank"><li className="About__content__list__author">Arnar Þór Sveinsson</li></a>
+              <a href="http://is.linkedin.com/pub/axel-gíslason/90/145/ba7/en" target="_blank"><li className="About__content__list__author">Axel Máni</li></a>
+              <a href="http://is.linkedin.com/pub/guðmundur-egill/85/876/517" target="_blank"><li className="About__content__list__author">Guðmundur Egill Bergsteinsson</li></a>
+              <a href="http://soli.is" target="_blank"><li className="About__content__list__author">Sólberg Bjarki</li></a>
+              <a href="https://is.linkedin.com/in/solviloga" target="_blank"><li className="About__content__list__author">Sölvi Logason</li></a>
+            </ul>
+          </p>
+          
+          <p className="About__footer">Made with <span className="About__footer__heart"></span> in Iceland</p>
+        </div>
         <div className={classSet(twinklingClasses)}></div>
         <div className={classSet(twinklingClasses)}></div>
         <div className={classSet(formClasses)}>
