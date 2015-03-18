@@ -20,9 +20,8 @@ Dohop hackathon project
 	you are about to visit, see tourist attraction and even book hotels! 
 ===
 ## How to run
-	We recommend you check the solution out at  ....
 
-	If you want you can clone the project and follow these instruction
+If you want you can clone the project from [github](https://github.com/arnarthor/dohop-hackathon) and follow these instruction
 
 	Make sure you have mongodb installed before trying to run this.
 
