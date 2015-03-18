@@ -45,15 +45,11 @@ let DestinationDetails = React.createClass({
         </ul>
       </div>
       <div className="DestinationDetails__items__destination__details">
-
-        
-          <div>
-            <span className="DestinationDetails__items__destination__details__duration">
-              {`${this.props.flight.stayDuration} days in`}
-            </span>
-          </div>
-        
-
+        <div>
+          <span className="DestinationDetails__items__destination__details__duration">
+            {`${this.props.flight.stayDuration} days in`}
+          </span>
+        </div>
         <div>
           <span className="DestinationDetails__items__destination__details__city">
             {this.props.flight.airportInfo.ci_n}
