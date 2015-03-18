@@ -11,6 +11,7 @@ const Map = ReactGoogleMaps.Map;
 const Polyline = ReactGoogleMaps.Polyline;
 const Circle = ReactGoogleMaps.Circle;
 const LatLng = window.google.maps.LatLng;
+const Arrow = window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW;
 
 let GoogleMap = React.createClass({
 
@@ -58,6 +59,13 @@ let GoogleMap = React.createClass({
   },
 
   render() {
+    let lineSymbol = {
+      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW
+    };
+    let arrow = [{
+        icon: lineSymbol,
+        offset: '100%'
+      }];
     let polyLineArrays = [];
     let linePath = this.state.linePath;
     for(var i = 0; i < linePath.length - 1; i++) {
@@ -80,6 +88,7 @@ let GoogleMap = React.createClass({
             strokeColor="#F58C5C"
             strokeOpacity={0.8}
             strokeWeight={3}
+            icons={arrow}
           />
         )}
         {_.map(this.state.linePath, coord =>
