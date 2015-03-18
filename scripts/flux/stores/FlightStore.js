@@ -19,10 +19,11 @@ class FlightStore extends Store {
     this.register(flightActions.createJourney, this.createJourney);
     this.register(flightActions.setDates, this.setDates);
     this.register(flightActions.setImage, this.setImage);
+    this.register(flightActions.hideAlert, this.hideAlert);
 
     this.socket = null;
     this.state = {
-      showError:false,
+      showError: false,
       desiredHash: '',
       flightPath: [],
       airports: [],
@@ -80,7 +81,6 @@ class FlightStore extends Store {
 
   handleError(data){
     this.setState({showError:true});
-
   }
 
   setImage(data) {
@@ -117,6 +117,10 @@ class FlightStore extends Store {
     if (hash === this.state.desiredHash) {
       this.setState({airports: airportList});
     }
+  }
+
+  hideAlert() {
+    this.setState({showError: false});
   }
 }
 

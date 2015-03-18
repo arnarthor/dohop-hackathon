@@ -68,6 +68,13 @@ const App = React.createClass({
         }
       }
     }
+    if(props.showError){
+            this.setState({
+        alertPositive: false,
+        alertShow: true,
+        alertMessage: "Oh no! We didn't find any trip at this time from this airport."
+      });
+    }
   },
 
   render() {
@@ -217,6 +224,8 @@ const App = React.createClass({
       alertPositive: true,
       alertShow: false,
     });
+
+    this.props.flux.getActions('FlightActions').hideAlert();
   },
 
   handleSetAirport(event, airport) {
@@ -286,6 +295,7 @@ const App = React.createClass({
     });
 
     this.props.flux.getActions('FlightActions').createJourney();
+    this.props.flux.getActions('FlightActions').hideAlert();
   },
 });
 

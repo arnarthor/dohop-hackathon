@@ -60,7 +60,6 @@ let DestinationDetails = React.createClass({
             {this.props.flight.airportInfo.cc_n}
           </span>
         </div>
-
       </div>
     </li>
     );
