@@ -4,6 +4,9 @@ Dohop hackathon project
 ## The Team:
 	- Arnar Þór Sveinsson
 	- Axel Máni Gíslason
+	- Guðmundur Egill Bergsteinsson
+	- Sólberg Bjarki Valdimarsson
+	- Sölvi Logason
 
 ===
 ## About
