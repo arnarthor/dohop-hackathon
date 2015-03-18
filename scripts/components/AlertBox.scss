@@ -1,0 +1,42 @@
+@import '../variables.scss';
+
+.AlertBox {
+	width: 891px;
+	height: 51px;
+	position: absolute;
+	z-index: 100;
+	bottom:0;
+	left: 50%;
+	transform: translate3d(-50%,100%,0);
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	color: white;
+	text-align: center;
+	padding: 18px;
+	background-color: $color-red;
+	transition: all 400ms;
+}
+
+.AlertBox_show {
+	transform: translate3d(-50%,0,0);
+}
+
+.alertBox_positive {
+  background-color: $color-green;
+}
+
+.AlertBox__spinner {
+  float:left;
+  width: 30px;
+  margin-top: -5px;
+  display: none;
+}
+
+.AlertBox__spinner_show {
+  display: block;
+}
+
+.AlertBox__message {
+  font-size: 1.1em;
+  display: inline-block;
+}
