@@ -185,10 +185,8 @@ function fly(travelingInfo, socket) {
               break;
             }
 
-
             //check if within price limit
           }
-
         }
 
         if(!tempIsBZ){
@@ -198,14 +196,32 @@ function fly(travelingInfo, socket) {
           bestFlights.push(tempFlight);
           tempIsBZ = false;
         }
+      }
 
+      // Check if deadend
+      if(bestFlights.length === 0){
+        console.log("blockedZone deadend")
+        newFlightPath = removeDeadends(travelingInfo.flightPath);
+        if (newFlightPath.length < 1){
+          console.log("there is no trip for this airport");
+          return;
+          //send to the socket and end the connection
+          //try to lengthen the first
+        }
+
+        travelingInfo.flightPath = newFlightPath;
 
 
       }
 
-        
+      else{
       //Push it to the history array
       travelingInfo.flightPath.push(bestFlights);
+      }
+    }
+
+    if(timeToGoHome){
+      console.log(bestFlights);
     }
 
     socket.emit('updateFlightPath', travelingInfo.flightPath);
