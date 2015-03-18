@@ -9,6 +9,7 @@ import GoogleMap from './components/GoogleMap';
 import TimeoutTransitionGroup from './TimeoutTransitionGroup';
 import DateRangePicker from './components/daterangepicker';
 import JourneyPlan from './components/JourneyPlan.jsx';
+import AlertBox from './components/AlertBox.jsx';
 import moment from 'moment';
 
 require('./app.scss');
@@ -16,8 +17,8 @@ require('./components/daterangepicker/DateRangePicker.scss');
 
 const Props = React.PropTypes;
 const classSet = React.addons.classSet;
-const App = React.createClass({
 
+const App = React.createClass({
   getInitialState() {
     return {
       airportSearch: '',
@@ -31,6 +32,9 @@ const App = React.createClass({
         lat: null,
         lng: null,
       },
+      alertShow: false,
+      alertPositive: true,
+      alertMessage: '',
     };
   },
 
@@ -39,7 +43,7 @@ const App = React.createClass({
       this.setState({
         location: {
           lat: location.coords.latitude,
-          lng: location.coords.longitude
+          lng: location.coords.longitude,
         }
       });
     });
@@ -49,11 +53,19 @@ const App = React.createClass({
 
   componentWillReceiveProps(props) {
     if(props.flightPath.length){
-      if(_.first(_.last(props.flightPath)).b === props.selectedAirport.airportCode){
-        this.setState({showJourneyPlan: true});
-      }
-      else{
-        this.setState({showJourneyPlan: false});
+      if(props.selectedAirport){
+        if(_.first(_.last(props.flightPath)).b === props.selectedAirport.airportCode){
+          this.setState({
+            showJourneyPlan: true,
+            alertShow: false,
+            alertMessage: '',
+          });
+        }
+        else{
+          this.setState({
+            showJourneyPlan: false,
+          });
+        }
       }
     }
   },
@@ -83,7 +95,28 @@ const App = React.createClass({
 
     return (
       <div>
-      <div className={classSet(twinklingClasses)}></div>
+        <AlertBox
+          alertShow={this.state.alertShow}
+          alertPositive={this.state.alertPositive}
+          alertMessage={this.state.alertMessage}
+        />
+        <div className="About">
+          <div className="About__title">About the project</div>
+          <p className="About__content">
+            Created for <a className="About__content__link" href="http://www.dohop.com/" target="_blank">Dohop Hackathon 2015</a>
+            <div className="About__content__authorstitle">Authors</div>
+            <ul className="About__content__list">
+              <a href="http://is.linkedin.com/pub/arnar-þór-sveinsson/77/447/844" target="_blank"><li className="About__content__list__author">Arnar Þór Sveinsson</li></a>
+              <a href="http://is.linkedin.com/pub/axel-gíslason/90/145/ba7/en" target="_blank"><li className="About__content__list__author">Axel Máni</li></a>
+              <a href="http://is.linkedin.com/pub/guðmundur-egill/85/876/517" target="_blank"><li className="About__content__list__author">Guðmundur Egill Bergsteinsson</li></a>
+              <a href="http://soli.is" target="_blank"><li className="About__content__list__author">Sólberg Bjarki</li></a>
+              <a href="https://is.linkedin.com/in/solviloga" target="_blank"><li className="About__content__list__author">Sölvi Logason</li></a>
+            </ul>
+          </p>
+          
+          <p className="About__footer">Made with <span className="About__footer__heart"></span> in Iceland</p>
+        </div>
+        <div className={classSet(twinklingClasses)}></div>
         <div className={classSet(twinklingClasses)}></div>
         <div className={classSet(formClasses)}>
           <h1>DISCOVER THE WORLD</h1>
@@ -178,7 +211,12 @@ const App = React.createClass({
 
   handleOnFocus(event, value) {
     event.preventDefault();
-    this.setState({showSearchResults: value});
+    this.setState({
+      showSearchResults: value,
+      alertMessage: '',
+      alertPositive: true,
+      alertShow: false,
+    });
   },
 
   handleSetAirport(event, airport) {
@@ -224,15 +262,29 @@ const App = React.createClass({
   handleCreateJourney(event) {
     event.preventDefault();
     if (!this.props.selectedAirport) {
-      alert('Obb bobb bobb, this isnt an airport');
+      this.setState({
+        alertMessage: 'Please pick a valid airport',
+        alertPositive: false,
+        alertShow: true,
+      });
       return;
     } else if (this.props.dates.startDate.format('YYYY-MM-DD') === this.props.dates.endDate.format('YYYY-MM-DD')) {
-      alert('Obb bobb bobb, invalid date');
+      this.setState({
+        alertMessage: 'Please pick a valid duration',
+        alertPositive: false,
+        alertShow: true,
+      });
       return;
     }
 
-    this.setState({showLandingPage: false});
-    this.setState({minimizeSearchResults: true});
+    this.setState({
+      showLandingPage: false,
+      minimizeSearchResults: true,
+      alertShow: true,
+      alertPositive: true,
+      alertMessage: 'Generating journey...',
+    });
+
     this.props.flux.getActions('FlightActions').createJourney();
   },
 });
