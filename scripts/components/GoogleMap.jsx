@@ -40,11 +40,12 @@ let GoogleMap = React.createClass({
   },
 
   componentWillReceiveProps(props) {
-    let linePath, firstCoord;
-    let {lat, lng} = props.startingPoint.location;
+    let linePath = [], firstCoord;
+    if (props.startingPoint) {
+      let {lat, lng} = props.startingPoint.location;
 
-    linePath = [];
-    linePath.push(new LatLng(lat, lng));
+      linePath.push(new LatLng(lat, lng));
+    }
 
     for (var i = 0; i < props.flightPath.length; i++) {
       linePath.push(new LatLng(

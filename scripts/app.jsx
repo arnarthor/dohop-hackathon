@@ -120,7 +120,7 @@ const App = React.createClass({
               <a href="https://is.linkedin.com/in/solviloga" target="_blank"><li className="About__content__list__author">Sölvi Logason</li></a>
             </ul>
           </p>
-          
+
           <p className="About__footer">Made with <span className="About__footer__heart"></span> in Iceland</p>
         </div>
         <div className={classSet(twinklingClasses)}></div>
@@ -177,13 +177,11 @@ const App = React.createClass({
           display={this.state.showJourneyPlan}
           flux={this.props.flux}
         />
-        {this.props.selectedAirport &&
-          <GoogleMap
-            startingPoint={this.props.selectedAirport}
-            flightPath={this.props.flightPath}
-            flightHash={this.props.desiredHash}
-          />
-        }
+        <GoogleMap
+          startingPoint={this.props.selectedAirport}
+          flightPath={this.props.flightPath}
+          flightHash={this.props.desiredHash}
+        />
       </div>
     );
   },
@@ -284,7 +282,7 @@ const App = React.createClass({
         alertShow: true,
       });
       return;
-    } 
+    }
 
     this.setState({
       showLandingPage: false,

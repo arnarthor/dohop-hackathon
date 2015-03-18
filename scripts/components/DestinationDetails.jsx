@@ -30,7 +30,7 @@ let DestinationDetails = React.createClass({
     if(this.props.daysStaying){
       checkOutDate = moment(this.props.flight.departure).add(this.props.daysStaying.substring(0, this.props.flight.daysStaying.indexOf(' ')), 'days')
     }
-    
+
     return (
      <li className="DestinationDetails__items__destination" style={destinationStyle}>
       <div className="DestinationDetails__items__destination__menu">
