@@ -31,6 +31,8 @@ Dohop hackathon project
 
 ===
 ## Walkthrough
+	This is a gif of our beautiful solution
+![Frontpage](img/movie.gif "Our beautiful solution")
 	On our frontpage you choose a starting airport and length of a trip. 
 	IMG
 	P.S. we have blinking stars ! 
