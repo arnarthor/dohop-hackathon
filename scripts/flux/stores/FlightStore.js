@@ -22,6 +22,7 @@ class FlightStore extends Store {
 
     this.socket = null;
     this.state = {
+      showError:false,
       desiredHash: '',
       flightPath: [],
       airports: [],
@@ -77,6 +78,11 @@ class FlightStore extends Store {
 
   }
 
+  handleError(data){
+    this.setState({showError:true});
+
+  }
+
   setImage(data) {
     let flightPath = _.clone(this.state.flightPath)
     let flight = _.findWhere(flightPath, [{d1: data.date}]);
@@ -90,6 +96,7 @@ class FlightStore extends Store {
     this.socket = window.io.connect(constants.socketIoAPI);
     this.socket.on('updateFlightPath', (data) => this.updateFlightPath(data));
     this.socket.on('error', (data) => this.debug(data));
+    this.socket.on('badAirport',(data)=> this.handleError(data));
   }
 
   airportList(data) {

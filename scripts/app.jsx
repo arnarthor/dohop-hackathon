@@ -275,7 +275,7 @@ const App = React.createClass({
         alertShow: true,
       });
       return;
-    }
+    } 
 
     this.setState({
       showLandingPage: false,
