@@ -75,6 +75,10 @@
   transition: max-height 300ms ease-out;
 }
 
+.JourneyPlan__items span:last-child .DestinationDetails__items__destination{
+  display: none;
+}
+
 .JourneyPlan__items:last-child {
   transition: all 800ms ease;
   padding-bottom: 54px;
