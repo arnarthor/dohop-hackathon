@@ -67,8 +67,6 @@ class FlightStore extends Store {
   }
 
   updateFlightPath(data) {
-    console.log('Update path!');
-    console.log(data);
     this.setState({flightPath: data});
   }
 
@@ -134,12 +132,12 @@ class FlightStore extends Store {
   */
 
   setImage(data) {
-    let flights = _.clone(this.state.flights)
-    let flight = _.findWhere(flights, {departure: data.date});
-    let index = _.indexOf(flights,flight);
-    flight.image = data.url;
-    flights[index] = flight;
-    this.setState({flights: flights});
+    let flightPath = _.clone(this.state.flightPath)
+    let flight = _.findWhere(flightPath, [{d1: data.date}]);
+    let index = _.indexOf(flightPath,flight);
+    flight[0].image = data.url;
+    flightPath[index] = flight;
+    this.setState({flightPath: flightPath});
   }
 
   connectIo() {
