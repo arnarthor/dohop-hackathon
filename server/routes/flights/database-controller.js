@@ -8,7 +8,7 @@ var flight = require('../../models/flightModel.js')
 
 
 exports.fetchFlight = function(req,res){
-  var ObjectId = require('mongoose').Types.ObjectId; 
+  var ObjectId = require('mongoose').Types.ObjectId;
   flight.findOne({_id: new ObjectId(req.params.id)},function(err,result){
     if(err){
       console.log(err);
