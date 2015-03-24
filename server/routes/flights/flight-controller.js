@@ -56,7 +56,7 @@ function goHome(travelingInfo){
 // Remove latest flight from flightPath
 function removeDeadends(flightPath){
   while(flightPath.length !== 0){
-    //if there are still items in the array 
+    //if there are still items in the array
     if(flightPath[flightPath.length - 1].length > 1){
       flightPath[flightPath.length - 1].shift();
       return flightPath;
@@ -64,7 +64,7 @@ function removeDeadends(flightPath){
     else{
       flightPath.pop();
       continue;
-    }  
+    }
   }
   console.log('oh shit, no backup plans left! We have to change the duration');
   return flightPath;
@@ -90,7 +90,7 @@ function fly(travelingInfo, socket) {
     travelingInfo.firstFlight = false;
       var url = [
       config.api,
-      'livestore',  
+      'livestore',
       'en',
       travelingInfo.startingPoint.selectedAirport.country_code,
       'per-country',
@@ -160,7 +160,7 @@ function fly(travelingInfo, socket) {
 
     }
 
-    //check if inside blocked zoone 
+    //check if inside blocked zoone
     else {
       var bestFlights = [];
 
@@ -190,8 +190,8 @@ function fly(travelingInfo, socket) {
           for(var k = 0; k<travelingInfo.flightPath.length; k++){
             //check if within blocked zone
             var tempIsBZ = false;
-            if(findDistance(travelingInfo.flightPath[k][0].airportInfo.lat,travelingInfo.flightPath[k][0].airportInfo.lon, tempAirport.lat, tempAirport.lon)){   
-              tempIsBZ = true; 
+            if(findDistance(travelingInfo.flightPath[k][0].airportInfo.lat,travelingInfo.flightPath[k][0].airportInfo.lon, tempAirport.lat, tempAirport.lon)){
+              tempIsBZ = true;
               break;
             }
 
@@ -207,17 +207,17 @@ function fly(travelingInfo, socket) {
           console.log(tempFlight);
           tempFlight.airportInfo = tempAirport;
           if(travelingInfo.flightPath.length === 0){
-            
+
            tempFlight.prevAirport = travelingInfo.startingPoint.selectedAirport.name;
           }
-          else{ 
+          else{
 
             tempFlight.prevAirport = travelingInfo.flightPath[travelingInfo.flightPath.length-1][0].airportInfo.a_n;
 
           }
 
-          
-          
+
+
           console.log(travelingInfo);
 
                   //  console.log(travelingInfo);

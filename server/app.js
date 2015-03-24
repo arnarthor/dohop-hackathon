@@ -36,6 +36,9 @@ app.use('*', function(req, res, next) {
   next();
 });
 
+app.get('/healthy', function(req, res) {
+  res.send('OK');
+});
 app.use('/api', flightApi);
 
 
