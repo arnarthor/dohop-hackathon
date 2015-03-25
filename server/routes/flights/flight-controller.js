@@ -27,8 +27,12 @@ exports.searchAirport = function(req, res) {
 
 exports.findCheapestFlight = function(travelingInfo, socket) {
    //UPDATE THE TRAVELING INFO FOR THE FIRST FLIGHT
-   travelingInfo = initFirstFlight(travelingInfo);
-   fly(travelingInfo, socket);
+
+    if(travelingInfo.tripDuration.stopDuration === undefined){
+      travelingInfo = initFirstFlight(travelingInfo);
+    }
+    console.log("oft")
+    fly(travelingInfo, socket);
 };
 
 exports.updateACK = function(data,data2,socket){
@@ -72,13 +76,6 @@ function removeDeadends(flightPath){
 
 function fly(travelingInfo, socket) {
 
-
-  if(travelingInfo.id !== ACKid && !ACKfirst){
-    console.log("ID:DFD")
-    //you
-    socket.emit('badAirport', travelingInfo);
-    return;
-  }
 
   if(!travelingInfo.firstFlight){
     var timeToGoHome = goHome(travelingInfo,currentLocation);
@@ -217,9 +214,6 @@ function fly(travelingInfo, socket) {
           }
 
 
-
-          console.log(travelingInfo);
-
                   //  console.log(travelingInfo);
           bestFlights.push(tempFlight);
           tempIsBZ = false;
@@ -268,10 +262,11 @@ function fly(travelingInfo, socket) {
       }
     }
 
-    socket.emit('updateFlightPath', travelingInfo);
+
 
     // Check if we're home
     if(newLocation.b === travelingInfo.startingPoint.selectedAirport.airportCode){
+          return socket.emit('finishFlightPath', travelingInfo);
 
 
 
@@ -281,7 +276,7 @@ function fly(travelingInfo, socket) {
       //STORE THE ID OF THE DUDE HERE AND TELL THE CLIENT THE ID NUMBER
 
       //MOVE TO DATABASE API TODO////////////////////////////////////////////////////////
-      flight.create({
+      /*flight.create({
 
         travelingInfo:travelingInfo,
         },function(err,msg){
@@ -295,13 +290,14 @@ function fly(travelingInfo, socket) {
             return socket.emit('finishFlightPath', travelingInfo.flightPath,msg.id);
 
         });
+    */
       //////////////////////////////////////////////////////////////////////////////////
     }
 
     //else we keep on trying
     else{
-
-      fly(travelingInfo,socket);
+      console.log("her")
+      return socket.emit('updateFlightPath', travelingInfo);
     }
   });
 }

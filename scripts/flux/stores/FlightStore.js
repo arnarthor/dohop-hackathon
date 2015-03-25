@@ -49,7 +49,7 @@ class FlightStore extends Store {
       flightPath:[],
       id:Math.random()*100,
     };
-        this.socket.emit('ACK',journeyData.id,true);
+     //   this.socket.emit('ACK',journeyData.id,true);
         this.socket.emit('create-journey', journeyData);
   }
 
@@ -75,8 +75,13 @@ class FlightStore extends Store {
 
   updateFlightPath(data) {
     this.setState({flightPath: data.flightPath});
-    this.socket.emit('ACK',data.id,false);
 
+    this.socket.emit('create-journey',data);
+    //this.socket.emit('ACK',data.id,false);
+
+  }
+  finishFlightPath(data){
+    this.setState({flightPath: data.flightPath});
   }
 
   handleError(data){
@@ -94,6 +99,8 @@ class FlightStore extends Store {
 
   connectIo() {
     this.socket = window.io.connect(constants.socketIoAPI);
+    this.socket.on('finishFlightPath', (data) => this.finishFlightPath(data));
+
     this.socket.on('updateFlightPath', (data) => this.updateFlightPath(data));
     this.socket.on('error', (data) => this.debug(data));
     this.socket.on('badAirport',(data)=> this.handleError(data));
